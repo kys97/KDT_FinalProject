@@ -1,13 +1,18 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{7DF77911-4B4A-D0B2-F090-D58B008035F3}",
+	"EngineAssociation": "{CFCE6F98-4E79-AC6C-791A-98993F963B07}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
 		{
 			"Name": "FinalProject",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine",
+				"AIModule",
+				"CoreUObject"
+			]
 		}
 	],
 	"Plugins": [
