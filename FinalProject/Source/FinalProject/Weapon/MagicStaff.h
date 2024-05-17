@@ -3,21 +3,27 @@
 #pragma once
 
 #include "../GameInfo.h"
-#include "GameFramework/Character.h"
-#include "Wizard.generated.h"
+#include "GameFramework/Actor.h"
+#include "MagicStaff.generated.h"
 
 UCLASS()
-class FINALPROJECT_API AWizard : public ACharacter
+class FINALPROJECT_API AMagicStaff : public AActor
 {
 	GENERATED_BODY()
-
-public:
-	// Sets default values for this character's properties
-	AWizard();
+	
+public:	
+	// Sets default values for this actor's properties
+	AMagicStaff();
 
 protected:
 	UPROPERTY(VisibleAnywhere)
-	class AMagicStaff* mWeapon;
+	USceneComponent* mRoot;
+
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* mMesh;
+
+public:
+	void SetMesh(UStaticMesh* Mesh);
 
 protected:
 	// Called when the game starts or when spawned
@@ -26,8 +32,5 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 };

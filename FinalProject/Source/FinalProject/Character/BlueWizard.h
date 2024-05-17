@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Wizard.h"
 #include "BlueWizard.generated.h"
 
@@ -13,5 +12,15 @@ UCLASS()
 class FINALPROJECT_API ABlueWizard : public AWizard
 {
 	GENERATED_BODY()
-	
+
+public:
+	ABlueWizard();
+
+protected:
+	UStaticMesh* mWeaponMesh;
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
 };
