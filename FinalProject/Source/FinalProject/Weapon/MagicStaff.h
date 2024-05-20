@@ -3,6 +3,9 @@
 #pragma once
 
 #include "../GameInfo.h"
+
+#include "../Character/Wizard.h"
+
 #include "GameFramework/Actor.h"
 #include "MagicStaff.generated.h"
 
@@ -23,7 +26,9 @@ protected:
 	UStaticMeshComponent* mMesh;
 
 public:
-	void SetMesh(UStaticMesh* Mesh);
+	void SetMesh(UStaticMesh* Mesh) { mMesh->SetStaticMesh(Mesh); }
+
+	void SetInputActionBind(AWizard* Character);
 
 protected:
 	// Called when the game starts or when spawned
@@ -33,4 +38,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+public:
+	void NormalAttack(AWizard* Character);
 };

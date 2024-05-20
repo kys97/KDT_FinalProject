@@ -2,6 +2,8 @@
 
 
 #include "MagicStaff.h"
+#include "../Character/WizardPlayerController.h"
+
 
 // Sets default values
 AMagicStaff::AMagicStaff()
@@ -16,9 +18,26 @@ AMagicStaff::AMagicStaff()
 	mMesh->SetupAttachment(mRoot);
 }
 
-void AMagicStaff::SetMesh(UStaticMesh* Mesh)
+void AMagicStaff::SetInputActionBind(AWizard* Character)
 {
-	mMesh->SetStaticMesh(Mesh);
+	if (Character == nullptr)
+		return;
+
+	// Input Setting
+	if (AWizardPlayerController* WizardPlayerController = Cast<AWizardPlayerController>(Character->GetController()))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(WizardPlayerController->GetLocalPlayer()))
+		{
+			const UInputDataConfig* InputDataConfig = GetDefault< UInputDataConfig>();
+			Subsystem->AddMappingContext(InputDataConfig->WizardInputContext, 1);
+		}
+
+		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(WizardPlayerController->InputComponent))
+		{
+			const UInputDataConfig* InputDataConfig = GetDefault<UInputDataConfig>();
+			EnhancedInputComponent->BindAction(InputDataConfig->NormalAttack, ETriggerEvent::Triggered, this, &ThisClass::NormalAttack, Character);
+		}
+	}
 }
 
 // Called when the game starts or when spawned
@@ -33,5 +52,13 @@ void AMagicStaff::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AMagicStaff::NormalAttack(AWizard* Character)
+{
+	// Character Animation Set
+	Character->NormalAttack();
+
+	// Attack
 }
 

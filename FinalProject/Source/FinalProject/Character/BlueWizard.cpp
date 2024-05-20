@@ -29,6 +29,7 @@ void ABlueWizard::BeginPlay()
 	param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	mWeapon = GetWorld()->SpawnActor<AMagicStaff>(FVector::ZeroVector, FRotator::ZeroRotator,param);
 	mWeapon->SetMesh(mWeaponMesh);
+	mWeapon->SetInputActionBind(this);
 	mWeapon->AttachToComponent(GetMesh(),FAttachmentTransformRules::KeepRelativeTransform,TEXT("WeaponSocket"));
 	
 }
