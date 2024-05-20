@@ -2,11 +2,11 @@
 
 
 #include "MainGameMode.h"
-#include "Character/Wizard.h"
+#include "Character/BlueWizard.h"
 #include "Character/WizardPlayerController.h"
 
 AMainGameMode::AMainGameMode()
 {
-	DefaultPawnClass = AWizard::StaticClass();
+	DefaultPawnClass = ABlueWizard::StaticClass();
 	PlayerControllerClass = AWizardPlayerController::StaticClass();
 }

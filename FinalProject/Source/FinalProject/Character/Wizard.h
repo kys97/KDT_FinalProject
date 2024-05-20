@@ -16,6 +16,12 @@ public:
 	AWizard();
 
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UCameraComponent* mCamera;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	USpringArmComponent* mCameraArm;
+
 	UPROPERTY(VisibleAnywhere)
 	class AMagicStaff* mWeapon;
 
