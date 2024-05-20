@@ -16,5 +16,15 @@ class FINALPROJECT_API ADefaultAIController : public AAIController
 
 public:
 	ADefaultAIController();
+
+protected:
+	UBehaviorTree* mBehaviorTree;
+	UBlackboardData* mBlackboard;
 	
+protected:
+	// AI에 빙의할 때 함수
+	virtual void OnPossess(APawn* InPawn) override;
+	// AI에서 빙의 해지 될 때 함수
+	virtual void OnUnPossess() override;
+
 };
