@@ -22,10 +22,11 @@ AAIPawn::AAIPawn()
 
 	// 자동빙의 설정
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
 	AIControllerClass = ADefaultAIController::StaticClass();
 
+	//// 블루프린트 에셋 가져올 경우 아래 코드 활용
 	//static ConstructorHelpers::FClassFinder<AAIController>	AIClass(TEXT(""));
-
 	//if (AIClass.Succeeded())
 	//	AIControllerClass = AIClass.Class;
 }
