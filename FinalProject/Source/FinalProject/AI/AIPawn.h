@@ -26,6 +26,12 @@ protected:
 	UPROPERTY(EditAnywhere)
 	UFloatingPawnMovement* mMovement;
 
+public:
+	float GetHalfRadius() const
+	{
+		return mCapsule->GetScaledCapsuleRadius();
+	}
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
