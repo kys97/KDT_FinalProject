@@ -7,6 +7,6 @@
 
 AMainGameMode::AMainGameMode()
 {
-	DefaultPawnClass = ABlueWizard::StaticClass();
-	PlayerControllerClass = AWizardPlayerController::StaticClass();
+	// DefaultPawnClass = ABlueWizard::StaticClass();
+	// PlayerControllerClass = AWizardPlayerController::StaticClass();
 }
