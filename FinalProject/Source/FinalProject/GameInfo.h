@@ -4,6 +4,8 @@
 
 #include "EngineMinimal.h"		// "CoreMinimal.h"
 
+#include "DrawDebugHelpers.h"
+
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/BlackboardComponent.h"
