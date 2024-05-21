@@ -27,7 +27,12 @@ protected:
 	UFloatingPawnMovement* mMovement;
 
 public:
-	float GetHalfRadius() const
+	float GetHalfHeight() const
+	{
+		return mCapsule->GetScaledCapsuleHalfHeight();
+	}
+
+	float GetCapsuleRadius()
 	{
 		return mCapsule->GetScaledCapsuleRadius();
 	}

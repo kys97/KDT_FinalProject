@@ -44,6 +44,60 @@ EBTNodeResult::Type UBTTask_TraceTarget::ExecuteTask(UBehaviorTreeComponent& Own
 void UBTTask_TraceTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
+
+	AAIController* Controller = OwnerComp.GetAIOwner();
+
+	AAIPawn* Pawn = Cast<AAIPawn>(Controller->GetPawn());
+
+	// Controller가 빙의되어 있는 Pawn이 없으면 Task 종료
+	if (!IsValid(Pawn))
+	{
+		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+
+		Controller->StopMovement();
+
+		return;
+	}
+
+	AActor* Target = Cast<AActor>(Controller->GetBlackboardComponent()->GetValueAsObject(TEXT("Target")));
+
+	// 타겟이 없어도 Task 종료
+	if (!IsValid(Target))
+	{
+		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+
+		Controller->StopMovement();
+
+		return;
+	}
+
+	// 타겟과의 거리 체크
+	FVector AILocation = Pawn->GetActorLocation();
+	FVector TargetLocation = Target->GetActorLocation();
+
+	AILocation.Z -= Pawn->GetHalfHeight();
+
+	UCapsuleComponent* TargetCapsule = Cast<UCapsuleComponent>(Target->GetRootComponent());
+
+	if (IsValid(TargetCapsule))
+		TargetLocation.Z -= TargetCapsule->GetScaledCapsuleHalfHeight();
+
+	// FVetor::Distance : 두 위치 사이의 거리를 구한다.
+	float Distance = FVector::Distance(AILocation, TargetLocation);
+
+	Distance -= Pawn->GetCapsuleRadius();
+
+	if (IsValid(TargetCapsule))
+		Distance -= TargetCapsule->GetScaledCapsuleRadius();
+
+
+	if (Distance <= 200.f)
+	{
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+
+		Controller->StopMovement();
+	}
+
 }
 
 void UBTTask_TraceTarget::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult)

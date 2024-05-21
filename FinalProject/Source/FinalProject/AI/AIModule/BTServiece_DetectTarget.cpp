@@ -29,7 +29,7 @@ void UBTServiece_DetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp,
 	FVector AILocation = Pawn->GetActorLocation();
 
 	// 몬스터의 Z위치에서 절반 높이(HalfHeight)를 빼서 발밑 중앙위치 구하기. 
-	AILocation.Z -= Pawn->GetHalfRadius();
+	AILocation.Z -= Pawn->GetHalfHeight();
 
 	// 주변에 Target이 있는지 판단한다.
 	FCollisionQueryParams Param(NAME_None, false, Pawn);
