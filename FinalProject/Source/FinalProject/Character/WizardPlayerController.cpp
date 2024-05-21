@@ -2,6 +2,7 @@
 
 
 #include "WizardPlayerController.h"
+#include "Wizard.h"
 
 
 AWizardPlayerController::AWizardPlayerController()
@@ -38,7 +39,7 @@ void AWizardPlayerController::SetupInputComponent()
 
 void AWizardPlayerController::OnMove(const FInputActionValue& InputActionValue)
 {
-	APawn* mPawn = GetPawn();
+	APawn* WizardPawn = GetPawn();
 
 	// Get Rotate & Move Vector
 	const FRotator Rotation = K2_GetActorRotation();
@@ -51,8 +52,32 @@ void AWizardPlayerController::OnMove(const FInputActionValue& InputActionValue)
 	// Action.Y > 0 ? Fwd : Bwd 
 	const FVector ActionValue = InputActionValue.Get<FVector>();
 	// 앞 뒤
-	mPawn->AddMovementInput(FwdVector, ActionValue.Y);
+	WizardPawn->AddMovementInput(FwdVector, ActionValue.Y);
 	// 좌우
-	mPawn->AddMovementInput(RightVector, ActionValue.X);
+	WizardPawn->AddMovementInput(RightVector, ActionValue.X);
 	
+	// Set Rotate
+	/*
+	AWizard* Wizard = Cast<AWizard>(GetPawn());
+	Wizard->MoveDir = ActionValue.X * 90.f; // 좌 우 설정
+	if (ActionValue.Y > 0) // 전방 대각선 설정
+		Wizard->MoveDir -= 45.f * ActionValue.X;
+	else if (ActionValue.Y < 0) // 후방 대각선 설정
+		Wizard->MoveDir += 45.f * ActionValue.X;
+	else if (Wizard->MoveDir == 0.f) // 앞 뒤 설정
+		Wizard->MoveDir = 90.f - (ActionValue.Y * 90.f);
+	*/
+
+	if (ActionValue.SizeSquared() > 0.0f) // 입력이 존재하는 경우에만 회전
+	{
+		FRotator TargetRotation = ActionValue.Rotation();
+		TargetRotation.Pitch = 0.0f; // 지면에 평행하게 회전
+		TargetRotation.Roll = 0.0f;
+		GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Cyan, FString::Printf(TEXT("%f"),TargetRotation.Yaw));
+
+		AWizard* Wizard = Cast<AWizard>(WizardPawn);
+
+		// TODO : Rotator Yaw 계산하기
+		Wizard->GetMesh()->AddLocalRotation(TargetRotation);
+	}
 }

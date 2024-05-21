@@ -12,7 +12,7 @@ AWizard::AWizard()
 	// Capsule Component Set
 	GetCapsuleComponent()->InitCapsuleSize(40.f, 100.f);
 	GetMesh()->SetRelativeLocation(FVector(0, 0, -97));
-
+	
 	// TODO : Character Set
 	// z 축 -90도 회전
 

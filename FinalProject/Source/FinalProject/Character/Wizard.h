@@ -25,6 +25,9 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class AMagicStaff* mWeapon;
 
+public:
+	float	MoveDir;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
