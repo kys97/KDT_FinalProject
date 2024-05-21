@@ -11,9 +11,7 @@
 #include "GameFramework/PlayerController.h"
 #include "WizardPlayerController.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class FINALPROJECT_API AWizardPlayerController : public APlayerController
 {

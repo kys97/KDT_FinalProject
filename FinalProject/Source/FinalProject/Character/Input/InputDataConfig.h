@@ -5,12 +5,9 @@
 #include "../../GameInfo.h"
 #include "InputMappingContext.h"
 #include "InputAction.h"
-// #include "UObject/NoExportTypes.h"
 #include "InputDataConfig.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class FINALPROJECT_API UInputDataConfig : public UObject
 {
