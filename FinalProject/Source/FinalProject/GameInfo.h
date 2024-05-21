@@ -10,7 +10,7 @@
 #include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
-
+#include "Blueprint/AIBlueprintHelperLibrary.h"
 
 
 #include "UObject/NoExportTypes.h"

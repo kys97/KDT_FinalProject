@@ -10,13 +10,13 @@ AAIDragonTheSoulEater::AAIDragonTheSoulEater()
 	if (MeshAsset.Succeeded())
 		mMesh->SetSkeletalMesh(MeshAsset.Object);
 
-	mMesh->SetRelativeLocation(FVector(-80.f, 0.f, -50.f));
+	mMesh->SetRelativeLocation(FVector(-90.f, 0.f, -27.f));
 	mMesh->SetRelativeRotation(FRotator(0.f, -90.f, 90.f)); // Pitch(Y), Yaw(Z), Roll(X)
 	mMesh->SetRelativeScale3D(FVector(0.3f, 0.3f, 0.3f));
 
 	mCapsule->SetRelativeRotation(FRotator(90.f, 0.f, 0.f));
-	mCapsule->SetCapsuleHalfHeight(160.f);
-	mCapsule->SetCapsuleRadius(80.f);
+	mCapsule->SetCapsuleHalfHeight(150.f);
+	mCapsule->SetCapsuleRadius(90.f);
 
 }
 

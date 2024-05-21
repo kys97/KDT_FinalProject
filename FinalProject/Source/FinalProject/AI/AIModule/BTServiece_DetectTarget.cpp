@@ -8,8 +8,8 @@
 UBTServiece_DetectTarget::UBTServiece_DetectTarget()
 {
 	NodeName = TEXT("DetectTarget");
-	Interval = 0.6f;
-	RandomDeviation = 0.2f;
+	Interval = 0.5f;
+	RandomDeviation = 0.1f;
 }
 
 void UBTServiece_DetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp,
@@ -34,7 +34,7 @@ void UBTServiece_DetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp,
 	// 주변에 Target이 있는지 판단한다.
 	FCollisionQueryParams Param(NAME_None, false, Pawn);
 
-	FHitResult result;
+	FHitResult result;	// 충돌 결과
 	bool IsCollision = GetWorld()->SweepSingleByChannel(result, AILocation, AILocation, FQuat::Identity, ECC_GameTraceChannel1,
 		FCollisionShape::MakeSphere(1000.f), Param);
 
@@ -46,6 +46,21 @@ void UBTServiece_DetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp,
 		1000.f, 20, DrawColor, false, 0.35f);
 
 #endif
+
+	// 충돌이 됐을 경우 (Target을 찾았을 경우)
+	if (IsCollision)
+	{
+		// AIController에 지정된 Blackboard에 Target을 저장한다.
+		// result.GetActor() : 충돌된 액터를 얻어온다.
+		Controller->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), result.GetActor());
+	}
+
+	// 충돌이 안됐을 경우
+	if (!IsCollision)
+	{
+		// AIController에 지정된 Blackboard에 nullptr을 저장한다.
+		Controller->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), nullptr);
+	}
 }
 
 
