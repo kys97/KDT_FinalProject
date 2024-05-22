@@ -5,9 +5,7 @@
 #include "AIPawn.h"
 #include "AIMonsterPawn.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class FINALPROJECT_API AAIMonsterPawn : public AAIPawn
 {
@@ -15,6 +13,12 @@ class FINALPROJECT_API AAIMonsterPawn : public AAIPawn
 
 public:
 	AAIMonsterPawn();
+
+protected:
+	class UMonsterAnimInstance* mAnimInst;
+
+public:
+	virtual void ChangeAIAnimType(uint8 AnimType);
 
 protected:
 	// Called when the game starts or when spawned

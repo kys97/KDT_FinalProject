@@ -2,6 +2,7 @@
 #include "BTTask_TraceTarget.h"
 #include "../DefaultAIController.h"
 #include "../AIPawn.h"
+#include "../MonsterAnimInstance.h"
 
 UBTTask_TraceTarget::UBTTask_TraceTarget()
 {
@@ -32,11 +33,17 @@ EBTNodeResult::Type UBTTask_TraceTarget::ExecuteTask(UBehaviorTreeComponent& Own
 	if (!IsValid(Target))
 	{
 		Controller->StopMovement();
+
+		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
+
+		return EBTNodeResult::Failed;
 	}
 
 	// 타겟을 찾으면 Target을 향해 이동
 										// (이동시킬 대상, 목표지점)
 	UAIBlueprintHelperLibrary::SimpleMoveToActor(Controller, Target);
+
+	Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Run);
 
 	return EBTNodeResult::InProgress;
 }
@@ -67,6 +74,8 @@ void UBTTask_TraceTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 
 		Controller->StopMovement();
+
+		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
 
 		return;
 	}
@@ -106,6 +115,8 @@ void UBTTask_TraceTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 
 		Controller->StopMovement();
+
+		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
 	}
 
 }

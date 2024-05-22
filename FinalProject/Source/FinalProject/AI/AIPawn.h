@@ -37,6 +37,9 @@ public:
 		return mCapsule->GetScaledCapsuleRadius();
 	}
 
+public:
+	virtual void ChangeAIAnimType(uint8 AnimType);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
