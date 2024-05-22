@@ -3,6 +3,7 @@
 
 #include "BlueWizard.h"
 #include "../Weapon/MagicStaff.h"
+#include "WizardAnimInstance.h"
 
 ABlueWizard::ABlueWizard()
 {
@@ -24,6 +25,9 @@ void ABlueWizard::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// Animation Class Set
+	mAnimInstance = Cast<UWizardAnimInstance>(GetMesh()->GetAnimInstance());
+
 	// Weapon Set
 	FActorSpawnParameters	param;
 	param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -32,4 +36,9 @@ void ABlueWizard::BeginPlay()
 	mWeapon->SetInputActionBind(this);
 	mWeapon->AttachToComponent(GetMesh(),FAttachmentTransformRules::KeepRelativeTransform,TEXT("WeaponSocket"));
 	
+}
+
+void ABlueWizard::NormalAttack()
+{
+	mAnimInstance->PlayNormalAttackAnimation();
 }
