@@ -71,13 +71,17 @@ void AWizardPlayerController::OnMove(const FInputActionValue& InputActionValue)
 	if (ActionValue.SizeSquared() > 0.0f) // 입력이 존재하는 경우에만 회전
 	{
 		FRotator TargetRotation = ActionValue.Rotation();
+		TargetRotation.Yaw *= -1.f;
 		TargetRotation.Pitch = 0.0f; // 지면에 평행하게 회전
 		TargetRotation.Roll = 0.0f;
+
 		GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Cyan, FString::Printf(TEXT("%f"),TargetRotation.Yaw));
 
 		AWizard* Wizard = Cast<AWizard>(WizardPawn);
-
+		float NewRotator = FMath::Clamp<float>(0.f, Wizard->GetMesh()->GetComponentRotation().Yaw + ActionValue.X, 0.f);
+		Wizard->GetMesh()->SetRelativeRotation(TargetRotation);
+		
 		// TODO : Rotator Yaw 계산하기
-		Wizard->GetMesh()->AddLocalRotation(TargetRotation);
+		//Wizard->GetMesh()->AddLocalRotation();
 	}
 }
