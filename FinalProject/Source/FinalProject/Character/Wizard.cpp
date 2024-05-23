@@ -47,7 +47,4 @@ void AWizard::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AWizard::NormalAttack()
 {
-	// 기본 공격 애니메이션 Set
-
 }
-

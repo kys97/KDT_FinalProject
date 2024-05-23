@@ -4,6 +4,7 @@
 
 #include "../GameInfo.h"
 #include "GameFramework/Character.h"
+#include "WizardAnimInstance.h"
 #include "Wizard.generated.h"
 
 UCLASS()
@@ -25,6 +26,11 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class AMagicStaff* mWeapon;
 
+	class UWizardAnimInstance* mAnimInstance;
+
+public:
+	bool GetMoveEnabled() { return mAnimInstance->MoveEnable(); }
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -37,5 +43,5 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 public:
-	void NormalAttack();
+	virtual void NormalAttack();
 };
