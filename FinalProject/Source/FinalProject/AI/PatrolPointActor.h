@@ -2,30 +2,28 @@
 
 #pragma once
 
-#include "AIPawn.h"
-#include "AIMonsterPawn.generated.h"
-
+#include "../GameInfo.h"
+#include "GameFramework/Actor.h"
+#include "PatrolPointActor.generated.h"
 
 UCLASS()
-class FINALPROJECT_API AAIMonsterPawn : public AAIPawn
+class FINALPROJECT_API APatrolPointActor : public AActor
 {
 	GENERATED_BODY()
-
-public:
-	AAIMonsterPawn();
+	
+public:	
+	// Sets default values for this actor's properties
+	APatrolPointActor();
 
 protected:
-	class UMonsterAnimInstance* mAnimInst;
-
-public:
-	virtual void ChangeAIAnimType(uint8 AnimType);
+	USceneComponent* mRoot;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:
+public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	
+
 };

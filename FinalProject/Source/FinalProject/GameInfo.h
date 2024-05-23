@@ -3,6 +3,7 @@
 #pragma once
 
 #include "EngineMinimal.h"		// "CoreMinimal.h"
+#include "Engine.h"
 
 #include "DrawDebugHelpers.h"
 
