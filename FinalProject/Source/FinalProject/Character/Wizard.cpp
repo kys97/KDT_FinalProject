@@ -13,12 +13,16 @@ AWizard::AWizard()
 	GetCapsuleComponent()->InitCapsuleSize(40.f, 100.f);
 	GetMesh()->SetRelativeLocation(FVector(0, 0, -97));
 
-	// TODO : Character Set
-	// z 축 -90도 회전
+	// Character Mesh Set
+	// TODO : z 축 -90도 회전
 
-	// TODO : Camera set
+	// Camera Arm Set
 	mCameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraArm"));
 	mCameraArm->SetupAttachment(GetCapsuleComponent());
+	mCameraArm->bDoCollisionTest = false; // 캐릭터 가려져도 카메라 이동 안하도록
+	// TODO : Camera Arm Length Set
+
+	// Camera Set
 	mCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	mCamera->SetupAttachment(mCameraArm);
 	// Camera 위치조정
