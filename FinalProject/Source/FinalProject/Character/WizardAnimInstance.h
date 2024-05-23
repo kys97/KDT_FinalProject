@@ -7,13 +7,6 @@
 #include "WizardAnimInstance.generated.h"
 
 
-UENUM(BlueprintType)
-enum class EWizardAnimType : uint8
-{
-	NormalAttack,
-	Death
-};
-
 UCLASS()
 class FINALPROJECT_API UWizardAnimInstance : public UAnimInstance
 {
@@ -31,13 +24,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UAnimMontage> mNormalAttackMontage;
-
-
-
-
-	// 안쓰면 지우기
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Animation")
-	EWizardAnimType	AnimType;
 
 public:
 	bool MoveEnable() 
