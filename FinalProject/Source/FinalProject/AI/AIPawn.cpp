@@ -4,6 +4,7 @@
 #include "AIPawn.h"
 #include "DefaultAIController.h"
 #include "AISpawnPoint.h"
+#include "PatrolPointActor.h"
 
 // Sets default values
 AAIPawn::AAIPawn()
@@ -44,6 +45,18 @@ void AAIPawn::ChangeAIAnimType(uint8 AnimType)
 void AAIPawn::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (!mPointActorArray.IsEmpty())
+	{
+		FVector StartPoint = GetActorLocation();
+
+		mPatrolPointArray.Add(StartPoint);
+
+		for (auto Point : mPointActorArray)
+		{
+			mPatrolPointArray.Add(Point->GetActorLocation());
+		}
+	}
 }
 
 void AAIPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)

@@ -93,6 +93,8 @@ void AAISpawnPoint::Spawn()
 
 	// 생성된 스폰 포인트를 지정해준다.
 	mSpawnAI->SetSpawnPoint(this);
+
+	mSpawnAI->SetPatrolPointArray(mPointActorArray);
 }
 
 void AAISpawnPoint::ClearSpawnObject()

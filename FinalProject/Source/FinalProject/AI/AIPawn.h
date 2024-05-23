@@ -30,10 +30,23 @@ protected:
 	// 어떤 SpawnPoint에서 생성이 되었는지를 가지고 있게 한다.
 	class AAISpawnPoint* mSpawnPoint;
 
+	// 순찰 PointActor를 저장할 배열
+	UPROPERTY(EditAnywhere)
+	TArray<class APatrolPointActor*> mPointActorArray;
+
+	// 순찰 PointActor의 위치를 저장할 배열
+	TArray<FVector> mPatrolPointArray;
+
 public:
 	void SetSpawnPoint(class AAISpawnPoint* Point)
 	{
 		mSpawnPoint = Point;
+	}
+
+	void SetPatrolPointArray(const TArray<class APatrolPointActor*>& PatrolPointArray)
+	{
+		// 받아온 PatrolPoint 배열을 멤버변수로 가지고 있게 한다.
+		mPointActorArray = PatrolPointArray;
 	}
 
 	float GetHalfHeight() const

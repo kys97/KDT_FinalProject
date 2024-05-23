@@ -37,6 +37,10 @@ protected:
 	// 생성을 위한 시간을 계산하기 위한 누적시간 변수
 	float mAccTime;
 
+	// 순찰 PointActor를 저장할 배열
+	UPROPERTY(EditAnywhere)
+	TArray<class APatrolPointActor*> mPointActorArray;
+
 	UPROPERTY(EditAnywhere)
 	float DeleteTime = 10.f;
 
