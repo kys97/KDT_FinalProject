@@ -3,7 +3,7 @@
 
 #include "BlueWizard.h"
 #include "../Weapon/MagicStaff.h"
-#include "WizardAnimInstance.h"
+
 
 ABlueWizard::ABlueWizard()
 {

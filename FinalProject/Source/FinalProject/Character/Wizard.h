@@ -4,6 +4,7 @@
 
 #include "../GameInfo.h"
 #include "GameFramework/Character.h"
+#include "WizardAnimInstance.h"
 #include "Wizard.generated.h"
 
 UCLASS()
@@ -25,8 +26,10 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class AMagicStaff* mWeapon;
 
+	class UWizardAnimInstance* mAnimInstance;
+
 public:
-	float	MoveDir;
+	bool GetMoveEnabled() { return mAnimInstance->MoveEnable(); }
 
 protected:
 	// Called when the game starts or when spawned

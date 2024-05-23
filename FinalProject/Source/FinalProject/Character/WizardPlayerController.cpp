@@ -39,29 +39,31 @@ void AWizardPlayerController::SetupInputComponent()
 
 void AWizardPlayerController::OnMove(const FInputActionValue& InputActionValue)
 {
-	APawn* WizardPawn = GetPawn();
+	AWizard* Wizard = Cast<AWizard>(GetPawn());
 
-	// Get Rotate & Move Vector
-	const FRotator Rotation = K2_GetActorRotation();
-	const FRotator YawRotation = FRotator(0.0, Rotation.Yaw, 0.0);
-	const FVector FwdVector = YawRotation.Vector();
-	const FVector RightVector = FRotationMatrix(YawRotation).GetScaledAxis(EAxis::Y);
+	if (Wizard->GetMoveEnabled())
+	{
+		// Get Rotate & Move Vector
+		const FRotator Rotation = K2_GetActorRotation();
+		const FRotator YawRotation = FRotator(0.0, Rotation.Yaw, 0.0);
+		const FVector FwdVector = YawRotation.Vector();
+		const FVector RightVector = FRotationMatrix(YawRotation).GetScaledAxis(EAxis::Y);
 
-	// Set Move
-	// Action.X > 0 ? Right : Left
-	// Action.Y > 0 ? Fwd : Bwd 
-	const FVector ActionValue = InputActionValue.Get<FVector>();
-	// 앞 뒤
-	WizardPawn->AddMovementInput(FwdVector, ActionValue.Y);
-	// 좌우
-	WizardPawn->AddMovementInput(RightVector, ActionValue.X);
-	
-	// Set Rotate
-	FRotator TargetRotation = ActionValue.Rotation();
-	TargetRotation.Yaw *= -1.f;
-	TargetRotation.Pitch = 0.0f;
-	TargetRotation.Roll = 0.0f;
+		// Set Move
+		// Action.X > 0 ? Right : Left
+		// Action.Y > 0 ? Fwd : Bwd 
+		const FVector ActionValue = InputActionValue.Get<FVector>();
+		// 앞 뒤
+		Wizard->AddMovementInput(FwdVector, ActionValue.Y);
+		// 좌우
+		Wizard->AddMovementInput(RightVector, ActionValue.X);
 
-	AWizard* Wizard = Cast<AWizard>(WizardPawn);
-	Wizard->GetMesh()->SetRelativeRotation(TargetRotation);
+		// Set Rotate
+		FRotator TargetRotation = ActionValue.Rotation();
+		TargetRotation.Yaw *= -1.f;
+		TargetRotation.Pitch = 0.0f;
+		TargetRotation.Roll = 0.0f;
+
+		Wizard->GetMesh()->SetRelativeRotation(TargetRotation);
+	}
 }
