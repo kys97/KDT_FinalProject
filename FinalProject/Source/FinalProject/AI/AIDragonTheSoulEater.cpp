@@ -18,7 +18,7 @@ AAIDragonTheSoulEater::AAIDragonTheSoulEater()
 		mMesh->SetAnimInstanceClass(AnimAsset.Class);
 
 	mMesh->SetRelativeLocation(FVector(0.f, 0.f, -100.f));
-	mMesh->SetRelativeRotation(FRotator(0.f, 0.f, -90.f)); // Pitch(Y), Yaw(Z), Roll(X)
+	mMesh->SetRelativeRotation(FRotator(0.f, -90.f, 0.f)); // Pitch(Y), Yaw(Z), Roll(X)
 	mMesh->SetRelativeScale3D(FVector(0.3f, 0.3f, 0.3f));
 
 	mCapsule->SetCapsuleHalfHeight(100.f);

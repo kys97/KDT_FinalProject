@@ -3,6 +3,7 @@
 
 #include "AIPawn.h"
 #include "DefaultAIController.h"
+#include "AISpawnPoint.h"
 
 // Sets default values
 AAIPawn::AAIPawn()
@@ -29,6 +30,10 @@ AAIPawn::AAIPawn()
 	//static ConstructorHelpers::FClassFinder<AAIController>	AIClass(TEXT(""));
 	//if (AIClass.Succeeded())
 	//	AIControllerClass = AIClass.Class;
+
+	// 어떤 몬스터는 SpawnPoint 없이 
+	// 바로 배치해서 사용할 수 있기 때문에 생성자에서 초기화해주자.
+	mSpawnPoint = nullptr;
 }
 
 void AAIPawn::ChangeAIAnimType(uint8 AnimType)
@@ -39,7 +44,16 @@ void AAIPawn::ChangeAIAnimType(uint8 AnimType)
 void AAIPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
+}
+
+void AAIPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	// AIPawn을 생성해준 SpawnPoint가 있을 경우
+	// 해당 SpawnPoint의 생성된 오브젝트 정보를 초기화한다.
+	if(mSpawnPoint)
+		mSpawnPoint->ClearSpawnObject();
 }
 
 // Called every frame
