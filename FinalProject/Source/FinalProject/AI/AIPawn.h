@@ -49,6 +49,12 @@ public:
 		mPointActorArray = PatrolPointArray;
 	}
 
+	// 순찰 위치 배열이 비어있는지 확인
+	bool IsPatrolPointEmpty()
+	{
+		return mPatrolPointArray.IsEmpty();
+	}
+
 	float GetHalfHeight() const
 	{
 		return mCapsule->GetScaledCapsuleHalfHeight();
