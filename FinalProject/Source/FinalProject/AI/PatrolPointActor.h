@@ -18,6 +18,9 @@ public:
 protected:
 	USceneComponent* mRoot;
 
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* mTrigger;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

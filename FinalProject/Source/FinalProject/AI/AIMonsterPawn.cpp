@@ -6,6 +6,11 @@
 
 AAIMonsterPawn::AAIMonsterPawn()
 {
+	PrimaryActorTick.bCanEverTick = true;
+
+	AIControllerClass = ADefaultAIController::StaticClass();
+
+	mCapsule->SetCollisionProfileName(TEXT("Monster"));
 }
 
 void AAIMonsterPawn::ChangeAIAnimType(uint8 AnimType)
