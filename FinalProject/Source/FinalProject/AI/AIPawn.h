@@ -37,17 +37,22 @@ protected:
 	// 순찰 PointActor의 위치를 저장할 배열
 	TArray<FVector> mPatrolPointArray;
 
+	// 순찰 위치를 꺼내오기 위한 Index
+	int32 mPatrolIndex;
+
 public:
+	FVector GetPatrolPoint()
+	{
+		// mPatrolIndex 번지에 있는 값 반환
+		return mPatrolPointArray[mPatrolIndex];
+	}
+
 	void SetSpawnPoint(class AAISpawnPoint* Point)
 	{
 		mSpawnPoint = Point;
 	}
 
-	void SetPatrolPointArray(const TArray<class APatrolPointActor*>& PatrolPointArray)
-	{
-		// 받아온 PatrolPoint 배열을 멤버변수로 가지고 있게 한다.
-		mPointActorArray = PatrolPointArray;
-	}
+	void SetPatrolPointArray(const TArray<class APatrolPointActor*>& PatrolPointArray);
 
 	// 순찰 위치 배열이 비어있는지 확인
 	bool IsPatrolPointEmpty()
