@@ -48,7 +48,6 @@ void UWizardAnimInstance::AnimNotify_AttackEnd()
 	IsAttack = false;
 }
 
-
 void UWizardAnimInstance::PlayNormalAttackAnimation()
 {
 	if (!Montage_IsPlaying(mNormalAttackMontage))

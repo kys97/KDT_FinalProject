@@ -56,9 +56,9 @@ void AMagicStaff::Tick(float DeltaTime)
 
 void AMagicStaff::NormalAttack(AWizard* Character)
 {
-	// Character Animation Set
+	// Character Attack
 	Character->NormalAttack();
 
-	// Attack
+	// If Skill : Spawn Event or Skill Actor
 }
 
