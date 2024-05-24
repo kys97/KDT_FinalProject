@@ -32,6 +32,11 @@ public:
 		else return false;
 	}
 
+	bool AttackEnable()
+	{
+		return !IsAttack;
+	}
+
 public:
 	virtual void NativeInitializeAnimation();
 	virtual void NativeUpdateAnimation(float DeltaSeconds);

@@ -4,6 +4,7 @@
 
 #include "EngineMinimal.h"		// "CoreMinimal.h"
 #include "Engine.h"
+#include "Engine/DamageEvents.h"
 
 #include "DrawDebugHelpers.h"
 

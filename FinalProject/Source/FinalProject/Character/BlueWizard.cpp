@@ -3,12 +3,12 @@
 
 #include "BlueWizard.h"
 #include "../Weapon/MagicStaff.h"
-
+#include "WizardPlayerState.h"
 
 ABlueWizard::ABlueWizard()
 {
 	// Blue Wizard Character Mesh Set
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMesh{ TEXT("/Script/Engine.SkeletalMesh'/Game/Blueprint/Character/SM_Wizard.SM_Wizard'") };
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMesh{ TEXT("/Script/Engine.SkeletalMesh'/Game/Blueprint/Character/Animation/SM_Wizard.SM_Wizard'") };
 	if (CharacterMesh.Succeeded())
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMesh.Object);
@@ -40,5 +40,52 @@ void ABlueWizard::BeginPlay()
 
 void ABlueWizard::NormalAttack()
 {
-	mAnimInstance->PlayNormalAttackAnimation();
+	// Damage
+	if (mAnimInstance->AttackEnable())
+	{
+		// Set Animation
+		mAnimInstance->PlayNormalAttackAnimation();
+
+		// Attack Collision Check
+		FCollisionQueryParams	param(NAME_None, false, this);
+
+		// Get Wizard State
+		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+
+		FVector	StartLocation = GetActorLocation();
+		FVector MeshForwardVector = GetMesh()->GetForwardVector();
+		FQuat QuatRotation = FQuat(FRotator(0.0f, 90.0f, 0.0f));
+		FVector PlayerForwardVector = QuatRotation.RotateVector(MeshForwardVector);
+		FVector	EndLocation = StartLocation + PlayerForwardVector * State->mNormalAttackDistance;
+		TArray<FHitResult>	resultArray;
+		bool IsCollision = GetWorld()->SweepMultiByChannel(resultArray,
+			StartLocation, EndLocation, FQuat::Identity, ECC_GameTraceChannel4,
+			FCollisionShape::MakeSphere(50.f), param);
+
+		IsCollision ? GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Red, FString::Printf(TEXT("Attack")))
+			: GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Green, FString::Printf(TEXT("Attack Missed")));
+
+#if ENABLE_DRAW_DEBUG
+
+		// 구를 그린다.
+		FColor	DrawColor = IsCollision ? FColor::Red : FColor::Green;
+
+		DrawDebugCapsule(GetWorld(), (StartLocation + EndLocation) / 2.f,
+			/* Radius */50.f / 2.f, /* Radius */50.f, FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(),
+			DrawColor, false, 1.f);
+
+#endif
+
+		if (IsCollision)
+		{
+			for (int32 i = 0; i < resultArray.Num(); ++i)
+			{
+				// Attack Damage
+				FDamageEvent DmgEvent;
+				resultArray[i].GetActor()->TakeDamage((float)State->mNormalAttackPoint, DmgEvent, GetController(), this);
+
+				// 이펙트 출력 및 사운드 재생.
+			}
+		}
+	}
 }
