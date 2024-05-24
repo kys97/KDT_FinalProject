@@ -42,13 +42,13 @@ AAIPawn::AAIPawn()
 	mPatrolIndex = -1;
 }
 
-void AAIPawn::SetPatrolPointArray(const TArray<class APatrolPointActor*>& PatrolPointArray)
+void AAIPawn::SetPointActorArray(const TArray<class APatrolPointActor*>& PointActorArray)
 {
-	if (PatrolPointArray.IsEmpty())
+	if (PointActorArray.IsEmpty())
 		return;
 
 	// 받아온 PatrolPoint 배열을 멤버변수로 가지고 있게 한다.
-	mPointActorArray = PatrolPointArray;
+	mPointActorArray = PointActorArray;
 
 	// Spawn시에 생성 위치를 잡아줘서 AIPawn에는 따로 캡슐 절반 위치를 안잡아줬지만
 	// 나중에 문제 생긴다면 확인 해보기

@@ -52,7 +52,8 @@ public:
 		mSpawnPoint = Point;
 	}
 
-	void SetPatrolPointArray(const TArray<class APatrolPointActor*>& PatrolPointArray);
+	// PointActor배열 세팅
+	void SetPointActorArray(const TArray<class APatrolPointActor*>& PatrolPointArray);
 
 	// 순찰 위치 배열이 비어있는지 확인
 	bool IsPatrolPointEmpty()
