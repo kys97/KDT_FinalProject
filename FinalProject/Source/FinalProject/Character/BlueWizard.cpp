@@ -59,7 +59,7 @@ void ABlueWizard::NormalAttack()
 		FVector	EndLocation = StartLocation + PlayerForwardVector * State->mNormalAttackDistance;
 		TArray<FHitResult>	resultArray;
 		bool IsCollision = GetWorld()->SweepMultiByChannel(resultArray,
-			StartLocation, EndLocation, FQuat::Identity, ECC_GameTraceChannel4,
+			StartLocation, EndLocation, FQuat::Identity, ECC_GameTraceChannel3,
 			FCollisionShape::MakeSphere(50.f), param);
 
 		IsCollision ? GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Red, FString::Printf(TEXT("Attack")))
