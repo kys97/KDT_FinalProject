@@ -8,6 +8,7 @@ UWizardAnimInstance::UWizardAnimInstance()
 {
 	IsMove = false;
 	IsAttack = false;
+	AttackIndex = 0;
 }
 
 void UWizardAnimInstance::NativeInitializeAnimation()
@@ -48,11 +49,13 @@ void UWizardAnimInstance::AnimNotify_AttackEnd()
 	IsAttack = false;
 }
 
-void UWizardAnimInstance::PlayNormalAttackAnimation()
+void UWizardAnimInstance::PlayAttackAnimation(const int pressed_key)
 {
-	if (!Montage_IsPlaying(mNormalAttackMontage))
+	AttackIndex = pressed_key;
+
+	if (!Montage_IsPlaying(mAttackMontageArray[AttackIndex]))
 	{
-		Montage_SetPosition(mNormalAttackMontage, 0.f);
-		Montage_Play(mNormalAttackMontage);
+		Montage_SetPosition(mAttackMontageArray[AttackIndex], 0.f);
+		Montage_Play(mAttackMontageArray[AttackIndex]);
 	}
 }

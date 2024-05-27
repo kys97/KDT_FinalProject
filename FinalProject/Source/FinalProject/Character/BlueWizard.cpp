@@ -44,7 +44,7 @@ void ABlueWizard::NormalAttack()
 	if (mAnimInstance->AttackEnable())
 	{
 		// Set Animation
-		mAnimInstance->PlayNormalAttackAnimation();
+		mAnimInstance->PlayAttackAnimation(0);
 
 		// Attack Collision Check
 		FCollisionQueryParams	param(NAME_None, false, this);
@@ -87,5 +87,41 @@ void ABlueWizard::NormalAttack()
 				// 이펙트 출력 및 사운드 재생.
 			}
 		}
+	}
+}
+
+void ABlueWizard::FirstSkill()
+{
+	if (mAnimInstance->AttackEnable())
+	{
+		// Set Animation
+		mAnimInstance->PlayAttackAnimation(1);
+	}
+}
+
+void ABlueWizard::SecondSkill()
+{
+	if (mAnimInstance->AttackEnable())
+	{
+		// Set Animation
+		mAnimInstance->PlayAttackAnimation(2);
+	}
+}
+
+void ABlueWizard::ThirdSkill()
+{
+	if (mAnimInstance->AttackEnable())
+	{
+		// Set Animation
+		mAnimInstance->PlayAttackAnimation(3);
+	}
+}
+
+void ABlueWizard::FourthSkill()
+{
+	if (mAnimInstance->AttackEnable())
+	{
+		// Set Animation
+		mAnimInstance->PlayAttackAnimation(4);
 	}
 }

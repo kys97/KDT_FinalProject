@@ -3,9 +3,12 @@
 #pragma once
 
 #include "../GameInfo.h"
-#include "GameFramework/Character.h"
+
 #include "WizardAnimInstance.h"
+
+#include "GameFramework/Character.h"
 #include "Wizard.generated.h"
+
 
 UCLASS()
 class FINALPROJECT_API AWizard : public ACharacter
@@ -44,4 +47,8 @@ public:
 
 public:
 	virtual void NormalAttack();
+	virtual void FirstSkill();
+	virtual void SecondSkill();
+	virtual void ThirdSkill();
+	virtual void FourthSkill();
 };

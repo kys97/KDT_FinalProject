@@ -23,7 +23,10 @@ protected:
 	bool IsAttack;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<UAnimMontage> mNormalAttackMontage;
+	TArray<TObjectPtr<UAnimMontage>> mAttackMontageArray;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 AttackIndex;
 
 public:
 	bool MoveEnable() 
@@ -49,5 +52,5 @@ public:
 	void AnimNotify_AttackEnd();
 
 public:
-	void PlayNormalAttackAnimation();
+	void PlayAttackAnimation(const int pressed_key);
 };

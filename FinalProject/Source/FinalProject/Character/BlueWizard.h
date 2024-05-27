@@ -25,5 +25,11 @@ protected:
 
 public:
 	virtual void NormalAttack() override;
+	virtual void FirstSkill() override;
+	virtual void SecondSkill() override;
+	virtual void ThirdSkill() override;
+	virtual void FourthSkill() override;
 
+private:
+	// return IsHit Bool Function()
 };

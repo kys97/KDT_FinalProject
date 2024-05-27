@@ -49,6 +49,8 @@ void AWizard::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
-void AWizard::NormalAttack()
-{
-}
+void AWizard::NormalAttack() {}
+void AWizard::FirstSkill() {}
+void AWizard::SecondSkill() {}
+void AWizard::ThirdSkill() {}
+void AWizard::FourthSkill() {}
