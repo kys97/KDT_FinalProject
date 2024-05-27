@@ -40,6 +40,8 @@ AAIPawn::AAIPawn()
 
 	// 배치해서 사용할 경우에는 Index가 없어야하기에 -1
 	mPatrolIndex = -1;
+	// 처음 시작은 정방향이어야 하기에 1
+	mPatrolDir = 1;
 }
 
 void AAIPawn::SetPointActorArray(const TArray<class APatrolPointActor*>& PointActorArray)
@@ -63,6 +65,15 @@ void AAIPawn::SetPointActorArray(const TArray<class APatrolPointActor*>& PointAc
 }
 
 void AAIPawn::ChangeAIAnimType(uint8 AnimType)
+{
+}
+
+bool AAIPawn::AIIsOverlap()
+{
+	return false;
+}
+
+void AAIPawn::ChangeOverlapVlaue(bool Value)
 {
 }
 

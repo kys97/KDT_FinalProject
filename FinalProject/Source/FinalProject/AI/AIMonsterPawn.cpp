@@ -11,6 +11,8 @@ AAIMonsterPawn::AAIMonsterPawn()
 	AIControllerClass = ADefaultAIController::StaticClass();
 
 	mCapsule->SetCollisionProfileName(TEXT("Monster"));
+
+	mOverlap = false;
 }
 
 void AAIMonsterPawn::ChangeAIAnimType(uint8 AnimType)
@@ -35,7 +37,14 @@ void AAIMonsterPawn::Tick(float DeltaTime)
 void AAIMonsterPawn::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("Monster Overlap"));
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("Monster BeginOverlap"));
 
+	mOverlap = true;
+}
 
+void AAIMonsterPawn::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("Monster End Overlap"));
+
+	mOverlap = false;
 }

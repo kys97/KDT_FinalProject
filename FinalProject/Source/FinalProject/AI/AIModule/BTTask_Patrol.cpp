@@ -61,16 +61,12 @@ void UBTTask_Patrol::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 	AAIController* Controller = OwnerComp.GetAIOwner();
 
 	AAIPawn* Pawn = Cast<AAIPawn>(Controller->GetPawn());
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Patrol TickTask"));
-
 
 	if (!IsValid(Pawn))
 	{
 		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 
 		Controller->StopMovement();
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Patrol TickTask 1"));
-
 
 		return;
 	}
@@ -84,8 +80,6 @@ void UBTTask_Patrol::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 	{
 		// 타겟이 있으면 이동을 멈추고
 		Controller->StopMovement();
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Patrol TickTask 2"));
-
 
 		// 애니메이션을 Idle로 변경하고
 		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
@@ -95,7 +89,6 @@ void UBTTask_Patrol::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 
 		return;
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Patrol TickTask 3"));
 
 	// 속도 벡터를 가져와서 방향을 구한다.
 	// 방향은 x, y의 값을 이용해서 방향을 구한다.
@@ -106,15 +99,10 @@ void UBTTask_Patrol::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 
 	Pawn->SetActorRotation(FRotator(0.0, Dir.Rotation().Yaw, 0.0));
 
-	FVector AILocation = Pawn->GetActorLocation();
+	// Overlap 결과로 도착 확인
+	bool Overlap = Pawn->AIIsOverlap();
 
-	// 방문할 위치
-	FVector GoalLocation = Pawn->GetPatrolPoint();
-
-	// 타겟과의 거리를 체크
-	float Distance = FVector::Distance(AILocation, GoalLocation);
-
-	if (Distance <= 60.f)
+	if (Overlap)
 	{
 		// Task 종료
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
@@ -124,5 +112,34 @@ void UBTTask_Patrol::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 
 		// 애니메이션을 Idle로 변경하고
 		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
+
+		// 패트롤 인덱스를 구해준다.
+		Pawn->NextPatrolPointIndex();
+
+		Pawn->ChangeOverlapVlaue(false);
 	}
+
+	// -----------------타겟 간의 거리를 이용한 Task 관리-------------------
+	
+	//FVector AILocation = Pawn->GetActorLocation();
+	//AILocation.Z -= Pawn->GetHalfHeight();
+
+	//// 방문할 위치
+	//FVector GoalLocation = Pawn->GetPatrolPoint();
+
+	//// 타겟과의 거리를 체크
+	//float Distance = FVector::Distance(AILocation, GoalLocation);
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Distance : %f"), Distance));
+
+	//if (Distance <= 120.f)
+	//{
+	//	// Task 종료
+	//	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+
+	//	// 타겟이 있으면 이동을 멈추고
+	//	Controller->StopMovement();
+
+	//	// 애니메이션을 Idle로 변경하고
+	//	Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
+	//}
 }
