@@ -2,7 +2,6 @@
 
 
 #include "MagicStaff.h"
-#include "../Character/WizardPlayerController.h"
 
 
 // Sets default values
@@ -36,6 +35,10 @@ void AMagicStaff::SetInputActionBind(AWizard* Character)
 		{
 			const UInputDataConfig* InputDataConfig = GetDefault<UInputDataConfig>();
 			EnhancedInputComponent->BindAction(InputDataConfig->NormalAttack, ETriggerEvent::Triggered, this, &ThisClass::NormalAttack, Character);
+			EnhancedInputComponent->BindAction(InputDataConfig->FirstSkill, ETriggerEvent::Triggered, this, &ThisClass::FirstSkill, Character);
+			EnhancedInputComponent->BindAction(InputDataConfig->SecondSkill, ETriggerEvent::Triggered, this, &ThisClass::SecondSkill, Character);
+			EnhancedInputComponent->BindAction(InputDataConfig->ThirdSkill, ETriggerEvent::Triggered, this, &ThisClass::ThirdSkill, Character);
+			EnhancedInputComponent->BindAction(InputDataConfig->FourthSkill, ETriggerEvent::Triggered, this, &ThisClass::FourthSkill, Character);
 		}
 	}
 }
@@ -56,9 +59,46 @@ void AMagicStaff::Tick(float DeltaTime)
 
 void AMagicStaff::NormalAttack(AWizard* Character)
 {
-	// Character Attack
+	// Character NormalAttack
 	Character->NormalAttack();
+}
 
-	// If Skill : Spawn Event or Skill Actor
+void AMagicStaff::FirstSkill(AWizard* Character)
+{
+	// Character First Skill
+	Character->FirstSkill();
+
+	// Respawn Effect
+	GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Cyan, FString::Printf(TEXT("pressed key 1")));
+}
+
+void AMagicStaff::SecondSkill(AWizard* Character)
+{
+	// Character First Skill
+	Character->SecondSkill();
+
+	// Respawn Effect
+	GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Cyan, FString::Printf(TEXT("pressed key 2")));
+
+}
+
+void AMagicStaff::ThirdSkill(AWizard* Character)
+{
+	// Character First Skill
+	Character->ThirdSkill();
+
+	// Respawn Effect
+	GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Cyan, FString::Printf(TEXT("pressed key 3")));
+
+}
+
+void AMagicStaff::FourthSkill(AWizard* Character)
+{
+	// Character First Skill
+	Character->FourthSkill();
+
+	// Respawn Effect
+	GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Cyan, FString::Printf(TEXT("pressed key 4")));
+
 }
 

@@ -5,6 +5,7 @@
 #include "../GameInfo.h"
 
 #include "../Character/Wizard.h"
+#include "../Character/WizardPlayerController.h"
 
 #include "GameFramework/Actor.h"
 #include "MagicStaff.generated.h"
@@ -40,4 +41,8 @@ public:
 
 public:
 	void NormalAttack(AWizard* Character);
+	void FirstSkill(AWizard* Character);
+	void SecondSkill(AWizard* Character);
+	void ThirdSkill(AWizard* Character);
+	void FourthSkill(AWizard* Character);
 };

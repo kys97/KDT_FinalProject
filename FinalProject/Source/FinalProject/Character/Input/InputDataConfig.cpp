@@ -29,4 +29,36 @@ UInputDataConfig::UInputDataConfig()
 			NormalAttack = Asset.Object;
 		}
 	}
+	{
+		static ConstructorHelpers::FObjectFinder<UInputAction> Asset
+		{ TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprint/Character/Input/IA_Skill1.IA_Skill1'") };
+		if (Asset.Succeeded())
+		{
+			FirstSkill = Asset.Object;
+		}
+	}
+	{
+		static ConstructorHelpers::FObjectFinder<UInputAction> Asset
+		{ TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprint/Character/Input/IA_Skill2.IA_Skill2'") };
+		if (Asset.Succeeded())
+		{
+			SecondSkill = Asset.Object;
+		}
+	}
+	{
+		static ConstructorHelpers::FObjectFinder<UInputAction> Asset
+		{ TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprint/Character/Input/IA_Skill3.IA_Skill3'") };
+		if (Asset.Succeeded())
+		{
+			ThirdSkill = Asset.Object;
+		}
+	}
+	{
+		static ConstructorHelpers::FObjectFinder<UInputAction> Asset
+		{ TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprint/Character/Input/IA_Skill4.IA_Skill4'") };
+		if (Asset.Succeeded())
+		{
+			FourthSkill = Asset.Object;
+		}
+	}
 }
