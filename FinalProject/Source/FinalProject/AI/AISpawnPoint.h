@@ -18,6 +18,9 @@ public:
 protected:
 	USceneComponent* mRoot;
 
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* mTrigger;
+
 #if WITH_EDITORONLY_DATA
 	UArrowComponent* mArror;
 #endif

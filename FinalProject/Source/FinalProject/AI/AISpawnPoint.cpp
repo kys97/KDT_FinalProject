@@ -13,6 +13,14 @@ AAISpawnPoint::AAISpawnPoint()
 	mRoot = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	SetRootComponent(mRoot);
 
+	mTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger"));
+	mTrigger->SetupAttachment(mRoot);
+
+	mTrigger->SetBoxExtent(FVector(30.0, 30.0, 100.0));
+	mTrigger->SetRelativeLocation(FVector(0.0, 0.0, 100.0));
+
+	mTrigger->SetCollisionProfileName(TEXT("MonsterTrigger"));
+
 #if WITH_EDITORONLY_DATA
 
 	mArror = CreateDefaultSubobject<UArrowComponent>(TEXT("Arror"));

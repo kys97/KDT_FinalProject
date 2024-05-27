@@ -112,6 +112,11 @@ void UBTTask_Patrol::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 
 		// 애니메이션을 Idle로 변경하고
 		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
+
+		// 패트롤 인덱스를 구해준다.
+		Pawn->NextPatrolPointIndex();
+
+		Pawn->ChangeOverlapVlaue(false);
 	}
 
 	// -----------------타겟 간의 거리를 이용한 Task 관리-------------------

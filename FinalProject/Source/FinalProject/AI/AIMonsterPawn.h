@@ -27,6 +27,11 @@ public:
 		return mOverlap;
 	}
 
+	virtual void ChangeOverlapVlaue(bool Value)
+	{
+		mOverlap = Value;
+	}
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

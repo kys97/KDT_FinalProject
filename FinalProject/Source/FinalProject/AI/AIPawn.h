@@ -37,10 +37,32 @@ protected:
 	// 순찰 PointActor의 위치를 저장할 배열
 	TArray<FVector> mPatrolPointArray;
 
-	// 순찰 위치를 꺼내오기 위한 Index
+	// 방문할 순찰 위치를 꺼내오기 위한 Index
 	int32 mPatrolIndex;
+	// 순찰 방향
+	int32 mPatrolDir;
 
 public:
+	void NextPatrolPointIndex()
+	{
+		mPatrolIndex += mPatrolDir;
+
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("PatrolIndex : %d"), mPatrolIndex));
+
+		// 배열의 인덱스 범위를 벗어났는지 판단
+		if (mPatrolIndex >= mPatrolPointArray.Num())	// Num() : 배열에 엘리먼트가 몇 개인지 확인
+		{
+			// 방향을 역방향으로 바꿔준다.
+			mPatrolDir = -1;
+			mPatrolIndex -= 2;
+		}
+		else if (mPatrolIndex < 0)
+		{
+			// 방향을 정방향으로 바꿔준다.
+			mPatrolDir = 1;
+			mPatrolIndex = 1;
+		}
+	}
 	FVector GetPatrolPoint()
 	{
 		// mPatrolIndex 번지에 있는 값 반환
@@ -74,6 +96,7 @@ public:
 public:
 	virtual void ChangeAIAnimType(uint8 AnimType);
 	virtual bool AIIsOverlap();
+	virtual void ChangeOverlapVlaue(bool Value);
 
 protected:
 	// Called when the game starts or when spawned
