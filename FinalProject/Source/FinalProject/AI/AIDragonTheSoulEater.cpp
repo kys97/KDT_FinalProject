@@ -35,3 +35,42 @@ void AAIDragonTheSoulEater::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
+
+void AAIDragonTheSoulEater::NormalAttack()
+{
+	FCollisionQueryParams param(NAME_None, false, this);
+
+	// 액터 위치 + 액터의 전방방향 * 50 이므로
+	// 현재 액터의 위치에서 앞으로 50cm 만큼 이동한 위치
+	FVector StartLocation = GetActorLocation() + GetActorForwardVector() * 50.f;
+
+	// 시작 위치 + 액터의 전방방향 * 100 이므로
+	// 시작위치에서 앞으로 100cm 만큼 이동한 위치
+	FVector EndLocation = StartLocation + GetActorForwardVector() * 150.f;
+
+	TArray<FHitResult> resultArray;
+	bool IsCollision = GetWorld()->SweepMultiByChannel(resultArray, StartLocation, EndLocation,
+		FQuat::Identity, ECC_GameTraceChannel5, FCollisionShape::MakeSphere(70.f), param);
+
+#if ENABLE_DRAW_DEBUG
+
+	FColor DrawColor = IsCollision ? FColor::Red : FColor::Green;
+
+	DrawDebugCapsule(GetWorld(), (StartLocation + EndLocation) / 2.f, 
+		50.f, 70.f, FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(),
+		DrawColor, false, 1.f);
+
+#endif
+
+	if (IsCollision)
+	{
+		//for (auto Hit : resultArray)
+		for(int32 i = 0; i < resultArray.Num(); ++i)
+		{
+			FDamageEvent DmgEvent;
+
+			// TakeDamage() : 데미지 정도, 데미지 이벤트, 가해자 컨트롤러, 가해자 액터
+			resultArray[i].GetActor()->TakeDamage(10.f, DmgEvent, GetController(), this);
+		}
+	}
+}

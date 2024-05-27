@@ -20,6 +20,10 @@ void AAIMonsterPawn::ChangeAIAnimType(uint8 AnimType)
 	mAnimInst->ChangeAnimType((EMonsterAnimType)AnimType);
 }
 
+void AAIMonsterPawn::NormalAttack()
+{
+}
+
 void AAIMonsterPawn::BeginPlay()
 {
 	Super::BeginPlay();
@@ -48,3 +52,4 @@ void AAIMonsterPawn::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 
 	mOverlap = false;
 }
+

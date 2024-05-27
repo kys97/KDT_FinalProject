@@ -110,7 +110,7 @@ void UBTTask_TraceTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 		Distance -= TargetCapsule->GetScaledCapsuleRadius();
 
 
-	if (Distance <= 200.f)
+	if (Distance <= 50.f)
 	{
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 
