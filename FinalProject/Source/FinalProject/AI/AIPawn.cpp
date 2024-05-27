@@ -66,6 +66,11 @@ void AAIPawn::ChangeAIAnimType(uint8 AnimType)
 {
 }
 
+bool AAIPawn::AIIsOverlap()
+{
+	return false;
+}
+
 // Called when the game starts or when spawned
 void AAIPawn::BeginPlay()
 {

@@ -73,6 +73,7 @@ public:
 
 public:
 	virtual void ChangeAIAnimType(uint8 AnimType);
+	virtual bool AIIsOverlap();
 
 protected:
 	// Called when the game starts or when spawned

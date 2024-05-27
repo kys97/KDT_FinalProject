@@ -17,8 +17,15 @@ public:
 protected:
 	class UMonsterAnimInstance* mAnimInst;
 
+	bool mOverlap;
+
 public:
 	virtual void ChangeAIAnimType(uint8 AnimType);
+
+	virtual bool AIIsOverlap()
+	{
+		return mOverlap;
+	}
 
 protected:
 	// Called when the game starts or when spawned
@@ -32,4 +39,9 @@ public:
 	void BeginOverlap(UPrimitiveComponent* OverlappedComponent,
 		AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void EndOverlap(UPrimitiveComponent* OverlappedComponent, 
+		AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 };
+
