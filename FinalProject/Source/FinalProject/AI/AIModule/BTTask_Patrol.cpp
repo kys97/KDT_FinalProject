@@ -38,6 +38,8 @@ EBTNodeResult::Type UBTTask_Patrol::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	{
 		Controller->StopMovement();
 
+		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
+
 		return EBTNodeResult::Failed;
 	}
 
@@ -49,7 +51,7 @@ EBTNodeResult::Type UBTTask_Patrol::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 
 	Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Walk);
 
-	return EBTNodeResult::Type();
+	return EBTNodeResult::InProgress;
 }
 
 void UBTTask_Patrol::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
