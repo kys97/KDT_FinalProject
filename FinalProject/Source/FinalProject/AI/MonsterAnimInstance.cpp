@@ -22,3 +22,10 @@ void UMonsterAnimInstance::AnimNotify_Attack()
 
 	Pawn->NormalAttack();
 }
+
+void UMonsterAnimInstance::AnimNotify_AttackEnd()
+{
+	AAIMonsterPawn* Pawn = Cast<AAIMonsterPawn>(TryGetPawnOwner());
+
+	Pawn->SetAttackEnd(true);
+}

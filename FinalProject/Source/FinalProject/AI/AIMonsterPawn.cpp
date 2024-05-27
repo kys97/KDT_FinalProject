@@ -13,6 +13,8 @@ AAIMonsterPawn::AAIMonsterPawn()
 	mCapsule->SetCollisionProfileName(TEXT("Monster"));
 
 	mOverlap = false;
+
+	mAttackEnd = false;
 }
 
 void AAIMonsterPawn::ChangeAIAnimType(uint8 AnimType)

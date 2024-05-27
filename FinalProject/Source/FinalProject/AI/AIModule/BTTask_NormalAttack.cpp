@@ -8,6 +8,13 @@
 
 UBTTask_NormalAttack::UBTTask_NormalAttack()
 {
+	NodeName = TEXT("NormalAttack");
+
+	// Tick 함수 호출이 가능하게 한다.
+	bNotifyTick = true;
+
+	// OnTaskFinished 이벤트를 사용할 수 있게 한다.
+	bNotifyTaskFinished = true;
 }
 
 EBTNodeResult::Type UBTTask_NormalAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, 
@@ -44,6 +51,77 @@ void UBTTask_NormalAttack::TickTask(UBehaviorTreeComponent& OwnerComp,
 	uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
+
+	AAIController* Controller = OwnerComp.GetAIOwner();
+
+	AAIPawn* Pawn = Cast<AAIPawn>(Controller->GetPawn());
+
+	// Controller가 빙의되어 있는 Pawn이 없으면 Task 종료
+	if (!IsValid(Pawn))
+	{
+		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+
+		return;
+	}
+
+	AActor* Target = Cast<AActor>(Controller->GetBlackboardComponent()->GetValueAsObject(TEXT("Target")));
+
+	// 타겟이 없어도 Task 종료
+	if (!IsValid(Target))
+	{
+		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+
+		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
+
+		return;
+	}
+
+
+	if (Pawn->IsAttackEnd())
+	{
+		Pawn->SetAttackEnd(false);
+
+		// 타겟과의 거리 체크
+		FVector AILocation = Pawn->GetActorLocation();
+		FVector TargetLocation = Target->GetActorLocation();
+
+		// AI가 Target을 바라보는 방향을 구한다.
+		FVector	Dir = TargetLocation - AILocation;
+		Dir.Z = 0.0;
+
+		// 두 위치 사이의 거리를 구한다.
+		AILocation.Z -= Pawn->GetHalfHeight();
+
+		// Target의 RootComponent를 CapsuleComponent로 변환한다.
+		UCapsuleComponent* TargetCapsule = Cast<UCapsuleComponent>(Target->GetRootComponent());
+
+		if (IsValid(TargetCapsule))
+			TargetLocation.Z -= TargetCapsule->GetScaledCapsuleHalfHeight();
+
+		// FVetor::Distance : 두 위치 사이의 거리를 구한다.
+		float Distance = FVector::Distance(AILocation, TargetLocation);
+
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("Distance : %f"), Distance));
+		// 공격 거리를 빠져나갔을 경우
+		if (Distance > 60.f)
+		{
+			// Task를 종료한다.
+			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+
+			// 애니메이션을 Idle 로 변경한다.
+			Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
+		}
+
+		// 공격 거리 안쪽일 경우
+		else
+		{
+			FRotator Rot = FRotationMatrix::MakeFromX(Dir).Rotator();
+			Rot.Pitch = 0.0;
+			Rot.Roll = 0.0;
+
+			Pawn->SetActorRotation(Rot);
+		}
+	}
 }
 
 

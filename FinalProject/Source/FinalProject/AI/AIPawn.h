@@ -93,6 +93,9 @@ public:
 		return mCapsule->GetScaledCapsuleRadius();
 	}
 
+	virtual void SetAttackEnd(bool End);
+	virtual bool IsAttackEnd();
+
 public:
 	virtual void ChangeAIAnimType(uint8 AnimType);
 	virtual bool AIIsOverlap();

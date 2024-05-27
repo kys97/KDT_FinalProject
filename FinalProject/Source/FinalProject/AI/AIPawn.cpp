@@ -64,6 +64,15 @@ void AAIPawn::SetPointActorArray(const TArray<class APatrolPointActor*>& PointAc
 	}
 }
 
+void AAIPawn::SetAttackEnd(bool End)
+{
+}
+
+bool AAIPawn::IsAttackEnd()
+{
+	return false;
+}
+
 void AAIPawn::ChangeAIAnimType(uint8 AnimType)
 {
 }

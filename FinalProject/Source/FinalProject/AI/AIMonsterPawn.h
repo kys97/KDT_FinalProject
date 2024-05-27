@@ -19,6 +19,8 @@ protected:
 
 	bool mOverlap;
 
+	bool mAttackEnd;
+
 public:
 	virtual void ChangeAIAnimType(uint8 AnimType);
 
@@ -33,6 +35,16 @@ public:
 	}
 
 	virtual void NormalAttack();
+
+	virtual void SetAttackEnd(bool End)
+	{
+		mAttackEnd = End;
+	}
+
+	virtual bool IsAttackEnd()
+	{
+		return mAttackEnd;
+	}
 
 protected:
 	// Called when the game starts or when spawned
