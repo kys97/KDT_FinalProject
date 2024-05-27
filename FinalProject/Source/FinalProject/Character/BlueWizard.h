@@ -19,6 +19,11 @@ public:
 protected:
 	UStaticMesh* mWeaponMesh;
 
+	AActor* mFirstKillParticle;
+
+public:
+	AActor* GetFirstSkillParticle() { return mFirstKillParticle; }
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

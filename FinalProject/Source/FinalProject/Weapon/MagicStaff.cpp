@@ -69,7 +69,7 @@ void AMagicStaff::FirstSkill(AWizard* Character)
 	Character->FirstSkill();
 
 	// Respawn Effect
-	GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Cyan, FString::Printf(TEXT("pressed key 1")));
+	
 }
 
 void AMagicStaff::SecondSkill(AWizard* Character)

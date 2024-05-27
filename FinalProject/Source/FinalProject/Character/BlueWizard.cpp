@@ -14,10 +14,16 @@ ABlueWizard::ABlueWizard()
 		GetMesh()->SetSkeletalMesh(CharacterMesh.Object);
 	}
 
-	ConstructorHelpers::FObjectFinder<UStaticMesh> WeaponMesh{ TEXT("/Script/Engine.StaticMesh'/Game/Blueprint/Character/Weapon/BlueStaff.BlueStaff'") };
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> WeaponMesh{ TEXT("/Script/Engine.StaticMesh'/Game/Blueprint/Character/Weapon/BlueStaff.BlueStaff'") };
 	if (WeaponMesh.Succeeded())
 	{
 		mWeaponMesh = WeaponMesh.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<AActor> SkillParticle{ TEXT("/Script/Engine.Blueprint'/Game/Blueprint/Character/FXV/BP_ky_aquaStorm.BP_ky_aquaStorm'") };
+	if (SkillParticle.Succeeded())
+	{
+		mFirstKillParticle = SkillParticle.Object;
 	}
 }
 
