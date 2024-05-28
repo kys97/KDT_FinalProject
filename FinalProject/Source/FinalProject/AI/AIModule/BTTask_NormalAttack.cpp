@@ -101,9 +101,10 @@ void UBTTask_NormalAttack::TickTask(UBehaviorTreeComponent& OwnerComp,
 		// FVetor::Distance : 두 위치 사이의 거리를 구한다.
 		float Distance = FVector::Distance(AILocation, TargetLocation);
 
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("Distance : %f"), Distance));
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red,
+			FString::Printf(TEXT("Distance : %f"), Distance));
 		// 공격 거리를 빠져나갔을 경우
-		if (Distance > 60.f)
+		if (Distance > 200.f)
 		{
 			// Task를 종료한다.
 			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
@@ -115,11 +116,15 @@ void UBTTask_NormalAttack::TickTask(UBehaviorTreeComponent& OwnerComp,
 		// 공격 거리 안쪽일 경우
 		else
 		{
+
 			FRotator Rot = FRotationMatrix::MakeFromX(Dir).Rotator();
 			Rot.Pitch = 0.0;
 			Rot.Roll = 0.0;
 
 			Pawn->SetActorRotation(Rot);
+
+			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue,
+				FString::Printf(TEXT("Rot.Yaw 2  : %f"), Rot.Yaw));
 		}
 	}
 }
