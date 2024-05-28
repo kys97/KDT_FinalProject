@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "AIDragonTheSoulEater.h"
+#include "../Effect/EffectBase.h"
 
 AAIDragonTheSoulEater::AAIDragonTheSoulEater()
 {
@@ -71,6 +71,19 @@ void AAIDragonTheSoulEater::NormalAttack()
 
 			// TakeDamage() : 데미지 정도, 데미지 이벤트, 가해자 컨트롤러, 가해자 액터
 			resultArray[i].GetActor()->TakeDamage(10.f, DmgEvent, GetController(), this);
+
+			// 이펙트 출력 및 사운드 재생
+			FActorSpawnParameters SpawnParam;
+
+			SpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+			AEffectBase* Effect = GetWorld()->SpawnActor<AEffectBase>(
+				resultArray[i].ImpactPoint,
+				resultArray[i].ImpactNormal.Rotation(), 
+				SpawnParam);
+
+			Effect->SetParticleAsset(TEXT(""));
+			Effect->SetSoundAsset(TEXT("/Script/Engine.SoundWave'/Game/AI/Monster/Sound/Rampage_Effort_Ability_Primary_01.Rampage_Effort_Ability_Primary_01'"));
 		}
 	}
 }
