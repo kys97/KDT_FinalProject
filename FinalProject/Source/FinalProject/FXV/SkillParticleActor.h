@@ -2,31 +2,28 @@
 
 #pragma once
 
-#include "SkillParticleActor.h"
+#include "../GameInfo.h"
 
 
 
 #include "GameFramework/Actor.h"
-#include "Storm.generated.h"
+#include "SkillParticleActor.generated.h"
 
 UCLASS()
-class FINALPROJECT_API AStorm : public ASkillParticleActor
+class FINALPROJECT_API ASkillParticleActor : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AStorm();
+	ASkillParticleActor();
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UCapsuleComponent* mInsideCollision;
+	UParticleSystemComponent* mParticle;
 
-	float mScale;
-
-	float mFadeSpeed;
-
-	float mMoveSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UCapsuleComponent* mOutSideCollision;
 
 protected:
 	// Called when the game starts or when spawned
