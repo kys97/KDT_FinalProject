@@ -24,6 +24,7 @@ AAIDragonTheSoulEater::AAIDragonTheSoulEater()
 	mCapsule->SetCapsuleHalfHeight(100.f);
 	mCapsule->SetCapsuleRadius(100.f);
 
+	mTableRowName = TEXT("Dragon_SoulEater");
 }
 
 void AAIDragonTheSoulEater::BeginPlay()

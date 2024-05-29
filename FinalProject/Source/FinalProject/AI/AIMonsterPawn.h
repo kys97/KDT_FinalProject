@@ -6,16 +6,57 @@
 #include "AIMonsterPawn.generated.h"
 
 
+// FTableRowBase 구조체를 상속 받아서 만들어야
+// 데이터테이블에서 사용할 수 있는 구조체가 된다. 
+USTRUCT(BlueprintType)
+struct FMonsterData : public FTableRowBase
+{
+	GENERATED_USTRUCT_BODY()
+
+public:
+	// 공격력
+	UPROPERTY(EditAnywhere)
+	int32	mAttackPoint;
+	// 방어력
+	UPROPERTY(EditAnywhere)
+	int32	mArmorPoint;
+
+	UPROPERTY(EditAnywhere)
+	int32	mHPMax;
+
+	UPROPERTY(EditAnywhere)
+	int32	mMPMax;
+	// 최대 이동 속도
+	UPROPERTY(EditAnywhere)
+	int32	mMaxMoveSpeed;
+	// 이동 속도
+	UPROPERTY(EditAnywhere)
+	int32	mMoveSpeed;
+	// 공격 거리
+	UPROPERTY(EditAnywhere)
+	int32	mAttackDistance;
+	// 타겟 감지 거리
+	UPROPERTY(EditAnywhere)
+	int32	mDetectDistance;
+};
+
 UCLASS()
 class FINALPROJECT_API AAIMonsterPawn : public AAIPawn
 {
 	GENERATED_BODY()
+
+protected:
+	static UDataTable* mMonsterDataTable;
+
+public:
+	static const FMonsterData* FindMonsterData(const FString& Name);
 
 public:
 	AAIMonsterPawn();
 
 protected:
 	class UMonsterAnimInstance* mAnimInst;
+	FString mTableRowName;
 
 	bool mOverlap;
 
@@ -51,6 +92,8 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	virtual void OnConstruction(const FTransform& Transform);
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	

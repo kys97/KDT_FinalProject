@@ -26,6 +26,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	UFloatingPawnMovement* mMovement;
 
+	UPROPERTY(EditAnywhere)
+	class UAIState* mState;
+
 	// SpawnPoint를 통해 생성이 되었을 경우
 	// 어떤 SpawnPoint에서 생성이 되었는지를 가지고 있게 한다.
 	class AAISpawnPoint* mSpawnPoint;
@@ -43,6 +46,12 @@ protected:
 	int32 mPatrolDir;
 
 public:
+	template <typename T>
+	T* GetState()
+	{
+		return Cast<T>(mState);
+	}
+
 	void NextPatrolPointIndex()
 	{
 		mPatrolIndex += mPatrolDir;
@@ -109,6 +118,8 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:	
+	virtual void OnConstruction(const FTransform& Transform);
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

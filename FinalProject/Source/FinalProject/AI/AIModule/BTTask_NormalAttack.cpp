@@ -5,6 +5,7 @@
 #include "../AIPawn.h"
 #include "../DefaultAIController.h"
 #include "../MonsterAnimInstance.h"
+#include "../MonsterState.h"
 
 UBTTask_NormalAttack::UBTTask_NormalAttack()
 {
@@ -101,10 +102,20 @@ void UBTTask_NormalAttack::TickTask(UBehaviorTreeComponent& OwnerComp,
 		// FVetor::Distance : 두 위치 사이의 거리를 구한다.
 		float Distance = FVector::Distance(AILocation, TargetLocation);
 
+		Distance -= Pawn->GetCapsuleRadius();
+
+		if (IsValid(TargetCapsule))
+			Distance -= TargetCapsule->GetScaledCapsuleRadius();
+
+		UMonsterState* MonsterState = Pawn->GetState<UMonsterState>();
+
+		if (!IsValid(MonsterState))
+			return;
+
 		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red,
 			FString::Printf(TEXT("Distance : %f"), Distance));
 		// 공격 거리를 빠져나갔을 경우
-		if (Distance > 200.f)
+		if (Distance > MonsterState->mAttackDistance)
 		{
 			// Task를 종료한다.
 			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
@@ -116,7 +127,6 @@ void UBTTask_NormalAttack::TickTask(UBehaviorTreeComponent& OwnerComp,
 		// 공격 거리 안쪽일 경우
 		else
 		{
-
 			FRotator Rot = FRotationMatrix::MakeFromX(Dir).Rotator();
 			Rot.Pitch = 0.0;
 			Rot.Roll = 0.0;
