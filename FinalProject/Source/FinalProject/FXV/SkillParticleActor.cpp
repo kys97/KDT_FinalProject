@@ -17,6 +17,8 @@ ASkillParticleActor::ASkillParticleActor()
 	mOutSideCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("OutsideCollision"));
 	mOutSideCollision->SetupAttachment(GetRootComponent());
 	mOutSideCollision->SetCollisionProfileName(TEXT("Skill"));
+	mOutSideCollision->CanCharacterStepUpOn = ECB_No;
+
 }
 
 // Called when the game starts or when spawned

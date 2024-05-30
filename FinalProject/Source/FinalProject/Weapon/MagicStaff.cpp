@@ -15,6 +15,7 @@ AMagicStaff::AMagicStaff()
 
 	mMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	mMesh->SetupAttachment(mRoot);
+	mMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AMagicStaff::SetInputActionBind(AWizard* Character)
@@ -67,9 +68,6 @@ void AMagicStaff::FirstSkill(AWizard* Character)
 {
 	// Character First Skill
 	Character->FirstSkill();
-
-	// Respawn Effect
-	
 }
 
 void AMagicStaff::SecondSkill(AWizard* Character)

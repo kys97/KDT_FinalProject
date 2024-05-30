@@ -63,6 +63,7 @@ void AWizardPlayerController::OnMove(const FInputActionValue& InputActionValue)
 		TargetRotation.Yaw *= -1.f;
 		TargetRotation.Pitch = 0.0f;
 		TargetRotation.Roll = 0.0f;
+
 		// 회전 보간
 		FRotator NewRotation = FMath::RInterpTo(Wizard->GetMesh()->GetComponentRotation(), TargetRotation, GetWorld()->GetDeltaSeconds(), 5.0f);
 		Wizard->GetMesh()->SetRelativeRotation(NewRotation);

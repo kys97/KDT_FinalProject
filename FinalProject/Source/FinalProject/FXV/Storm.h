@@ -22,11 +22,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UCapsuleComponent* mInsideCollision;
 
-	float mScale;
-
+	float mScale; // 0.2 ~ 1.0
 	float mFadeSpeed;
-
 	float mMoveSpeed;
+
+public:
+	FVector mMoveDir;
+
+private:
+	bool IsMove;
 
 protected:
 	// Called when the game starts or when spawned
@@ -36,4 +40,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+private:
+	void BeginDelayOver();
+	void SkillDelayOver();
+	void DestoyStorm();
 };

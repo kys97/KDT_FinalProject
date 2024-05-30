@@ -19,10 +19,9 @@ public:
 protected:
 	UStaticMesh* mWeaponMesh;
 
-	AActor* mFirstKillParticle;
-
-public:
-	AActor* GetFirstSkillParticle() { return mFirstKillParticle; }
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class AActor> mFirstSkillParticle;
+	// TSubclassOf<class AStorm> mFirstSkillParticle;
 
 protected:
 	// Called when the game starts or when spawned
