@@ -21,7 +21,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class AStorm> mFirstSkillParticle;
-	// TSubclassOf<class AActor> mFirstSkillParticle;
 
 protected:
 	// Called when the game starts or when spawned

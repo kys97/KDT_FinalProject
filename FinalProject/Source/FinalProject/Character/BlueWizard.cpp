@@ -128,10 +128,7 @@ void ABlueWizard::FirstSkill()
 
 			// Skill Spawn
 			AStorm* Storm = World->SpawnActor<AStorm>(mFirstSkillParticle, SpawnLocation, SpawnRotation, ActorSpawnParam);
-			// AActor* Storm = World->SpawnActor<AActor>(mFirstSkillParticle, SpawnLocation, SpawnRotation, ActorSpawnParam);
 			Storm->mMoveDir = PlayerForwardVector;
-
-			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Rotation : %f, %f, %f"), GetMesh()->GetRelativeRotation().Yaw, GetMesh()->GetRelativeRotation().Pitch, GetMesh()->GetRelativeRotation().Roll));
 		}
 	}
 }
