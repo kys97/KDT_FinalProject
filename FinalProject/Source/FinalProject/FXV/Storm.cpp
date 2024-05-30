@@ -101,7 +101,7 @@ void AStorm::NotifyActorBeginOverlap(AActor* OtherActor)
 	{
 		// Monster->TakeDamage()
 		FDamageEvent DmgEvent;
-		// Monster->TakeDamage(SkillDamage, DmgEvent, SkillOwner->GetController(), this);
+		Monster->TakeDamage(SkillDamage, DmgEvent, SkillOwner->GetController(), this);
 	}
 }
 
