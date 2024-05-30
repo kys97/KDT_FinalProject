@@ -118,7 +118,7 @@ void ABlueWizard::FirstSkill()
 			PlayerForwardVector.X = (-1) * MeshForwardVector.Y;
 			PlayerForwardVector.Y = MeshForwardVector.X;
 			FVector	StartLocation = GetActorLocation();
-			FVector	EndLocation = StartLocation + PlayerForwardVector * 500.f;
+			FVector	EndLocation = StartLocation + PlayerForwardVector * State->mFirstSkillAttackDistance;
 			FVector SpawnLocation = (StartLocation + EndLocation) / 2.f;
 			SpawnLocation.Z = 0.f;
 
@@ -129,6 +129,11 @@ void ABlueWizard::FirstSkill()
 			// Skill Spawn
 			AStorm* Storm = World->SpawnActor<AStorm>(mFirstSkillParticle, SpawnLocation, SpawnRotation, ActorSpawnParam);
 			Storm->mMoveDir = PlayerForwardVector;
+			Storm->SkillOwner = this;
+			Storm->SkillDamage = State->mFirstSkillAttackDamage;
+
+			// Use MP
+			State->mMP -= 50; // TODO : MP사용량 나중에 추후 수정
 		}
 	}
 }

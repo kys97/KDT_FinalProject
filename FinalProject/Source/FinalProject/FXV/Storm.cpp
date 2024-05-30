@@ -4,6 +4,8 @@
 #include "Storm.h"
 #include "TimerManager.h"
 
+#include "../AI/AIMonsterPawn.h"
+
 
 // Sets default values
 AStorm::AStorm()
@@ -38,7 +40,7 @@ AStorm::AStorm()
 	// Var Set
 	mScale = 0.2f;
 	mFadeSpeed = 0.5f;
-	mMoveSpeed = 500.f;
+	mMoveSpeed = 1000.f;
 	IsMove = false;
 }
 
@@ -67,6 +69,7 @@ void AStorm::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// Storm Life Cycle
 	if (mParticle->IsActive())
 	{
 		if (mScale < 1) // Scale
@@ -88,6 +91,27 @@ void AStorm::Tick(float DeltaTime)
 		}
 	}
 }
+
+void AStorm::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorBeginOverlap(OtherActor);
+
+	AAIMonsterPawn* Monster = Cast<AAIMonsterPawn>(OtherActor);
+	if (Monster && SkillOwner)
+	{
+		// Monster->TakeDamage()
+		FDamageEvent DmgEvent;
+		// Monster->TakeDamage(SkillDamage, DmgEvent, SkillOwner->GetController(), this);
+	}
+}
+
+void AStorm::NotifyActorEndOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorEndOverlap(OtherActor);
+
+
+}
+
 
 void AStorm::SkillDelayOver()
 {

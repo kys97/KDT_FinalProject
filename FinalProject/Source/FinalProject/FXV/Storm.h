@@ -4,8 +4,6 @@
 
 #include "SkillParticleActor.h"
 
-
-
 #include "GameFramework/Actor.h"
 #include "Storm.generated.h"
 
@@ -32,16 +30,19 @@ public:
 private:
 	bool IsMove;
 
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
 
 private:
 	void BeginDelayOver();
 	void SkillDelayOver();
 	void DestoyStorm();
+
 };

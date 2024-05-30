@@ -21,8 +21,18 @@ void AWizardPlayerState::BeginPlay()
 	if (Data)
 	{
 		mJob = Data->mJob;
+
 		mNormalAttackPoint = Data->mNormalAttackPoint;
 		mNormalAttackDistance = Data->mNormalAttackDistance;
+		mFirstSkillAttackDamage = Data->mFirstSkillAttackDamage;
+		mFirstSkillAttackDistance = Data->mFirstSkillAttackDistance;
+		mSecondSkillAttackDamage = Data->mSecondSkillAttackDamage;
+		mSecondSkillAttackDistance = Data->mSecondSkillAttackDistance;
+		mThirdSkillAttackDamage = Data->mThirdSkillAttackDamage;
+		mThirdSkillAttackDistance = Data->mThirdSkillAttackDistance;
+		mFourthSkillAttackDamage = Data->mFourthSkillAttackDamage;
+		mFourthSkillAttackDistance = Data->mFourthSkillAttackDistance;
+
 		mArmorPoint = Data->mArmorPoint;
 		mHPMax = Data->mHPMax;
 		mMPMax = Data->mMPMax;

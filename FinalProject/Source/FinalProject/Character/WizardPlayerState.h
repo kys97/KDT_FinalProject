@@ -35,6 +35,24 @@ public:
 	int32 mNormalAttackPoint;
 	UPROPERTY(EditAnywhere)
 	float mNormalAttackDistance;
+
+	UPROPERTY(EditAnywhere)
+	int32 mFirstSkillAttackDamage;
+	UPROPERTY(EditAnywhere)
+	float mFirstSkillAttackDistance;
+	UPROPERTY(EditAnywhere)
+	int32 mSecondSkillAttackDamage;
+	UPROPERTY(EditAnywhere)
+	float mSecondSkillAttackDistance;
+	UPROPERTY(EditAnywhere)
+	int32 mThirdSkillAttackDamage;
+	UPROPERTY(EditAnywhere)
+	float mThirdSkillAttackDistance;
+	UPROPERTY(EditAnywhere)
+	int32 mFourthSkillAttackDamage;
+	UPROPERTY(EditAnywhere)
+	float mFourthSkillAttackDistance;
+
 	UPROPERTY(EditAnywhere)
 	int32 mArmorPoint;
 
@@ -64,8 +82,17 @@ public:
 
 
 	int32 mNormalAttackPoint;
-
 	float mNormalAttackDistance;
+
+	int32 mFirstSkillAttackDamage;
+	float mFirstSkillAttackDistance;
+	int32 mSecondSkillAttackDamage;
+	float mSecondSkillAttackDistance;
+	int32 mThirdSkillAttackDamage;
+	float mThirdSkillAttackDistance;
+	int32 mFourthSkillAttackDamage;
+	float mFourthSkillAttackDistance;
+
 
 	int32 mArmorPoint;
 

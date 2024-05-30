@@ -4,7 +4,7 @@
 
 #include "../GameInfo.h"
 
-
+#include "../Character/Wizard.h"
 
 #include "GameFramework/Actor.h"
 #include "SkillParticleActor.generated.h"
@@ -24,6 +24,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UCapsuleComponent* mOutSideCollision;
+
+public:
+	AWizard* SkillOwner = nullptr;
+	int32 SkillDamage = 0;
 
 protected:
 	// Called when the game starts or when spawned

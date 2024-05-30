@@ -25,13 +25,11 @@ ASkillParticleActor::ASkillParticleActor()
 void ASkillParticleActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
 void ASkillParticleActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
