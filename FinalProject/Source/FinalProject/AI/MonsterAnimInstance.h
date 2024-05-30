@@ -25,6 +25,9 @@ class FINALPROJECT_API UMonsterAnimInstance : public UAnimInstance
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float mPlayerMoveSpeed = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EMonsterAnimType mAnimType;
 
 public:

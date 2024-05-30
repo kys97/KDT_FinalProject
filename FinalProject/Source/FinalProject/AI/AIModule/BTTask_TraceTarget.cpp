@@ -90,17 +90,26 @@ void UBTTask_TraceTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 
 	// 속도 벡터를 가져와서 방향을 구한다.
 	// 방향은 x, y의 값을 이용해서 방향을 구한다.
-	FVector Dir = Pawn->GetMovementComponent()->Velocity;
-	Dir.Z = 0.f;
+	//FVector Dir = Pawn->GetMovementComponent()->Velocity;
+	//Dir.Z = 0.f;
 
-	// 벡터 정규화
-	Dir.Normalize();
+	//// 벡터 정규화
+	//Dir.Normalize();
 
-	Pawn->SetActorRotation(FRotator(0.f, Dir.Rotation().Yaw, 0.f));
+	//Pawn->SetActorRotation(FRotator(0.f, Dir.Rotation().Yaw, 0.f));
 
 	// 타겟과의 거리 체크
 	FVector AILocation = Pawn->GetActorLocation();
 	FVector TargetLocation = Target->GetActorLocation();
+
+	FVector	Dir = TargetLocation - AILocation;
+	Dir.Z = 0.0;
+
+	FRotator Rot = FRotationMatrix::MakeFromX(Dir).Rotator();
+	Rot.Pitch = 0.0;
+	Rot.Roll = 0.0;
+
+	Pawn->SetActorRotation(Rot);
 
 	AILocation.Z -= Pawn->GetHalfHeight();
 

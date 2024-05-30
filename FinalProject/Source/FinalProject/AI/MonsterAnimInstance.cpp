@@ -3,6 +3,7 @@
 
 #include "MonsterAnimInstance.h"
 #include "AIMonsterPawn.h"
+#include "../Character/Wizard.h"
 
 void UMonsterAnimInstance::NativeInitializeAnimation()
 {
@@ -14,6 +15,20 @@ void UMonsterAnimInstance::NativeInitializeAnimation()
 void UMonsterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
+
+	AWizard* PlayerCharacter = Cast<AWizard>(TryGetPawnOwner());
+
+	if (IsValid(PlayerCharacter))
+	{
+		UCharacterMovementComponent* Movement = PlayerCharacter->GetCharacterMovement();
+
+		if (IsValid(Movement))
+		{
+			mPlayerMoveSpeed = Movement->Velocity.Length();
+			mPlayerMoveSpeed /= Movement->MaxWalkSpeed;
+		}
+	}
+
 }
 
 void UMonsterAnimInstance::AnimNotify_Attack()
