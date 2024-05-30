@@ -23,7 +23,7 @@ ABlueWizard::ABlueWizard()
 		mWeaponMesh = WeaponMesh.Object;
 	}
 
-	// mFirstSkillParticle = AStorm::StaticClass();
+	mFirstSkillParticle = AStorm::StaticClass();
 }
 
 void ABlueWizard::BeginPlay()
@@ -114,12 +114,11 @@ void ABlueWizard::FirstSkill()
 
 			// Spawn Location
 			FVector MeshForwardVector = GetMesh()->GetForwardVector();
-			FQuat QuatRotation = FQuat(FRotator(0.0f, 90.0f, 0.0f));
-			FVector PlayerForwardVector = QuatRotation.RotateVector(MeshForwardVector);
-
-
+			FVector PlayerForwardVector = MeshForwardVector;
+			PlayerForwardVector.X = (-1) * MeshForwardVector.Y;
+			PlayerForwardVector.Y = MeshForwardVector.X;
 			FVector	StartLocation = GetActorLocation();
-			FVector	EndLocation = StartLocation + GetMesh()->GetForwardVector() * 1000.f;
+			FVector	EndLocation = StartLocation + PlayerForwardVector * 1000.f;
 			FVector SpawnLocation = (StartLocation + EndLocation) / 2.f;
 			SpawnLocation.Z = 0.f;
 
@@ -128,10 +127,9 @@ void ABlueWizard::FirstSkill()
 			ActorSpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 			// Skill Spawn
-			// AStorm* Storm = World->SpawnActor<AStorm>(mFirstSkillParticle, SpawnLocation, SpawnRotation, ActorSpawnParam);
-			// AStorm* Storm = World->SpawnActor<AActor>(mFirstSkillParticle, SpawnLocation, SpawnRotation, ActorSpawnParam);
-			AActor* Storm = World->SpawnActor<AActor>(mFirstSkillParticle, SpawnLocation, SpawnRotation, ActorSpawnParam);
-			// Storm->mMoveDir = PlayerForwardVector;
+			AStorm* Storm = World->SpawnActor<AStorm>(mFirstSkillParticle, SpawnLocation, SpawnRotation, ActorSpawnParam);
+			// AActor* Storm = World->SpawnActor<AActor>(mFirstSkillParticle, SpawnLocation, SpawnRotation, ActorSpawnParam);
+			Storm->mMoveDir = PlayerForwardVector;
 
 			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Rotation : %f, %f, %f"), GetMesh()->GetRelativeRotation().Yaw, GetMesh()->GetRelativeRotation().Pitch, GetMesh()->GetRelativeRotation().Roll));
 		}

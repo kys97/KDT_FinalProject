@@ -20,8 +20,8 @@ protected:
 	UStaticMesh* mWeaponMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<class AActor> mFirstSkillParticle;
-	// TSubclassOf<class AStorm> mFirstSkillParticle;
+	TSubclassOf<class AStorm> mFirstSkillParticle;
+	// TSubclassOf<class AActor> mFirstSkillParticle;
 
 protected:
 	// Called when the game starts or when spawned
