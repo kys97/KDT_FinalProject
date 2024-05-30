@@ -19,8 +19,8 @@ void UMonsterState::BeginPlay()
 		mMoveSpeed = Data->mMoveSpeed;
 		mInteractionDistance = Data->mDetectDistance;
 
-		mAttackPoint = Data->mAttackPoint;
-		mArmorPoint = Data->mArmorPoint;
+		mAttackPower = Data->mAttackPower;
+		mArmorPower = Data->mArmorPower;
 		mHP = Data->mHPMax;
 		mHPMax = Data->mHPMax;
 		mMP = Data->mMPMax;

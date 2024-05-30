@@ -62,6 +62,8 @@ void AAIMonsterPawn::OnConstruction(const FTransform& Transform)
 	// MonsterPawn의 자식 클래스에서 넘긴 행이름을
 	// AIState 에 저장
 	mState->mDataTableRowName = mTableRowName;
+
+	mMonsterState = GetState<UMonsterState>();
 }
 
 void AAIMonsterPawn::Tick(float DeltaTime)

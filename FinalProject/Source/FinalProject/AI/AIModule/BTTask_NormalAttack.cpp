@@ -132,9 +132,6 @@ void UBTTask_NormalAttack::TickTask(UBehaviorTreeComponent& OwnerComp,
 			Rot.Roll = 0.0;
 
 			Pawn->SetActorRotation(Rot);
-
-			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue,
-				FString::Printf(TEXT("Rot.Yaw 2  : %f"), Rot.Yaw));
 		}
 	}
 }

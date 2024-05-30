@@ -49,6 +49,7 @@ void UBTServiece_DetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp,
 
 	FColor DrawColor = IsCollision ? FColor::Red : FColor::Green;
 
+	// (월드, 위치, 반지름, 세그먼트(값이 클수록 구가 정교함), 색, 지속여부, 틱타임)
 	DrawDebugSphere(GetWorld(), AILocation,
 		AIState->mInteractionDistance, 20, DrawColor, false, 0.35f);
 

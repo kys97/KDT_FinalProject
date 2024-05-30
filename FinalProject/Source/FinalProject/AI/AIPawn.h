@@ -46,6 +46,11 @@ protected:
 	int32 mPatrolDir;
 
 public:
+	void SetMoveSpeed(float Speed)
+	{
+		mMovement->MaxSpeed = Speed;
+	}
+
 	template <typename T>
 	T* GetState()
 	{

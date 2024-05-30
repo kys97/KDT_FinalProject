@@ -22,8 +22,6 @@ AAIPawn::AAIPawn()
 	mMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Movement"));
 	mMovement->SetUpdatedComponent(mCapsule);
 
-	mMovement->MaxSpeed = 700.f;
-
 	// 자동빙의 설정
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 

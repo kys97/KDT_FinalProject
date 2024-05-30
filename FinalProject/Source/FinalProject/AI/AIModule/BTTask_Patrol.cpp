@@ -5,6 +5,7 @@
 #include "../DefaultAIController.h"
 #include "../AIPawn.h"
 #include "../MonsterAnimInstance.h"
+#include "../MonsterState.h"
 
 UBTTask_Patrol::UBTTask_Patrol()
 {
@@ -90,6 +91,13 @@ void UBTTask_Patrol::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 		return;
 	}
 
+	UMonsterState* MonsterState = Pawn->GetState<UMonsterState>();
+
+	if (!IsValid(MonsterState))
+		return;
+
+	Pawn->SetMoveSpeed((float)MonsterState->mMoveSpeed);
+	
 	// 속도 벡터를 가져와서 방향을 구한다.
 	// 방향은 x, y의 값을 이용해서 방향을 구한다.
 	FVector	Dir = Pawn->GetMovementComponent()->Velocity;

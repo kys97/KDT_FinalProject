@@ -20,10 +20,10 @@ protected:
 public:
 	// 공격력
 	UPROPERTY(EditAnywhere)
-	int32	mAttackPoint;
+	int32	mAttackPower;
 	// 방어력
 	UPROPERTY(EditAnywhere)
-	int32	mArmorPoint;
+	int32	mArmorPower;
 
 	UPROPERTY(EditAnywhere)
 	int32	mHP;

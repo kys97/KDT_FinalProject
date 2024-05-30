@@ -81,6 +81,13 @@ void UBTTask_TraceTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 		return;
 	}
 
+	UMonsterState* MonsterState = Pawn->GetState<UMonsterState>();
+
+	if (!IsValid(MonsterState))
+		return;
+
+	Pawn->SetMoveSpeed((float)MonsterState->mMaxMoveSpeed);
+
 	// 속도 벡터를 가져와서 방향을 구한다.
 	// 방향은 x, y의 값을 이용해서 방향을 구한다.
 	FVector Dir = Pawn->GetMovementComponent()->Velocity;
@@ -109,11 +116,6 @@ void UBTTask_TraceTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 
 	if (IsValid(TargetCapsule))
 		Distance -= TargetCapsule->GetScaledCapsuleRadius();
-
-	UMonsterState* MonsterState = Pawn->GetState<UMonsterState>();
-
-	if (!IsValid(MonsterState))
-		return;
 
 	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow,
 		FString::Printf(TEXT("Trace Distance : %f"), Distance));
