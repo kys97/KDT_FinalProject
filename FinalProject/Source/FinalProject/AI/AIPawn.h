@@ -26,6 +26,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	UFloatingPawnMovement* mMovement;
 
+	UPROPERTY(EditAnywhere)
+	class UAIState* mState;
+
 	// SpawnPoint를 통해 생성이 되었을 경우
 	// 어떤 SpawnPoint에서 생성이 되었는지를 가지고 있게 한다.
 	class AAISpawnPoint* mSpawnPoint;
@@ -43,6 +46,17 @@ protected:
 	int32 mPatrolDir;
 
 public:
+	void SetMoveSpeed(float Speed)
+	{
+		mMovement->MaxSpeed = Speed;
+	}
+
+	template <typename T>
+	T* GetState()
+	{
+		return Cast<T>(mState);
+	}
+
 	void NextPatrolPointIndex()
 	{
 		mPatrolIndex += mPatrolDir;
@@ -93,6 +107,9 @@ public:
 		return mCapsule->GetScaledCapsuleRadius();
 	}
 
+	virtual void SetAttackEnd(bool End);
+	virtual bool IsAttackEnd();
+
 public:
 	virtual void ChangeAIAnimType(uint8 AnimType);
 	virtual bool AIIsOverlap();
@@ -106,10 +123,15 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:	
+	virtual void OnConstruction(const FTransform& Transform);
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
+		AController* EventInstigator, AActor* DamageCauser) override;
 
 };

@@ -25,6 +25,9 @@ class FINALPROJECT_API UMonsterAnimInstance : public UAnimInstance
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float mPlayerMoveSpeed = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EMonsterAnimType mAnimType;
 
 public:
@@ -36,5 +39,15 @@ public:
 public:
 	virtual void NativeInitializeAnimation();
 	virtual void NativeUpdateAnimation(float DeltaSeconds);
+
+public:
+	UFUNCTION()
+	void AnimNotify_Attack();
+
+	UFUNCTION()
+	void AnimNotify_AttackEnd();
+
+	UFUNCTION()
+	void AnimNotify_DeathEnd();
 	
 };

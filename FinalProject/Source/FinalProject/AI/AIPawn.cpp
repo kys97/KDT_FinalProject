@@ -22,8 +22,6 @@ AAIPawn::AAIPawn()
 	mMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Movement"));
 	mMovement->SetUpdatedComponent(mCapsule);
 
-	mMovement->MaxSpeed = 700.f;
-
 	// 자동빙의 설정
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
@@ -64,6 +62,15 @@ void AAIPawn::SetPointActorArray(const TArray<class APatrolPointActor*>& PointAc
 	}
 }
 
+void AAIPawn::SetAttackEnd(bool End)
+{
+}
+
+bool AAIPawn::IsAttackEnd()
+{
+	return false;
+}
+
 void AAIPawn::ChangeAIAnimType(uint8 AnimType)
 {
 }
@@ -98,6 +105,11 @@ void AAIPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		mSpawnPoint->ClearSpawnObject();
 }
 
+void AAIPawn::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+}
+
 // Called every frame
 void AAIPawn::Tick(float DeltaTime)
 {
@@ -110,5 +122,13 @@ void AAIPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+float AAIPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
+	AController* EventInstigator, AActor* DamageCauser)
+{
+	Damage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+
+	return Damage;
 }
 
