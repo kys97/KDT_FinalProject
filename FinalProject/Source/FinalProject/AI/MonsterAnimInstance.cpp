@@ -44,3 +44,10 @@ void UMonsterAnimInstance::AnimNotify_AttackEnd()
 
 	Pawn->SetAttackEnd(true);
 }
+
+void UMonsterAnimInstance::AnimNotify_DeathEnd()
+{
+	AAIMonsterPawn* Pawn = Cast<AAIMonsterPawn>(TryGetPawnOwner());
+
+	Pawn->DeathEnd();
+}

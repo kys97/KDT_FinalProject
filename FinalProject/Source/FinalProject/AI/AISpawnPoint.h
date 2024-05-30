@@ -44,9 +44,6 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TArray<class APatrolPointActor*> mPointActorArray;
 
-	UPROPERTY(EditAnywhere)
-	float DeleteTime = 10.f;
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

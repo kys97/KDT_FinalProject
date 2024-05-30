@@ -35,11 +35,21 @@ AAIMonsterPawn::AAIMonsterPawn()
 	mOverlap = false;
 
 	mAttackEnd = false;
+
+	mDeathEnd = false;
+	mDeadTime = 0.f;
+	mDeadDuration = 5.f;
 }
 
 void AAIMonsterPawn::ChangeAIAnimType(uint8 AnimType)
 {
 	mAnimInst->ChangeAnimType((EMonsterAnimType)AnimType);
+}
+
+void AAIMonsterPawn::DeathEnd()
+{
+	mDeathEnd = true;
+	mDeadTime = 0.f;
 }
 
 void AAIMonsterPawn::NormalAttack()
@@ -69,6 +79,19 @@ void AAIMonsterPawn::OnConstruction(const FTransform& Transform)
 void AAIMonsterPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (mDeathEnd)
+	{
+		mDeadTime += DeltaTime;
+
+		if (mDeadTime >= mDeadDuration)
+		{
+			Destroy();
+
+			mDeathEnd = false;
+			mDeadTime = 0.f;
+		}
+	}
 }
 
 void AAIMonsterPawn::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
@@ -77,6 +100,21 @@ void AAIMonsterPawn::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("Monster BeginOverlap"));
 
 	mOverlap = true;
+}
+
+float AAIMonsterPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent, 
+	AController* EventInstigator, AActor* DamageCauser)
+{
+	Damage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+
+	mMonsterState->mHP -= Damage;
+
+	if (mMonsterState->mHP <= 0)
+	{
+		mAnimInst->ChangeAnimType(EMonsterAnimType::Death);
+	}
+
+	return Damage;
 }
 
 void AAIMonsterPawn::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)

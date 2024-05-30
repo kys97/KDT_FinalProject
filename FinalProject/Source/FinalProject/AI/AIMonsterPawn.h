@@ -61,10 +61,17 @@ protected:
 	class UMonsterState* mMonsterState;
 
 	bool mOverlap;
-
 	bool mAttackEnd;
 
+	bool mDeathEnd;
+	float mDeadTime;
+
+	UPROPERTY(EditAnywhere)
+	float mDeadDuration;
+
 public:
+	void DeathEnd();
+
 	virtual void ChangeAIAnimType(uint8 AnimType);
 
 	virtual bool AIIsOverlap()
@@ -98,6 +105,9 @@ public:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
+		AController* EventInstigator, AActor* DamageCauser) override;
 	
 	UFUNCTION()
 	void BeginOverlap(UPrimitiveComponent* OverlappedComponent,

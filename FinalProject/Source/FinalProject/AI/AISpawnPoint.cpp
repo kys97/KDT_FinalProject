@@ -52,19 +52,6 @@ void AAISpawnPoint::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// 재생성 되는지 확인하기 위해 임의로 삭제해주는 코드
-	if (mSpawnAI)
-	{
-		mAccTime += DeltaTime;
-
-		if (mAccTime >= DeleteTime)
-		{
-			mSpawnAI->Destroy();
-
-			mAccTime = 0.f;
-		}
-	}
-
 	// 생성된 오브젝트가 nullptr 일 경우에는
 	// 해당 오브젝트는 제거가 되었다는 뜻이므로 새로 생성해주자.
 	if (!mSpawnAI)

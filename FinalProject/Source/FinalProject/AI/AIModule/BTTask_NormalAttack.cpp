@@ -77,24 +77,23 @@ void UBTTask_NormalAttack::TickTask(UBehaviorTreeComponent& OwnerComp,
 		return;
 	}
 
-	// 타겟과의 거리 체크
-	FVector AILocation = Pawn->GetActorLocation();
-	FVector TargetLocation = Target->GetActorLocation();
-
-	// AI가 Target을 바라보는 방향을 구한다.
-	FVector	Dir = TargetLocation - AILocation;
-	Dir.Z = 0.0;
-	
-	FRotator Rot = FRotationMatrix::MakeFromX(Dir).Rotator();
-	Rot.Pitch = 0.0;
-	Rot.Roll = 0.0;
-
-	Pawn->SetActorRotation(Rot);
-
-
 	if (Pawn->IsAttackEnd())
 	{
 		Pawn->SetAttackEnd(false);
+
+		// 타겟과의 거리 체크
+		FVector AILocation = Pawn->GetActorLocation();
+		FVector TargetLocation = Target->GetActorLocation();
+
+		// AI가 Target을 바라보는 방향을 구한다.
+		FVector	Dir = TargetLocation - AILocation;
+		Dir.Z = 0.0;
+
+		FRotator Rot = FRotationMatrix::MakeFromX(Dir).Rotator();
+		Rot.Pitch = 0.0;
+		Rot.Roll = 0.0;
+
+		Pawn->SetActorRotation(Rot);
 
 		// 두 위치 사이의 거리를 구한다.
 		AILocation.Z -= Pawn->GetHalfHeight();

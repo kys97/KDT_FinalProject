@@ -124,3 +124,11 @@ void AAIPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+float AAIPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
+	AController* EventInstigator, AActor* DamageCauser)
+{
+	Damage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+
+	return Damage;
+}
+
