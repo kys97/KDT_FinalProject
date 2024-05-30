@@ -110,7 +110,7 @@ void ABlueWizard::FirstSkill()
 			AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
 
 			// Spawn Rotation
-			FRotator SpawnRotation;
+			FRotator SpawnRotation = FRotator::ZeroRotator;
 
 			// Spawn Location
 			FVector MeshForwardVector = GetMesh()->GetForwardVector();
@@ -118,7 +118,7 @@ void ABlueWizard::FirstSkill()
 			PlayerForwardVector.X = (-1) * MeshForwardVector.Y;
 			PlayerForwardVector.Y = MeshForwardVector.X;
 			FVector	StartLocation = GetActorLocation();
-			FVector	EndLocation = StartLocation + PlayerForwardVector * 1000.f;
+			FVector	EndLocation = StartLocation + PlayerForwardVector * 500.f;
 			FVector SpawnLocation = (StartLocation + EndLocation) / 2.f;
 			SpawnLocation.Z = 0.f;
 
