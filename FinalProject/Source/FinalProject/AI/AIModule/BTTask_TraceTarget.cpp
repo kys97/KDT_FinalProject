@@ -126,8 +126,8 @@ void UBTTask_TraceTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 	if (IsValid(TargetCapsule))
 		Distance -= TargetCapsule->GetScaledCapsuleRadius();
 
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow,
-		FString::Printf(TEXT("Trace Distance : %f"), Distance));
+	//GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow,
+	//	FString::Printf(TEXT("Trace Distance : %f"), Distance));
 	if (Distance <= MonsterState->mAttackDistance)
 	{
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
