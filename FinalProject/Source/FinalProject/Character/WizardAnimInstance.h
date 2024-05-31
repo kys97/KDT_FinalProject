@@ -23,6 +23,9 @@ protected:
 	bool IsAttack;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool IsDeath;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<TObjectPtr<UAnimMontage>> mAttackMontageArray;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -52,5 +55,6 @@ public:
 	void AnimNotify_AttackEnd();
 
 public:
-	void PlayAttackAnimation(const int pressed_key);
+	void PlayAnimation(const EWizardAttackAnimTypes animType);
+	void SetDeath(bool death) { IsDeath = death; }
 };

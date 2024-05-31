@@ -2,6 +2,8 @@
 
 
 #include "Wizard.h"
+#include "WizardPlayerState.h"
+
 
 // Sets default values
 AWizard::AWizard()
@@ -20,12 +22,24 @@ AWizard::AWizard()
 	mCameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraArm"));
 	mCameraArm->SetupAttachment(GetCapsuleComponent());
 	mCameraArm->bDoCollisionTest = false; // 캐릭터 가려져도 카메라 이동 안하도록
+	mCameraArm->bInheritPitch = false; // 컨트롤러 회전 안먹도록
+	mCameraArm->bInheritYaw = false;
+	mCameraArm->bInheritRoll = false;
 	// TODO : Camera Arm Length Set
 
 	// Camera Set
 	mCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	mCamera->SetupAttachment(mCameraArm);
 	// Camera 위치조정
+
+	// Movement Set
+	GetCharacterMovement()->bUseControllerDesiredRotation = true; // 컨트롤러 회전 사용
+	GetCharacterMovement()->bOrientRotationToMovement = false; // 딱딱 끊겨서 회전돼서 해제
+
+	// Controller Rotation Set
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
 }
 
 // Called when the game starts or when spawned
@@ -46,7 +60,23 @@ void AWizard::Tick(float DeltaTime)
 void AWizard::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
 
+float AWizard::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	Damage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+
+	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+	State->mHP -= Damage;
+
+	if (State->mHP <= 0)
+	{
+		mAnimInstance->SetDeath(true);
+
+		// TODO : 사망처리 추후 어떻게 할건지?
+	}
+
+	return Damage;
 }
 
 void AWizard::NormalAttack() {}

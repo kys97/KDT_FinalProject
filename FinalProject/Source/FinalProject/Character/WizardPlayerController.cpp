@@ -43,30 +43,19 @@ void AWizardPlayerController::OnMove(const FInputActionValue& InputActionValue)
 
 	if (Wizard->GetMoveEnabled())
 	{
-		// Get Rotate & Move Vector
-		const FRotator Rotation = K2_GetActorRotation();
-		const FRotator YawRotation = FRotator(0.0, Rotation.Yaw, 0.0);
-		const FVector FwdVector = YawRotation.Vector();
-		const FVector RightVector = FRotationMatrix(YawRotation).GetScaledAxis(EAxis::Y);
-
 		// Set Move
-		// Action.X > 0 ? Right : Left
-		// Action.Y > 0 ? Fwd : Bwd 
-		const FVector ActionValue = InputActionValue.Get<FVector>();
-		// 앞 뒤
-		Wizard->AddMovementInput(FwdVector, ActionValue.Y);
-		// 좌우
-		Wizard->AddMovementInput(RightVector, ActionValue.X);
+		// InputVector.X > 0 ? Right1 : Left-1
+		// InputVector.Y > 0 ? Fwd1 : Bwd-1 
+		FVector2D InputVector = InputActionValue.Get<FVector2D>();
+		float InputSizeSquared = InputVector.SquaredLength(); // : 1 ~ 2
+		if (InputSizeSquared > 1.0f) InputVector.Normalize(); // : 1
+		FVector MoveDirection = FVector(InputVector.Y, InputVector.X, 0.f);
+		Wizard->AddMovementInput(MoveDirection, 1.f);
 
 		// Set Rotate
-		FRotator TargetRotation = ActionValue.Rotation();
-		TargetRotation.Yaw *= -1.f;
-		TargetRotation.Pitch = 0.0f;
-		TargetRotation.Roll = 0.0f;
-
+		FRotator TargetRotation = MoveDirection.Rotation();
 		// 회전 보간
-		FRotator NewRotation = FMath::RInterpTo(Wizard->GetMesh()->GetComponentRotation(), TargetRotation, GetWorld()->GetDeltaSeconds(), 5.0f);
-		Wizard->GetMesh()->SetRelativeRotation(NewRotation);
-		
+		FRotator NewRotation = FMath::RInterpTo(Wizard->GetActorRotation(), TargetRotation, GetWorld()->GetDeltaSeconds(), 5.0f);
+		SetControlRotation(NewRotation);
 	}
 }

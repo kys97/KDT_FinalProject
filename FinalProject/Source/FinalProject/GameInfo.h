@@ -21,6 +21,17 @@
 /**
  * 
  */
+
+UENUM(BlueprintType)
+enum class EWizardAttackAnimTypes : uint8
+{ 
+	NormalAttack,
+	FirstSkill,
+	SecondSkill,
+	ThirdSkill,
+	FourthSkill
+};
+
 UCLASS()
 class FINALPROJECT_API UGameInfo : public UObject
 {

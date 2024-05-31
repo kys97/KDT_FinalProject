@@ -8,6 +8,7 @@ UWizardAnimInstance::UWizardAnimInstance()
 {
 	IsMove = false;
 	IsAttack = false;
+	IsDeath = false;
 	AttackIndex = 0;
 }
 
@@ -49,9 +50,9 @@ void UWizardAnimInstance::AnimNotify_AttackEnd()
 	IsAttack = false;
 }
 
-void UWizardAnimInstance::PlayAttackAnimation(const int pressed_key)
+void UWizardAnimInstance::PlayAnimation(const EWizardAttackAnimTypes animType)
 {
-	AttackIndex = pressed_key;
+	AttackIndex = (int32)animType;
 
 	if (!Montage_IsPlaying(mAttackMontageArray[AttackIndex]))
 	{

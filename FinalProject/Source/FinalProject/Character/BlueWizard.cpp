@@ -5,6 +5,7 @@
 #include "../Weapon/MagicStaff.h"
 #include "WizardPlayerState.h"
 
+
 #include "../FXV/Storm.h"
 
 
@@ -24,6 +25,8 @@ ABlueWizard::ABlueWizard()
 	}
 
 	mFirstSkillParticle = AStorm::StaticClass();
+
+	
 }
 
 void ABlueWizard::BeginPlay()
@@ -49,7 +52,7 @@ void ABlueWizard::NormalAttack()
 	if (mAnimInstance->AttackEnable())
 	{
 		// Set Animation
-		mAnimInstance->PlayAttackAnimation(0);
+		mAnimInstance->PlayAnimation(EWizardAttackAnimTypes::NormalAttack);
 
 		// Attack Collision Check
 		FCollisionQueryParams	param(NAME_None, false, this);
@@ -100,7 +103,7 @@ void ABlueWizard::FirstSkill()
 	if (mAnimInstance->AttackEnable())
 	{
 		// Set Animation
-		mAnimInstance->PlayAttackAnimation(1);
+		mAnimInstance->PlayAnimation(EWizardAttackAnimTypes::FirstSkill);
 
 		// Respawn Skill
 		UWorld* const World = GetWorld();
@@ -143,7 +146,7 @@ void ABlueWizard::SecondSkill()
 	if (mAnimInstance->AttackEnable())
 	{
 		// Set Animation
-		mAnimInstance->PlayAttackAnimation(2);
+		mAnimInstance->PlayAnimation(EWizardAttackAnimTypes::SecondSkill);
 	}
 }
 
@@ -152,7 +155,7 @@ void ABlueWizard::ThirdSkill()
 	if (mAnimInstance->AttackEnable())
 	{
 		// Set Animation
-		mAnimInstance->PlayAttackAnimation(3);
+		mAnimInstance->PlayAnimation(EWizardAttackAnimTypes::ThirdSkill);
 	}
 }
 
@@ -161,6 +164,6 @@ void ABlueWizard::FourthSkill()
 	if (mAnimInstance->AttackEnable())
 	{
 		// Set Animation
-		mAnimInstance->PlayAttackAnimation(4);
+		mAnimInstance->PlayAnimation(EWizardAttackAnimTypes::FourthSkill);
 	}
 }
