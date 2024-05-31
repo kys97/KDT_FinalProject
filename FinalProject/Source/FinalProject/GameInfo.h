@@ -8,6 +8,11 @@
 
 #include "DrawDebugHelpers.h"
 
+#include "Networking.h"
+#include "Sockets.h"
+#include "SocketSubsystem.h"
+#include "Net/UnrealNetwork.h"
+
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -18,9 +23,7 @@
 #include "UObject/NoExportTypes.h"
 #include "GameInfo.generated.h"
 
-/**
- * 
- */
+DECLARE_LOG_CATEGORY_EXTERN(Network, Log, All);
 
 UENUM(BlueprintType)
 enum class EWizardAttackAnimTypes : uint8

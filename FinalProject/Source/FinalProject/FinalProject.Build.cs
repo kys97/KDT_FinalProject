@@ -8,14 +8,17 @@ public class FinalProject : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core",
+		PublicDependencyModuleNames.AddRange(new string[] {
+			"Core",
 			"CoreUObject",
 			"Engine",
 			"InputCore",
 			"EnhancedInput", 
 			"AIModule",
-			"NavigationSystem"
-		});
+			"NavigationSystem",
+			"Networking",
+			"Sockets"
+        });
         PrivateDependencyModuleNames.AddRange(new string[] {  });
 
 		// Uncomment if you are using Slate UI
