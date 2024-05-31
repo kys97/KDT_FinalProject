@@ -24,6 +24,8 @@ ABlueWizard::ABlueWizard()
 	}
 
 	mFirstSkillParticle = AStorm::StaticClass();
+
+	
 }
 
 void ABlueWizard::BeginPlay()

@@ -5,9 +5,7 @@
 #include "Wizard.h"
 #include "BlueWizard.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class FINALPROJECT_API ABlueWizard : public AWizard
 {
