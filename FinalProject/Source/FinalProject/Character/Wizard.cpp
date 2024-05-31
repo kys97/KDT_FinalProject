@@ -2,6 +2,8 @@
 
 
 #include "Wizard.h"
+#include "WizardPlayerState.h"
+
 
 // Sets default values
 AWizard::AWizard()
@@ -58,7 +60,23 @@ void AWizard::Tick(float DeltaTime)
 void AWizard::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
 
+float AWizard::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	Damage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+
+	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+	State->mHP -= Damage;
+
+	if (State->mHP <= 0)
+	{
+		mAnimInstance->SetDeath(true);
+
+		// TODO : 사망처리 추후 어떻게 할건지?
+	}
+
+	return Damage;
 }
 
 void AWizard::NormalAttack() {}
