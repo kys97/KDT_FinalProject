@@ -40,4 +40,5 @@ void ADefaultAIController::OnPossess(APawn* InPawn)
 
 void ADefaultAIController::OnUnPossess()
 {
+	Super::OnUnPossess();
 }

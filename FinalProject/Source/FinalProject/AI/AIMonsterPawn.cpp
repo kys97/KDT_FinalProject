@@ -72,8 +72,6 @@ void AAIMonsterPawn::OnConstruction(const FTransform& Transform)
 	// MonsterPawn의 자식 클래스에서 넘긴 행이름을
 	// AIState 에 저장
 	mState->mDataTableRowName = mTableRowName;
-
-	mMonsterState = GetState<UMonsterState>();
 }
 
 void AAIMonsterPawn::Tick(float DeltaTime)
@@ -102,17 +100,26 @@ void AAIMonsterPawn::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 	mOverlap = true;
 }
 
-float AAIMonsterPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent, 
+float AAIMonsterPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
 	AController* EventInstigator, AActor* DamageCauser)
 {
 	Damage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
-	mMonsterState->mHP -= Damage;
+	mMonsterState = GetState<UMonsterState>();
 
-	if (mMonsterState->mHP <= 0)
+	if (mMonsterState->mHP > 0 && !mDeathEnd)
 	{
-		mAnimInst->ChangeAnimType(EMonsterAnimType::Death);
-	}
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("Monster mHP1 : %d"), mMonsterState->mHP));
+		mMonsterState->mHP -= Damage;
+	
+		if (mMonsterState->mHP <= 0)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("Monster Dead"));
+			mAnimInst->ChangeAnimType(EMonsterAnimType::Death);
+
+			Controller->UnPossess();
+		}
+	}	
 
 	return Damage;
 }

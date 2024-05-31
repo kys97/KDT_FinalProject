@@ -61,8 +61,6 @@ public:
 	{
 		mPatrolIndex += mPatrolDir;
 
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("PatrolIndex : %d"), mPatrolIndex));
-
 		// 배열의 인덱스 범위를 벗어났는지 판단
 		if (mPatrolIndex >= mPatrolPointArray.Num())	// Num() : 배열에 엘리먼트가 몇 개인지 확인
 		{
