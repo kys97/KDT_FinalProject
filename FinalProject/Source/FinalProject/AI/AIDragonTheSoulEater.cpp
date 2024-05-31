@@ -8,7 +8,7 @@ AAIDragonTheSoulEater::AAIDragonTheSoulEater()
 {
 	PrimaryActorTick.bCanEverTick = true; 
 
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/Asset/FourEvilDragonsPBR/Meshes/DrangonTheSoulEater/PBR_DragonTheSoulEaterSK.PBR_DragonTheSoulEaterSK'"));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/Asset/FourEvilDragonsPBR/Meshes/DrangonTheSoulEater/DragonTheSoulEaterSK.DragonTheSoulEaterSK'"));
 
 	if (MeshAsset.Succeeded())
 		mMesh->SetSkeletalMesh(MeshAsset.Object);
@@ -42,6 +42,8 @@ void AAIDragonTheSoulEater::NormalAttack()
 {
 	FCollisionQueryParams param(NAME_None, false, this);
 
+	mMonsterState = GetState<UMonsterState>();
+
 	// 액터 위치 + 액터의 전방방향
 	FVector StartLocation = GetActorLocation() + GetActorForwardVector();
 
@@ -53,8 +55,6 @@ void AAIDragonTheSoulEater::NormalAttack()
 	// 시작위치에서 끝 위치 사이에 감지되는 결과
 	bool IsCollision = GetWorld()->SweepMultiByChannel(resultArray, StartLocation, EndLocation,
 		FQuat::Identity, ECC_GameTraceChannel5, FCollisionShape::MakeSphere(GetCapsuleRadius()), param);
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue, FString::Printf(TEXT("IsCollision : %d"), IsCollision));
-
 
 #if ENABLE_DRAW_DEBUG
 
