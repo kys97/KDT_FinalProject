@@ -109,15 +109,17 @@ float AAIMonsterPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
 
 	if (mMonsterState->mHP > 0 && !mDeathEnd)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("Monster mHP1 : %d"), mMonsterState->mHP));
 		mMonsterState->mHP -= Damage;
-	
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("Monster mHP1 : %d"), mMonsterState->mHP));
+		
+		ADefaultAIController* AIController = Cast<ADefaultAIController>(GetController());
+
 		if (mMonsterState->mHP <= 0)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("Monster Dead"));
 			mAnimInst->ChangeAnimType(EMonsterAnimType::Death);
 
-			Controller->UnPossess();
+			AIController->UnPossess();
 		}
 	}	
 
