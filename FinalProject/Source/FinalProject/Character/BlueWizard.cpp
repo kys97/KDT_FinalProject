@@ -54,20 +54,15 @@ void ABlueWizard::NormalAttack()
 		// Set Animation
 		mAnimInstance->PlayAnimation(EWizardAttackAnimTypes::NormalAttack);
 
-		// Attack Collision Check
-		FCollisionQueryParams	param(NAME_None, false, this);
-
 		// Get Wizard State
 		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
 
-		FVector	StartLocation = GetActorLocation();
-		FVector MeshForwardVector = GetMesh()->GetForwardVector();
-		FQuat QuatRotation = FQuat(FRotator(0.0f, 90.0f, 0.0f));
-		FVector PlayerForwardVector = QuatRotation.RotateVector(MeshForwardVector);
-		FVector	EndLocation = StartLocation + PlayerForwardVector * State->mNormalAttackDistance;
+		// Attack Collision Check
+		FCollisionQueryParams	param(NAME_None, false, this);
+		FVector	EndLocation = GetActorLocation() + GetActorForwardVector() * State->mNormalAttackDistance;
 		TArray<FHitResult>	resultArray;
 		bool IsCollision = GetWorld()->SweepMultiByChannel(resultArray,
-			StartLocation, EndLocation, FQuat::Identity, ECC_GameTraceChannel3,
+			GetActorLocation(), EndLocation, FQuat::Identity, ECC_GameTraceChannel3,
 			FCollisionShape::MakeSphere(50.f), param);
 
 		IsCollision ? GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Red, FString::Printf(TEXT("Attack")))
@@ -78,7 +73,7 @@ void ABlueWizard::NormalAttack()
 		// 구를 그린다.
 		FColor	DrawColor = IsCollision ? FColor::Red : FColor::Green;
 
-		DrawDebugCapsule(GetWorld(), (StartLocation + EndLocation) / 2.f,
+		DrawDebugCapsule(GetWorld(), (GetActorLocation() + EndLocation) / 2.f,
 			/* Radius */50.f / 2.f, /* Radius */50.f, FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(),
 			DrawColor, false, 1.f);
 
@@ -116,13 +111,8 @@ void ABlueWizard::FirstSkill()
 			FRotator SpawnRotation = FRotator::ZeroRotator;
 
 			// Spawn Location
-			FVector MeshForwardVector = GetMesh()->GetForwardVector();
-			FVector PlayerForwardVector = MeshForwardVector;
-			PlayerForwardVector.X = (-1) * MeshForwardVector.Y;
-			PlayerForwardVector.Y = MeshForwardVector.X;
-			FVector	StartLocation = GetActorLocation();
-			FVector	EndLocation = StartLocation + PlayerForwardVector * State->mFirstSkillAttackDistance;
-			FVector SpawnLocation = (StartLocation + EndLocation) / 2.f;
+			FVector	EndLocation = GetActorLocation() + GetActorForwardVector() * State->mFirstSkillAttackDistance;
+			FVector SpawnLocation = (GetActorLocation() + EndLocation) / 2.f;
 			SpawnLocation.Z = 0.f;
 
 			// Spawn Parameter
@@ -131,7 +121,7 @@ void ABlueWizard::FirstSkill()
 
 			// Skill Spawn
 			AStorm* Storm = World->SpawnActor<AStorm>(mFirstSkillParticle, SpawnLocation, SpawnRotation, ActorSpawnParam);
-			Storm->mMoveDir = PlayerForwardVector;
+			Storm->mMoveDir = GetActorForwardVector();
 			Storm->SkillOwner = this;
 			Storm->SkillDamage = State->mFirstSkillAttackDamage;
 

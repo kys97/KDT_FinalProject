@@ -9,7 +9,10 @@
 
 AMainGameMode::AMainGameMode()
 {
-	// DefaultPawnClass = ABlueWizard::StaticClass();
-	// PlayerControllerClass = AWizardPlayerController::StaticClass();
-	PlayerStateClass = AWizardPlayerState::StaticClass();
+	
+}
+
+void AMainGameMode::BeginPlay()
+{
+	Super::BeginPlay();
 }

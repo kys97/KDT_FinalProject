@@ -19,6 +19,11 @@
 
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 
+// Server
+#include "Networking.h"
+#include "Sockets.h"
+#include "SocketSubsystem.h"
+#include "Net/UnrealNetwork.h"
 
 #include "UObject/NoExportTypes.h"
 #include "GameInfo.generated.h"

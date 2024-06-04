@@ -20,7 +20,6 @@ AEffectBase::AEffectBase()
 	mParticle->bVisualizeComponent = true;
 
 #endif // WITH_EDITORONLY_DATA
-
 }
 
 // Called when the game starts or when spawned

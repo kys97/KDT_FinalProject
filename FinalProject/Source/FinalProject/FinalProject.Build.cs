@@ -18,7 +18,8 @@ public class FinalProject : ModuleRules
 			"NavigationSystem",
 			"Networking",
 			"Sockets"
-        });
+		});
+
         PrivateDependencyModuleNames.AddRange(new string[] {  });
 
 		// Uncomment if you are using Slate UI

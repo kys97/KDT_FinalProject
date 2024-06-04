@@ -29,37 +29,37 @@ struct FWizardData : public FTableRowBase
 
 public:
 	UPROPERTY(EditAnywhere)
-	EWizardJob mJob;
+	EWizardJob mJob = EWizardJob::Blue;
 
 	UPROPERTY(EditAnywhere)
-	int32 mNormalAttackPoint;
+	int32 mNormalAttackPoint = 20.f;
 	UPROPERTY(EditAnywhere)
-	float mNormalAttackDistance;
+	float mNormalAttackDistance = 350.f;
 
 	UPROPERTY(EditAnywhere)
-	int32 mFirstSkillAttackDamage;
+	int32 mFirstSkillAttackDamage = 100.f;
 	UPROPERTY(EditAnywhere)
-	float mFirstSkillAttackDistance;
+	float mFirstSkillAttackDistance = 500.f;
 	UPROPERTY(EditAnywhere)
-	int32 mSecondSkillAttackDamage;
+	int32 mSecondSkillAttackDamage = 100.f;
 	UPROPERTY(EditAnywhere)
-	float mSecondSkillAttackDistance;
+	float mSecondSkillAttackDistance = 500.f;
 	UPROPERTY(EditAnywhere)
-	int32 mThirdSkillAttackDamage;
+	int32 mThirdSkillAttackDamage = 100.f;
 	UPROPERTY(EditAnywhere)
-	float mThirdSkillAttackDistance;
+	float mThirdSkillAttackDistance = 500.f;
 	UPROPERTY(EditAnywhere)
-	int32 mFourthSkillAttackDamage;
+	int32 mFourthSkillAttackDamage = 100.f;
 	UPROPERTY(EditAnywhere)
-	float mFourthSkillAttackDistance;
+	float mFourthSkillAttackDistance = 500.f;
 
 	UPROPERTY(EditAnywhere)
-	int32 mArmorPoint;
+	int32 mArmorPoint = 10.f;
 
 	UPROPERTY(EditAnywhere)
-	int32 mHPMax;
+	int32 mHPMax = 100.f;
 	UPROPERTY(EditAnywhere)
-	int32 mMPMax;
+	int32 mMPMax = 100.f;
 };
 
 

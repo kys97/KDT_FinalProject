@@ -20,9 +20,12 @@ void AWizardPlayerController::BeginPlay()
 	bShowMouseCursor = true;
 
 	// Mapping Input Context
-	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-	const UInputDataConfig* InputDataConfig = GetDefault<UInputDataConfig>();
-	Subsystem->AddMappingContext(InputDataConfig->WizardInputContext, 0);
+	if (IsLocalPlayerController())
+	{
+		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
+		const UInputDataConfig* InputDataConfig = GetDefault<UInputDataConfig>();
+		Subsystem->AddMappingContext(InputDataConfig->WizardInputContext, 0);
+	}
 }
 
 void AWizardPlayerController::SetupInputComponent()
@@ -39,23 +42,26 @@ void AWizardPlayerController::SetupInputComponent()
 
 void AWizardPlayerController::OnMove(const FInputActionValue& InputActionValue)
 {
-	AWizard* Wizard = Cast<AWizard>(GetPawn());
-
-	if (Wizard->GetMoveEnabled())
+	if (IsLocalPlayerController())
 	{
-		// Set Move
-		// InputVector.X > 0 ? Right1 : Left-1
-		// InputVector.Y > 0 ? Fwd1 : Bwd-1 
-		FVector2D InputVector = InputActionValue.Get<FVector2D>();
-		float InputSizeSquared = InputVector.SquaredLength(); // : 1 ~ 2
-		if (InputSizeSquared > 1.0f) InputVector.Normalize(); // : 1
-		FVector MoveDirection = FVector(InputVector.Y, InputVector.X, 0.f);
-		Wizard->AddMovementInput(MoveDirection, 1.f);
+		AWizard* Wizard = Cast<AWizard>(GetPawn());
 
-		// Set Rotate
-		FRotator TargetRotation = MoveDirection.Rotation();
-		// 회전 보간
-		FRotator NewRotation = FMath::RInterpTo(Wizard->GetActorRotation(), TargetRotation, GetWorld()->GetDeltaSeconds(), 5.0f);
-		SetControlRotation(NewRotation);
+		if (Wizard->GetMoveEnabled())
+		{
+			// Set Move
+			// InputVector.X > 0 ? Right1 : Left-1
+			// InputVector.Y > 0 ? Fwd1 : Bwd-1 
+			FVector2D InputVector = InputActionValue.Get<FVector2D>();
+			float InputSizeSquared = InputVector.SquaredLength(); // : 1 ~ 2
+			if (InputSizeSquared > 1.0f) InputVector.Normalize(); // : 1
+			FVector MoveDirection = FVector(InputVector.Y, InputVector.X, 0.f);
+			Wizard->AddMovementInput(MoveDirection, 1.f);
+
+			// Set Rotate
+			FRotator TargetRotation = MoveDirection.Rotation();
+			// 회전 보간
+			FRotator NewRotation = FMath::RInterpTo(Wizard->GetActorRotation(), TargetRotation, GetWorld()->GetDeltaSeconds(), 5.0f);
+			SetControlRotation(NewRotation);
+		}
 	}
 }
