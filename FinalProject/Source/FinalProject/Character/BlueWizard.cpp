@@ -6,6 +6,7 @@
 #include "WizardPlayerState.h"
 
 
+#include "../AI/AIMonsterPawn.h"
 #include "../FXV/Storm.h"
 
 
@@ -81,11 +82,13 @@ void ABlueWizard::NormalAttack()
 
 		if (IsCollision)
 		{
+			AAIMonsterPawn* Monster;
 			for (int32 i = 0; i < resultArray.Num(); ++i)
 			{
 				// Attack Damage
 				FDamageEvent DmgEvent;
-				resultArray[i].GetActor()->TakeDamage((float)State->mNormalAttackPoint, DmgEvent, GetController(), this);
+				Monster = Cast<AAIMonsterPawn>(resultArray[i].GetActor());
+				Monster->TakeDamage((float)State->mNormalAttackPoint, DmgEvent, GetController(), this);
 
 				// 이펙트 출력 및 사운드 재생.
 			}

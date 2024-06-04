@@ -103,14 +103,17 @@ void AAIMonsterPawn::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 float AAIMonsterPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
 	AController* EventInstigator, AActor* DamageCauser)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Cyan, FString::Printf(TEXT("Monster Attack Damage(In Wizard) : %d"), (int)Damage));
+
 	Damage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Cyan, FString::Printf(TEXT("Monster Attack Damage(In Wizard) : %d"), (int)Damage));
 
 	mMonsterState = GetState<UMonsterState>();
 
 	if (mMonsterState->mHP > 0 && !mDeathEnd)
 	{
 		mMonsterState->mHP -= Damage;
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("Monster mHP1 : %d"), mMonsterState->mHP));
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Cyan, FString::Printf(TEXT("Monster mHP1 : %d"), mMonsterState->mHP));
 		
 		ADefaultAIController* AIController = Cast<ADefaultAIController>(GetController());
 
