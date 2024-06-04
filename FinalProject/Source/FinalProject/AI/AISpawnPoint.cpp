@@ -46,7 +46,8 @@ void AAISpawnPoint::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	Spawn();
+	if (HasAuthority())
+		Spawn();
 }
 
 // Called every frame
@@ -54,22 +55,29 @@ void AAISpawnPoint::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// 생성된 오브젝트가 nullptr 일 경우에는
-	// 해당 오브젝트는 제거가 되었다는 뜻이므로 새로 생성해주자.
-	if (!mSpawnAI)
+	//GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("Log! AAISpawnPoint/Tick"));
+	//UE_LOG(Network, Warning, TEXT("Log! AAISpawnPoint/Tick"));
+
+	if (HasAuthority())
 	{
-		mAccTime += DeltaTime;
+		// 생성된 오브젝트가 nullptr 일 경우에는
+		// 해당 오브젝트는 제거가 되었다는 뜻이므로 새로 생성해주자.
+		if (!mSpawnAI)
+		{
+			mAccTime += DeltaTime;
 
-		if (mAccTime >= mSpawnTime)
-			Spawn();
+			if (mAccTime >= mSpawnTime)
+				Spawn();
+		}
 	}
-
 }
 
 void AAISpawnPoint::Spawn()
 {
 	if (!IsValid(mSpawnClass))
 		return;
+
+	UE_LOG(Network, Warning, TEXT("Log! AAISpawnPoint/Spawn"));
 
 	FActorSpawnParameters SpawnParam;
 

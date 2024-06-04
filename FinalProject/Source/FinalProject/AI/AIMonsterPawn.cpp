@@ -107,10 +107,15 @@ float AAIMonsterPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
 
 	mMonsterState = GetState<UMonsterState>();
 
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("Client Log! AAIMonsterPawn/Monster Tack Damage : %d"), Damage));
+	UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/Monster Tack Damage : %d"), Damage);
+
 	if (mMonsterState->mHP > 0 && !mDeathEnd)
 	{
 		mMonsterState->mHP -= Damage;
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("Monster mHP1 : %d"), mMonsterState->mHP));
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Client Log! AAIMonsterPawn/Monster mHP : %d"), mMonsterState->mHP));
+		UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/Monster mHP : %d"), mMonsterState->mHP);
+
 		
 		ADefaultAIController* AIController = Cast<ADefaultAIController>(GetController());
 
