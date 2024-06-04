@@ -5,7 +5,7 @@
 
 AWizardPlayerState::AWizardPlayerState()
 {
-	static ConstructorHelpers::FObjectFinder<UDataTable> WizardDataAsset(TEXT("/Script/Engine.DataTable'/Game/Blueprint/Character/DT_Wizard.DT_Wizard'"));
+	static ConstructorHelpers::FObjectFinder<UDataTable> WizardDataAsset(TEXT("/Script/Engine.DataTable'/Game/Blueprint/Character/DT_WizardDataTable.DT_WizardDataTable'"));
 	if (WizardDataAsset.Succeeded())
 	{
 		mWizardDataTable = WizardDataAsset.Object;

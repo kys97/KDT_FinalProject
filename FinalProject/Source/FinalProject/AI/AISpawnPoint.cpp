@@ -30,9 +30,9 @@ AAISpawnPoint::AAISpawnPoint()
 
 	mArror->bVisualizeComponent = true;
 
-#endif // WITH_EDITORONLY_DATA
-
 	mRoot->bVisualizeComponent = true;
+
+#endif // WITH_EDITORONLY_DATA
 
 	mSpawnAI = nullptr;
 	mAccTime = 0.f;

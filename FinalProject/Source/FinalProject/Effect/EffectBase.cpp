@@ -15,7 +15,11 @@ AEffectBase::AEffectBase()
 	mAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio"));
 	mAudio->SetupAttachment(mParticle);
 
+#if WITH_EDITORONLY_DATA
+
 	mParticle->bVisualizeComponent = true;
+
+#endif
 }
 
 // Called when the game starts or when spawned

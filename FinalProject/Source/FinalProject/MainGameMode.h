@@ -16,4 +16,8 @@ class FINALPROJECT_API AMainGameMode : public AGameModeBase
 	
 public:
 	AMainGameMode();
+
+public:
+	virtual void BeginPlay() override;
+
 };

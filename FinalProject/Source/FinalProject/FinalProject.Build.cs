@@ -14,7 +14,9 @@ public class FinalProject : ModuleRules
 			"InputCore",
 			"EnhancedInput", 
 			"AIModule",
-			"NavigationSystem"
+			"NavigationSystem",
+			"Networking",
+			"Sockets"
 		});
         PrivateDependencyModuleNames.AddRange(new string[] {  });
 
