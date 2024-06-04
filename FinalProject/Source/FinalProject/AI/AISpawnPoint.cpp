@@ -10,6 +10,8 @@ AAISpawnPoint::AAISpawnPoint()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	SetReplicates(true);
+
 	mRoot = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	SetRootComponent(mRoot);
 
@@ -30,9 +32,9 @@ AAISpawnPoint::AAISpawnPoint()
 
 	mArror->bVisualizeComponent = true;
 
-#endif // WITH_EDITORONLY_DATA
-
 	mRoot->bVisualizeComponent = true;
+
+#endif // WITH_EDITORONLY_DATA
 
 	mSpawnAI = nullptr;
 	mAccTime = 0.f;

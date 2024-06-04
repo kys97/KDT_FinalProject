@@ -20,7 +20,12 @@ APatrolPointActor::APatrolPointActor()
 
 	mTrigger->SetCollisionProfileName(TEXT("MonsterTrigger"));
 
+#if WITH_EDITORONLY_DATA
+
 	mRoot->bVisualizeComponent = true;
+
+#endif // WITH_EDITORONLY_DATA
+
 }
 
 // Called when the game starts or when spawned
