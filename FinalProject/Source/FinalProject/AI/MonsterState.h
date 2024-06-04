@@ -25,13 +25,13 @@ public:
 	UPROPERTY(EditAnywhere)
 	int32	mArmorPower;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Replicated)
 	int32	mHP;
 
 	UPROPERTY(EditAnywhere)
 	int32	mHPMax;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Replicated)
 	int32	mMP;
 
 	UPROPERTY(EditAnywhere)
@@ -44,4 +44,8 @@ public:
 	// 공격 거리
 	UPROPERTY(EditAnywhere)
 	int32	mAttackDistance;
+
+
+public:
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

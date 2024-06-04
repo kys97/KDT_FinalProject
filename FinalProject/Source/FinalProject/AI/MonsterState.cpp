@@ -29,3 +29,11 @@ void UMonsterState::BeginPlay()
 		mAttackDistance = Data->mAttackDistance;
 	}
 }
+
+void UMonsterState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UMonsterState, mHP);
+	DOREPLIFETIME(UMonsterState, mMP);
+}
