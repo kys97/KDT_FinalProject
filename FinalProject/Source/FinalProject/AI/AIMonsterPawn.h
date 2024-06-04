@@ -16,28 +16,28 @@ struct FMonsterData : public FTableRowBase
 public:
 	// 공격력
 	UPROPERTY(EditAnywhere)
-	int32	mAttackPower;
+	int32	mAttackPower = 50;
 	// 방어력
 	UPROPERTY(EditAnywhere)
-	int32	mArmorPower;
+	int32	mArmorPower = 50;
 
 	UPROPERTY(EditAnywhere)
-	int32	mHPMax;
+	int32	mHPMax = 50;
 
 	UPROPERTY(EditAnywhere)
-	int32	mMPMax;
+	int32	mMPMax = 50;
 	// 최대 이동 속도
 	UPROPERTY(EditAnywhere)
-	int32	mMaxMoveSpeed;
+	int32	mMaxMoveSpeed = 700;
 	// 이동 속도
 	UPROPERTY(EditAnywhere)
-	int32	mMoveSpeed;
+	int32	mMoveSpeed = 300;
 	// 공격 거리
 	UPROPERTY(EditAnywhere)
-	int32	mAttackDistance;
+	int32	mAttackDistance = 40;
 	// 타겟 감지 거리
 	UPROPERTY(EditAnywhere)
-	int32	mDetectDistance;
+	int32	mDetectDistance = 1000;
 };
 
 UCLASS()
