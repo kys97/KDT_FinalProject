@@ -45,22 +45,31 @@ void AAIDragonTheSoulEater::NormalAttack()
 	mMonsterState = GetState<UMonsterState>();
 
 	// 액터 위치 + 액터의 전방방향
-	FVector StartLocation = GetActorLocation() + GetActorForwardVector();
+	FVector StartLocation = GetActorLocation();// +GetActorForwardVector();
 
 	// 시작 위치 + 액터의 전방방향 * (캡슐반경+공격거리) 이므로
 	// 시작위치에서 앞으로 (캡슐반경+공격거리) 만큼 이동한 위치가 끝 위치
-	FVector EndLocation = StartLocation + GetActorForwardVector() * (GetCapsuleRadius() + mMonsterState->mAttackDistance);
+	float Radius = GetCapsuleRadius();
+
+	FVector EndLocation = StartLocation + (GetActorForwardVector() * (Radius + mMonsterState->mAttackDistance));
 
 	TArray<FHitResult> resultArray;
 	// 시작위치에서 끝 위치 사이에 감지되는 결과
 	bool IsCollision = GetWorld()->SweepMultiByChannel(resultArray, StartLocation, EndLocation,
-		FQuat::Identity, ECC_GameTraceChannel5, FCollisionShape::MakeSphere(GetCapsuleRadius()), param);
+		FQuat::Identity, ECC_GameTraceChannel5, FCollisionShape::MakeSphere(Radius + 2.f), param);
+
+	UE_LOG(Network, Warning, TEXT("Server Log! AAIDragonTheSoulEater/IsCollision : %d"), IsCollision);
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Client Log! AAIDragonTheSoulEater/IsCollision : %d"), IsCollision));
 
 #if ENABLE_DRAW_DEBUG
 
 	FColor DrawColor = IsCollision ? FColor::Red : FColor::Green;
 
-	DrawDebugCapsule(GetWorld(), (StartLocation + EndLocation) / 2.f, 
+	FVector Center;
+
+	Center = StartLocation + (GetActorForwardVector() * FVector::Dist(StartLocation, EndLocation));
+
+	DrawDebugCapsule(GetWorld(), Center,
 		mMonsterState->mAttackDistance, GetCapsuleRadius(),
 		FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(),
 		DrawColor, false, 1.f);
@@ -74,21 +83,31 @@ void AAIDragonTheSoulEater::NormalAttack()
 		{
 			FDamageEvent DmgEvent;
 
-			// TakeDamage() : 데미지 정도, 데미지 이벤트, 가해자 컨트롤러, 가해자 액터
-			resultArray[i].GetActor()->TakeDamage(mMonsterState->mAttackPower, DmgEvent, GetController(), this);
+			if (HasAuthority())
+			{
+				UE_LOG(Network, Warning, TEXT("Server Log! AAIDragonTheSoulEater/mMonsterState->mAttackPower : %d"), mMonsterState->mAttackPower);
+				resultArray[i].GetActor()->TakeDamage(mMonsterState->mAttackPower, DmgEvent, GetController(), this);
 
-			// 이펙트 출력 및 사운드 재생
-			FActorSpawnParameters SpawnParam;
+			}
+			else
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Orange, FString::Printf(TEXT("Client Log! AAIDragonTheSoulEater/mMonsterState->mAttackPower : %d"), mMonsterState->mAttackPower));
 
-			SpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+				// TakeDamage() : 데미지 정도, 데미지 이벤트, 가해자 컨트롤러, 가해자 액터
 
-			AEffectBase* Effect = GetWorld()->SpawnActor<AEffectBase>(
-				resultArray[i].ImpactPoint,
-				resultArray[i].ImpactNormal.Rotation(), 
-				SpawnParam);
+				// 이펙트 출력 및 사운드 재생
+				FActorSpawnParameters SpawnParam;
 
-			Effect->SetParticleAsset(TEXT(""));
-			Effect->SetSoundAsset(TEXT("/Script/Engine.SoundWave'/Game/AI/Monster/Sound/Rampage_Effort_Ability_Primary_01.Rampage_Effort_Ability_Primary_01'"));
+				SpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+				AEffectBase* Effect = GetWorld()->SpawnActor<AEffectBase>(
+					resultArray[i].ImpactPoint,
+					resultArray[i].ImpactNormal.Rotation(), 
+					SpawnParam);
+
+				Effect->SetParticleAsset(TEXT(""));
+				Effect->SetSoundAsset(TEXT("/Script/Engine.SoundWave'/Game/AI/Monster/Sound/Rampage_Effort_Ability_Primary_01.Rampage_Effort_Ability_Primary_01'"));
+			}
 		}
 	}
 }

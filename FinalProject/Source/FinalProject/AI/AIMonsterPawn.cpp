@@ -24,6 +24,7 @@ AAIMonsterPawn::AAIMonsterPawn()
 	AIControllerClass = ADefaultAIController::StaticClass();
 
 	mCapsule->SetCollisionProfileName(TEXT("Monster"));
+	mCapsule->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
 
 	static ConstructorHelpers::FObjectFinder<UDataTable> 
 		MonsterTable(TEXT("/Script/Engine.DataTable'/Game/AI/Monster/DT_MonsterData.DT_MonsterData'"));

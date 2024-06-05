@@ -102,15 +102,6 @@ void UBTTask_TraceTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 	FVector AILocation = Pawn->GetActorLocation();
 	FVector TargetLocation = Target->GetActorLocation();
 
-	FVector	Dir = TargetLocation - AILocation;
-	Dir.Z = 0.0;
-
-	FRotator Rot = FRotationMatrix::MakeFromX(Dir).Rotator();
-	Rot.Pitch = 0.0;
-	Rot.Roll = 0.0;
-
-	Pawn->SetActorRotation(Rot);
-
 	AILocation.Z -= Pawn->GetHalfHeight();
 
 	UCapsuleComponent* TargetCapsule = Cast<UCapsuleComponent>(Target->GetRootComponent());
@@ -128,13 +119,26 @@ void UBTTask_TraceTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 
 	//GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow,
 	//	FString::Printf(TEXT("Trace Distance : %f"), Distance));
-	if (Distance <= MonsterState->mAttackDistance)
+	if (Distance < MonsterState->mAttackDistance)
 	{
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 
 		Controller->StopMovement();
 
 		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
+	}
+	else 
+	{
+		FVector	Dir = TargetLocation - AILocation;
+		Dir.Z = 0.0;
+
+		FRotator Rot = FRotationMatrix::MakeFromX(Dir).Rotator();
+		Rot.Pitch = 0.0;
+		Rot.Roll = 0.0;
+
+		Pawn->SetActorRotation(Rot);
+
+		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Run);
 	}
 
 }

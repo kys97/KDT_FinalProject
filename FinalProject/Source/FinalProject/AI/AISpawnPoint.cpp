@@ -77,7 +77,7 @@ void AAISpawnPoint::Spawn()
 	if (!IsValid(mSpawnClass))
 		return;
 
-	UE_LOG(Network, Warning, TEXT("Log! AAISpawnPoint/Spawn"));
+	UE_LOG(Network, Warning, TEXT("Server Log! AAISpawnPoint/Spawn"));
 
 	FActorSpawnParameters SpawnParam;
 
