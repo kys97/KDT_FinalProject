@@ -62,12 +62,13 @@ void ABlueWizard::NormalAttack()
 		FCollisionQueryParams	param(NAME_None, false, this);
 		FVector	EndLocation = GetActorLocation() + GetActorForwardVector() * State->mNormalAttackDistance;
 		TArray<FHitResult>	resultArray;
+
 		bool IsCollision = GetWorld()->SweepMultiByChannel(resultArray,
 			GetActorLocation(), 
 			EndLocation, 
-			FQuat::Identity, 
+			FQuat(GetActorForwardVector(), FMath::DegreesToRadians(90.0f)), //Rotator
 			ECC_GameTraceChannel3,
-			FCollisionShape::MakeCapsule(FVector(50, 50, 100)), 
+			FCollisionShape::MakeCapsule(FVector(50, 50, 125)), // (Radius, Radius, HalfHeight)
 			param);
 
 #if ENABLE_DRAW_DEBUG
@@ -77,9 +78,9 @@ void ABlueWizard::NormalAttack()
 
 		DrawDebugCapsule(GetWorld(), 
 			(GetActorLocation() + EndLocation) / 2.f,
-			/* Radius */50.f / 2.f, 
-			/* Radius */50.f, 
-			FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(),
+			/* HalfHeight */ 125.f,
+			/* Radius */ 50.f, 
+			FQuat(GetActorForwardVector(), FMath::DegreesToRadians(90.0f)), //Rotator
 			DrawColor, false, 1.f);
 
 #endif
