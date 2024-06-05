@@ -47,6 +47,11 @@ void ABlueWizard::BeginPlay()
 	
 }
 
+void ABlueWizard::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	mWeapon->Destroy();
+}
+
 void ABlueWizard::NormalAttack()
 {
 	// Damage
