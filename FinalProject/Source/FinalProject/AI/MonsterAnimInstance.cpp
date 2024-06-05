@@ -51,3 +51,10 @@ void UMonsterAnimInstance::AnimNotify_DeathEnd()
 
 	Pawn->DeathEnd();
 }
+
+void UMonsterAnimInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UMonsterAnimInstance, mAnimType);
+}

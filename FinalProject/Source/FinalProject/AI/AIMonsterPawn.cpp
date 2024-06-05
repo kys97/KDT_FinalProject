@@ -41,7 +41,7 @@ AAIMonsterPawn::AAIMonsterPawn()
 	mDeadDuration = 5.f;
 }
 
-void AAIMonsterPawn::ChangeAIAnimType(uint8 AnimType)
+void AAIMonsterPawn::ChangeAIAnimType_Implementation(uint8 AnimType)
 {
 	mAnimInst->ChangeAnimType((EMonsterAnimType)AnimType);
 }

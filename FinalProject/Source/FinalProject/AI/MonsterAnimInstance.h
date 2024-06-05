@@ -25,9 +25,9 @@ class FINALPROJECT_API UMonsterAnimInstance : public UAnimInstance
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	float mPlayerMoveSpeed = false;
+	double mPlayerMoveSpeed = 0.f;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
 	EMonsterAnimType mAnimType;
 
 public:
@@ -49,5 +49,8 @@ public:
 
 	UFUNCTION()
 	void AnimNotify_DeathEnd();
+
+public:
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 };
