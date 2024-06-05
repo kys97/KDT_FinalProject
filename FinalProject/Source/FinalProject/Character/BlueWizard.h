@@ -32,5 +32,7 @@ public:
 	virtual void FourthSkill() override;
 
 private:
-	// return IsHit Bool Function()
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerNormalAttack(AActor* DamagedActor, float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser);
+
 };
