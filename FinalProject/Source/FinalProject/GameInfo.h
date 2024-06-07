@@ -40,6 +40,20 @@ enum class EWizardAttackAnimTypes : uint8
 	FourthSkill
 };
 
+// TODO : AnimInstance C++로 변환작업
+UENUM(BlueprintType)
+enum class EWizardAnimTypes : uint8
+{
+	Idle, 
+	Move,
+	NormalAttack,
+	FirstSkill,
+	SecondSkill,
+	ThirdSkill,
+	FourthSkill, 
+	Death
+};
+
 UCLASS()
 class FINALPROJECT_API UGameInfo : public UObject
 {

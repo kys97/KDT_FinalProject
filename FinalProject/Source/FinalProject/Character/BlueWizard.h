@@ -21,8 +21,8 @@ protected:
 	TSubclassOf<class AStorm> mFirstSkillParticle;
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:
 	virtual void NormalAttack() override;
@@ -32,5 +32,7 @@ public:
 	virtual void FourthSkill() override;
 
 private:
-	// return IsHit Bool Function()
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerNormalAttack(AActor* DamagedActor, float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser);
+
 };
