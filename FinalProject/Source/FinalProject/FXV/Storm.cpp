@@ -101,7 +101,12 @@ void AStorm::NotifyActorBeginOverlap(AActor* OtherActor)
 	{
 		// Monster->TakeDamage()
 		FDamageEvent DmgEvent;
-		Monster->TakeDamage(SkillDamage, DmgEvent, SkillOwner->GetController(), this);
+		if (HasAuthority())
+			Monster->TakeDamage(SkillDamage, DmgEvent, SkillOwner->GetController(), this);
+		else
+			ServerAttack(Monster, SkillDamage, DmgEvent, SkillOwner->GetController(), this);
+
+		
 	}
 }
 
@@ -124,4 +129,16 @@ void AStorm::SkillDelayOver()
 void AStorm::DestoyStorm()
 {
 	Destroy();
+}
+
+void AStorm::ServerAttack_Implementation(AActor* DamagedActor, float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	if (DamagedActor)
+	{
+		DamagedActor->TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	}
+}
+bool AStorm::ServerAttack_Validate(AActor* DamagedActor, float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	return true;
 }
