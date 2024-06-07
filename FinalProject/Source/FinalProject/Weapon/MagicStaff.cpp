@@ -4,7 +4,6 @@
 #include "MagicStaff.h"
 
 #include "../Character/WizardPlayerState.h"
-
 #include "../FXV/Thunder.h"
 
 
@@ -20,6 +19,8 @@ AMagicStaff::AMagicStaff()
 	mMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	mMesh->SetupAttachment(mRoot);
 	mMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	mSecondSkillParticle = AThunder::StaticClass();
 }
 
 void AMagicStaff::SetInputActionBind(AWizard* Character)

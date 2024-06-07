@@ -19,6 +19,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class AStorm> mFirstSkillParticle;
+	
 
 protected:
 	virtual void BeginPlay() override;

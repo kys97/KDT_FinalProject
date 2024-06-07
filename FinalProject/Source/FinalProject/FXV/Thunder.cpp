@@ -2,6 +2,8 @@
 
 
 #include "Thunder.h"
+#include "TimerManager.h"
+
 
 
 
@@ -21,19 +23,17 @@ AThunder::AThunder()
 	mOutSideCollision->SetCapsuleSize(180.f, 350.f);
 	mOutSideCollision->SetRelativeLocation(FVector(0.f, 0.f, 165.f));
 
-	// Skill Color Set
-	switch (Job)
-	{
-		case EWizardJob::Blue: Color = FVector(0.0f, 3.0f, 8.0f);
-	}
-	mParticle->SetVectorParameter(TEXT("color"), Color);
+	// Enable Set
+	GetRootComponent()->bAutoActivate = false;
 }
 
 void AThunder::BeginPlay()
 {
 	Super::BeginPlay();
-
-	GEngine->AddOnScreenDebugMessage(0, 1.f, FColor::Yellow, FString::Printf(TEXT("Thunder Spawn")));
+	
+	// Delay
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AThunder::BeginDelayOver, 0.2f, false);
 }
 
 void AThunder::Tick(float DeltaTime)
@@ -49,4 +49,19 @@ void AThunder::NotifyActorBeginOverlap(AActor* OtherActor)
 void AThunder::NotifyActorEndOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorEndOverlap(OtherActor);
+}
+
+void AThunder::BeginDelayOver()
+{
+	// Skill Color Set
+	switch (Job)
+	{
+	case EWizardJob::Blue:
+		Color = FVector(0.0f, 3.0f, 8.0f);
+		break;
+	}
+	mParticle->SetVectorParameter(TEXT("color"), Color);
+
+	// Activate
+	mParticle->Activate();
 }

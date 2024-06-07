@@ -19,9 +19,11 @@ public:
 	AThunder();
 
 public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EWizardJob Job;
 
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FVector Color;
 
 protected:
@@ -32,4 +34,6 @@ public:
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
 	
+private:
+	void BeginDelayOver();
 };

@@ -10,6 +10,8 @@
 #include "../FXV/Storm.h"
 
 
+
+
 ABlueWizard::ABlueWizard()
 {
 	// Blue Wizard Character Mesh Set
@@ -26,7 +28,6 @@ ABlueWizard::ABlueWizard()
 	}
 
 	mFirstSkillParticle = AStorm::StaticClass();
-
 	
 }
 
@@ -154,6 +155,8 @@ void ABlueWizard::SecondSkill()
 	{
 		// Set Animation
 		mAnimInstance->PlayAnimation(EWizardAttackAnimTypes::SecondSkill);
+
+		
 	}
 }
 
