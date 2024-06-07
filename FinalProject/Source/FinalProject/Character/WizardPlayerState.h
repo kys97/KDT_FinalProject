@@ -7,18 +7,7 @@
 #include "WizardPlayerState.generated.h"
 
 
-// 플레이어 직업 ENUM
-UENUM(BlueprintType)
-enum class EWizardJob : uint8
-{
-	None,
-	Blue,
-	Green,
-	Red,
-	White,
-	Black,
-	Count
-};
+
 
 
 // 직업별 초기 데이터 정보들

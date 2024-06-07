@@ -3,6 +3,10 @@
 
 #include "MagicStaff.h"
 
+#include "../Character/WizardPlayerState.h"
+
+#include "../FXV/Thunder.h"
+
 
 // Sets default values
 AMagicStaff::AMagicStaff()
@@ -75,9 +79,33 @@ void AMagicStaff::SecondSkill(AWizard* Character)
 	// Character First Skill
 	Character->SecondSkill();
 
-	// Respawn Effect
-	GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Cyan, FString::Printf(TEXT("pressed key 2")));
+	// Respawn Skill
+	UWorld* const World = GetWorld();
+	if (World != nullptr)
+	{
+		// Get Wizard State
+		AWizardPlayerState* State = Character->GetPlayerState<AWizardPlayerState>();
 
+		// Spawn Rotation
+		FRotator SpawnRotation = Character->GetActorRotation();
+
+		// Spawn Location
+		FVector SpawnLocation = Character->GetActorLocation();
+		SpawnLocation.Z = 0.f;
+
+		// Spawn Parameter
+		FActorSpawnParameters ActorSpawnParam;
+		ActorSpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+		// Skill Spawn
+		AThunder* Thunder = World->SpawnActor<AThunder>(mSecondSkillParticle, SpawnLocation, SpawnRotation, ActorSpawnParam);
+		Thunder->SkillOwner = Character;
+		Thunder->SkillDamage = State->mSecondSkillAttackDamage;
+		Thunder->Job = State->mJob;
+
+		// Use MP
+		State->mMP -= 50; // TODO : MP사용량 나중에 추후 수정
+	}
 }
 
 void AMagicStaff::ThirdSkill(AWizard* Character)
