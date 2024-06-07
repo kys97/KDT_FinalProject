@@ -50,4 +50,9 @@ public:
 	virtual void SecondSkill();
 	virtual void ThirdSkill();
 	virtual void FourthSkill();
+
+private:
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerTakeDamge(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser);
+
 };

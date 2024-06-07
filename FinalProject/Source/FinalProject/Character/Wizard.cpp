@@ -64,7 +64,14 @@ void AWizard::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 float AWizard::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	Damage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	if (HasAuthority())
+	{
+		Damage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);	
+	}
+	else
+	{
+		ServerTakeDamge(Damage, DamageEvent, EventInstigator, DamageCauser);
+	}
 
 	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
 	State->mHP -= Damage;
@@ -84,3 +91,12 @@ void AWizard::FirstSkill() {}
 void AWizard::SecondSkill() {}
 void AWizard::ThirdSkill() {}
 void AWizard::FourthSkill() {}
+
+void AWizard::ServerTakeDamge_Implementation(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+}
+bool AWizard::ServerTakeDamge_Validate(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	return true;
+}

@@ -45,4 +45,8 @@ private:
 	void SkillDelayOver();
 	void DestoyStorm();
 
+private:
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerAttack(AActor* DamagedActor, float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser);
+
 };
