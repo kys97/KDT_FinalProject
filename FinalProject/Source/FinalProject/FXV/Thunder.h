@@ -4,8 +4,6 @@
 
 #include "../GameInfo.h"
 
-
-
 #include "SkillParticleActor.h"
 #include "Thunder.generated.h"
 
@@ -24,7 +22,7 @@ public:
 	EWizardJob Job;
 
 protected:
-	FSlateColor Color;
+	FVector Color;
 
 protected:
 	virtual void BeginPlay() override;

@@ -4,6 +4,8 @@
 #include "Thunder.h"
 
 
+
+
 AThunder::AThunder()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -22,8 +24,9 @@ AThunder::AThunder()
 	// Skill Color Set
 	switch (Job)
 	{
-		case EWizardJob::Blue: Color = FSlateColor(FLinearColor(0.0f, 3.0f, 8.0f, 1.0f));
+		case EWizardJob::Blue: Color = FVector(0.0f, 3.0f, 8.0f);
 	}
+	mParticle->SetVectorParameter(TEXT("color"), Color);
 }
 
 void AThunder::BeginPlay()
