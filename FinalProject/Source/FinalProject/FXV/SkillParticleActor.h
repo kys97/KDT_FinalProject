@@ -5,6 +5,9 @@
 #include "../GameInfo.h"
 
 #include "../Character/Wizard.h"
+#include "../AI/AIMonsterPawn.h"
+#include "TimerManager.h"
+
 
 #include "GameFramework/Actor.h"
 #include "SkillParticleActor.generated.h"
@@ -36,5 +39,4 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
 };

@@ -2,9 +2,6 @@
 
 
 #include "Storm.h"
-#include "TimerManager.h"
-
-#include "../AI/AIMonsterPawn.h"
 
 
 // Sets default values
@@ -96,25 +93,33 @@ void AStorm::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 
+	if (SkillOwner)
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("[Storm] SkillOwner True")));
+	else
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("[Storm] SkillOwner False")));
+
+
 	AAIMonsterPawn* Monster = Cast<AAIMonsterPawn>(OtherActor);
 	if (Monster && SkillOwner)
 	{
 		// Monster->TakeDamage()
 		FDamageEvent DmgEvent;
-		if (HasAuthority())
+		if (SkillOwner->HasAuthority())
+		{
 			Monster->TakeDamage(SkillDamage, DmgEvent, SkillOwner->GetController(), this);
+			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Cyan, FString::Printf(TEXT("[Storm] Server Attack Monster : %d"), SkillDamage));
+		}
 		else
-			ServerAttack(Monster, SkillDamage, DmgEvent, SkillOwner->GetController(), this);
-
-		
+		{
+			SkillOwner->ServerAttack(Monster, SkillDamage, DmgEvent, SkillOwner->GetController(), this);
+			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Cyan, FString::Printf(TEXT("[Storm] Client Attack Monster : %d"), SkillDamage));
+		}
 	}
 }
 
 void AStorm::NotifyActorEndOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorEndOverlap(OtherActor);
-
-
 }
 
 
@@ -131,14 +136,3 @@ void AStorm::DestoyStorm()
 	Destroy();
 }
 
-void AStorm::ServerAttack_Implementation(AActor* DamagedActor, float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
-{
-	if (DamagedActor)
-	{
-		DamagedActor->TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
-	}
-}
-bool AStorm::ServerAttack_Validate(AActor* DamagedActor, float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
-{
-	return true;
-}

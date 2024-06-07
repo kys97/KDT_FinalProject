@@ -32,4 +32,3 @@ void ASkillParticleActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
-

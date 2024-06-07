@@ -100,3 +100,15 @@ bool AWizard::ServerTakeDamge_Validate(float Damage, FDamageEvent const& DamageE
 {
 	return true;
 }
+
+void AWizard::ServerAttack_Implementation(AActor* DamagedActor, float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	if (DamagedActor)
+	{
+		DamagedActor->TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	}
+}
+bool AWizard::ServerAttack_Validate(AActor* DamagedActor, float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	return true;
+}

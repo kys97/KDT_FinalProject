@@ -26,7 +26,6 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* mMesh;
 
-	TSubclassOf<class AThunder> mSecondSkillParticle;
 
 public:
 	void SetMesh(UStaticMesh* Mesh) { mMesh->SetStaticMesh(Mesh); }
