@@ -33,7 +33,7 @@ protected:
 
 public:
 	bool GetMoveEnabled() { return mAnimInstance->MoveEnable(); }
-
+	void SetMove(bool move) { mAnimInstance->SetMove(move); }
 protected:
 	virtual void BeginPlay() override;
 
