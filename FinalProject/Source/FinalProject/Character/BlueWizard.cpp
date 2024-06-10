@@ -6,6 +6,7 @@
 #include "WizardPlayerState.h"
 
 
+#include "../AI/AIMonsterPawn.h"
 #include "../FXV/Storm.h"
 
 
@@ -46,6 +47,11 @@ void ABlueWizard::BeginPlay()
 	
 }
 
+void ABlueWizard::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	mWeapon->Destroy();
+}
+
 void ABlueWizard::NormalAttack()
 {
 	// Damage
@@ -61,31 +67,42 @@ void ABlueWizard::NormalAttack()
 		FCollisionQueryParams	param(NAME_None, false, this);
 		FVector	EndLocation = GetActorLocation() + GetActorForwardVector() * State->mNormalAttackDistance;
 		TArray<FHitResult>	resultArray;
-		bool IsCollision = GetWorld()->SweepMultiByChannel(resultArray,
-			GetActorLocation(), EndLocation, FQuat::Identity, ECC_GameTraceChannel3,
-			FCollisionShape::MakeSphere(50.f), param);
 
-		IsCollision ? GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Red, FString::Printf(TEXT("Attack")))
-			: GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Green, FString::Printf(TEXT("Attack Missed")));
+		bool IsCollision = GetWorld()->SweepMultiByChannel(resultArray,
+			GetActorLocation(), 
+			EndLocation, 
+			FQuat(GetActorForwardVector(), FMath::DegreesToRadians(90.0f)), //Rotator
+			ECC_GameTraceChannel3,
+			FCollisionShape::MakeCapsule(FVector(50, 50, 125)), // (Radius, Radius, HalfHeight)
+			param);
 
 #if ENABLE_DRAW_DEBUG
 
 		// 구를 그린다.
 		FColor	DrawColor = IsCollision ? FColor::Red : FColor::Green;
 
-		DrawDebugCapsule(GetWorld(), (GetActorLocation() + EndLocation) / 2.f,
-			/* Radius */50.f / 2.f, /* Radius */50.f, FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(),
+		DrawDebugCapsule(GetWorld(), 
+			(GetActorLocation() + EndLocation) / 2.f,
+			/* HalfHeight */ 125.f,
+			/* Radius */ 50.f, 
+			FQuat(GetActorForwardVector(), FMath::DegreesToRadians(90.0f)), //Rotator
 			DrawColor, false, 1.f);
 
 #endif
 
 		if (IsCollision)
 		{
+			AAIMonsterPawn* Monster;
 			for (int32 i = 0; i < resultArray.Num(); ++i)
 			{
 				// Attack Damage
 				FDamageEvent DmgEvent;
-				resultArray[i].GetActor()->TakeDamage((float)State->mNormalAttackPoint, DmgEvent, GetController(), this);
+				Monster = Cast<AAIMonsterPawn>(resultArray[i].GetActor());
+
+				if (HasAuthority())
+					Monster->TakeDamage((float)State->mNormalAttackPoint, DmgEvent, GetController(), this);
+				else
+					ServerNormalAttack(Monster, (float)State->mNormalAttackPoint, DmgEvent, GetController(), this);
 
 				// 이펙트 출력 및 사운드 재생.
 			}
@@ -156,4 +173,16 @@ void ABlueWizard::FourthSkill()
 		// Set Animation
 		mAnimInstance->PlayAnimation(EWizardAttackAnimTypes::FourthSkill);
 	}
+}
+
+void ABlueWizard::ServerNormalAttack_Implementation(AActor* DamagedActor, float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	if (DamagedActor)
+	{
+		DamagedActor->TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	}
+}
+bool ABlueWizard::ServerNormalAttack_Validate(AActor* DamagedActor, float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{	
+	return true;
 }
