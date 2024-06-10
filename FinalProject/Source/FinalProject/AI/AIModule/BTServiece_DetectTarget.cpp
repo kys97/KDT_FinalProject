@@ -68,6 +68,7 @@ void UBTServiece_DetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp,
 
 	FHitResult result = IsAttacked ? AttackedResult : DetectedResult;
 
+#if ENABLE_DRAW_DEBUG
 	if (IsAttacked)
 	{
 		DrawDebugCapsule(GetWorld(), AILocation,
@@ -79,6 +80,7 @@ void UBTServiece_DetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp,
 	DrawDebugSphere(GetWorld(), AILocation,
 		AIState->mInteractionDistance, 20, DrawColor, false, 0.35f);
 
+#endif
 
 	// 충돌이 됐을 경우 (Target을 찾았을 경우)
 	if (IsDetected || IsAttacked)
