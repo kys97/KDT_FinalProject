@@ -40,6 +40,8 @@ EBTNodeResult::Type UBTTask_TraceTarget::ExecuteTask(UBehaviorTreeComponent& Own
 		return EBTNodeResult::Failed;
 	}
 
+	mOnGroundLocation = Pawn->GetActorLocation();
+
 	// 타겟을 찾으면 Target을 향해 이동
 										// (이동시킬 대상, 목표지점)
 	UAIBlueprintHelperLibrary::SimpleMoveToActor(Controller, Target);
@@ -67,6 +69,16 @@ void UBTTask_TraceTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 		return;
 	}
 
+	UPawnMovementComponent* Movement = Pawn->GetMovementComponent();
+	if (IsValid(Movement))
+	{
+		if (!Movement->IsMovingOnGround())
+		{
+			FVector Location = Pawn->GetActorLocation();
+			Pawn->SetActorRelativeLocation(FVector(Location.X, Location.Y, mOnGroundLocation.Z));
+		}
+	}
+
 	AActor* Target = Cast<AActor>(Controller->GetBlackboardComponent()->GetValueAsObject(TEXT("Target")));
 
 	// 타겟이 없어도 Task 종료
@@ -88,19 +100,18 @@ void UBTTask_TraceTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 
 	Pawn->SetMoveSpeed((float)MonsterState->mMaxMoveSpeed);
 
-	// 속도 벡터를 가져와서 방향을 구한다.
-	// 방향은 x, y의 값을 이용해서 방향을 구한다.
-	//FVector Dir = Pawn->GetMovementComponent()->Velocity;
-	//Dir.Z = 0.f;
-
-	//// 벡터 정규화
-	//Dir.Normalize();
-
-	//Pawn->SetActorRotation(FRotator(0.f, Dir.Rotation().Yaw, 0.f));
-
 	// 타겟과의 거리 체크
 	FVector AILocation = Pawn->GetActorLocation();
 	FVector TargetLocation = Target->GetActorLocation();
+
+	FVector	Dir = TargetLocation - AILocation;
+	Dir.Z = 0.0;
+
+	FRotator Rot = FRotationMatrix::MakeFromX(Dir).Rotator();
+	Rot.Pitch = 0.0;
+	Rot.Roll = 0.0;
+
+	Pawn->SetActorRotation(Rot);
 
 	AILocation.Z -= Pawn->GetHalfHeight();
 
@@ -117,8 +128,6 @@ void UBTTask_TraceTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 	if (IsValid(TargetCapsule))
 		Distance -= TargetCapsule->GetScaledCapsuleRadius();
 
-	//GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow,
-	//	FString::Printf(TEXT("Trace Distance : %f"), Distance));
 	if (Distance < MonsterState->mAttackDistance)
 	{
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
@@ -127,20 +136,10 @@ void UBTTask_TraceTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 
 		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
 	}
-	else 
+	else if (Distance > MonsterState->mAttackDistance && Pawn->GetMovementComponent()->Velocity == FVector(0))
 	{
-		FVector	Dir = TargetLocation - AILocation;
-		Dir.Z = 0.0;
-
-		FRotator Rot = FRotationMatrix::MakeFromX(Dir).Rotator();
-		Rot.Pitch = 0.0;
-		Rot.Roll = 0.0;
-
-		Pawn->SetActorRotation(Rot);
-
-		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Run);
+		UAIBlueprintHelperLibrary::SimpleMoveToActor(Controller, Target);
 	}
-
 }
 
 void UBTTask_TraceTarget::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult)

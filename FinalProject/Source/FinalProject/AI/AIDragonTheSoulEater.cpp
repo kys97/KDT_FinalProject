@@ -56,23 +56,19 @@ void AAIDragonTheSoulEater::NormalAttack()
 	TArray<FHitResult> resultArray;
 	// 시작위치에서 끝 위치 사이에 감지되는 결과
 	bool IsCollision = GetWorld()->SweepMultiByChannel(resultArray, StartLocation, EndLocation,
-		FQuat::Identity, ECC_GameTraceChannel5, FCollisionShape::MakeSphere(Radius + 2.f), param);
-
-	UE_LOG(Network, Warning, TEXT("Server Log! AAIDragonTheSoulEater/IsCollision : %d"), IsCollision);
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Client Log! AAIDragonTheSoulEater/IsCollision : %d"), IsCollision));
+		FQuat::Identity, ECC_GameTraceChannel5, FCollisionShape::MakeSphere(Radius + 3.f), param);
 
 #if ENABLE_DRAW_DEBUG
 
 	FColor DrawColor = IsCollision ? FColor::Red : FColor::Green;
 
 	FVector Center;
-
 	Center = StartLocation + (GetActorForwardVector() * FVector::Dist(StartLocation, EndLocation));
 
 	DrawDebugCapsule(GetWorld(), Center,
-		mMonsterState->mAttackDistance, GetCapsuleRadius(),
+		(Radius + mMonsterState->mAttackDistance), (Radius + 3.f),
 		FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(),
-		DrawColor, false, 1.f);
+		DrawColor, false, 0.2f);
 
 #endif
 
@@ -85,16 +81,12 @@ void AAIDragonTheSoulEater::NormalAttack()
 
 			if (HasAuthority())
 			{
-				UE_LOG(Network, Warning, TEXT("Server Log! AAIDragonTheSoulEater/mMonsterState->mAttackPower : %d"), mMonsterState->mAttackPower);
+				// TakeDamage() : 데미지 정도, 데미지 이벤트, 가해자 컨트롤러, 가해자 액터
 				resultArray[i].GetActor()->TakeDamage(mMonsterState->mAttackPower, DmgEvent, GetController(), this);
 
 			}
 			else
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Orange, FString::Printf(TEXT("Client Log! AAIDragonTheSoulEater/mMonsterState->mAttackPower : %d"), mMonsterState->mAttackPower));
-
-				// TakeDamage() : 데미지 정도, 데미지 이벤트, 가해자 컨트롤러, 가해자 액터
-
 				// 이펙트 출력 및 사운드 재생
 				FActorSpawnParameters SpawnParam;
 

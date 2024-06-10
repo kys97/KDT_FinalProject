@@ -72,7 +72,7 @@ void UBTServiece_DetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp,
 	if (IsAttacked)
 	{
 		DrawDebugCapsule(GetWorld(), AILocation,
-			CapsuleHalfHeight, CapsuleRadius, FQuat::Identity, FColor::Red, true, 0.5f);
+			CapsuleHalfHeight, CapsuleRadius, FQuat::Identity, FColor::Red, false, 0.5f);
 	}
 
 	FColor	DrawColor = IsDetected ? FColor::Red : FColor::Green;
