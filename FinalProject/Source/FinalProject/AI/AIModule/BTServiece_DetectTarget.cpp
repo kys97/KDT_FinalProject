@@ -60,9 +60,10 @@ void UBTServiece_DetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp,
 			}
 		}
 	}
+	UE_LOG(Network, Warning, TEXT("Server Log! UBTServiece_DetectTarget/IsSetBlackboardValue : %d"), Pawn->IsSetBlackboardValue());
 
-	// 충돌이 됐을 경우 (Target을 찾았을 경우)
-	if (IsDetected)
+	// 충돌이 됐을 경우 (Target을 찾았을 경우) && 블랙보드에 타겟지정이 안되어 있을 경우
+	if (IsDetected && !Pawn->IsSetBlackboardValue())
 	{
 		// AIController에 지정된 Blackboard에 Target을 저장한다.
 		// result.GetActor() : 충돌된 액터를 얻어온다.

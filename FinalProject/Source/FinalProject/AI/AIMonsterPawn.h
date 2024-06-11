@@ -64,12 +64,22 @@ protected:
 	bool mAttackEnd;
 
 	bool mDeathEnd;
-	float mDeadTime;
+	//float mDeadTime;
+	float mAccTime;
 
 	UPROPERTY(EditAnywhere)
 	float mDeadDuration;
 
+	bool mSetBlackboardValue = false;
+	float mBlackboardResetDuration = 3.f;
+
 public:
+	virtual bool IsSetBlackboardValue()
+	{
+		UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/mSetBlackboardValue : %d"), mSetBlackboardValue);
+		return mSetBlackboardValue;
+	}
+
 	void DeathEnd();
 
 	UFUNCTION(NetMulticast, Reliable)
