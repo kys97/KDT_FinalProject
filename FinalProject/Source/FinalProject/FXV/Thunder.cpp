@@ -46,15 +46,15 @@ void AThunder::OnCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 	{
 		// Monster->TakeDamage()
 		FDamageEvent DmgEvent;
-		if (HasAuthority())
+		if (SkillOwner->HasAuthority())
 		{
 			Monster->TakeDamage(SkillDamage, DmgEvent, SkillOwner->GetController(), this);
-			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Emerald, FString::Printf(TEXT("[Thunder] Server Attack Monster : %d"), SkillDamage));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, FString::Printf(TEXT("[Thunder] Server Attack Monster : %d"), SkillDamage));
 		}
 		else
 		{
 			SkillOwner->ServerAttack(Monster, SkillDamage, DmgEvent, SkillOwner->GetController(), this);
-			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Emerald, FString::Printf(TEXT("[Thunder] Client Attack Monster : %d"), SkillDamage));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, FString::Printf(TEXT("[Thunder] Client Attack Monster : %d"), SkillDamage));
 		}
 	}
 }
