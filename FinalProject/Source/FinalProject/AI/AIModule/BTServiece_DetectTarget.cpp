@@ -27,10 +27,13 @@ void UBTServiece_DetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp,
 	if (!IsValid(Pawn))
 		return;
 
+	float CapsuleRadius = Pawn->GetCapsuleRadius();
+	float CapsuleHalfHeight = Pawn->GetHalfHeight();
+
 	FVector AILocation = Pawn->GetActorLocation();
 
 	// 몬스터의 Z위치에서 절반 높이(HalfHeight)를 빼서 발밑 중앙위치 구하기. 
-	AILocation.Z -= Pawn->GetHalfHeight();
+	AILocation.Z -= CapsuleHalfHeight;
 
 	// 주변에 Target이 있는지 판단한다.
 	FCollisionQueryParams Param(NAME_None, false, Pawn);
@@ -40,15 +43,39 @@ void UBTServiece_DetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp,
 	if (!IsValid(AIState))
 		return;
 
-	FHitResult result;	// 충돌 결과
-	bool IsCollision = GetWorld()->SweepSingleByChannel(result, AILocation, AILocation, 
+	TArray<FHitResult> DetectedArray;	// 충돌 결과
+	bool IsDetected = GetWorld()->SweepMultiByChannel(DetectedArray, AILocation, AILocation,
 		FQuat::Identity, ECC_GameTraceChannel1,
 		FCollisionShape::MakeSphere(AIState->mInteractionDistance), Param);
 
+	FHitResult AttackedResult;
+	bool IsAttacked = GetWorld()->SweepSingleByChannel(AttackedResult, AILocation, AILocation,
+		FQuat::Identity, ECC_GameTraceChannel3,
+		FCollisionShape::MakeCapsule(CapsuleRadius, CapsuleHalfHeight), Param);
+
+	FHitResult DetectedResult;
+	if (IsDetected && !IsAttacked)
+	{
+		DetectedResult = DetectedArray[0];
+		for (int32 i = 1; i < DetectedArray.Num(); ++i)
+		{
+			if (DetectedResult.Distance > DetectedArray[i].Distance)
+			{
+				DetectedResult = DetectedArray[i];
+			}
+		}
+	}
+
+	FHitResult result = IsAttacked ? AttackedResult : DetectedResult;
+
 #if ENABLE_DRAW_DEBUG
+	if (IsAttacked)
+	{
+		DrawDebugCapsule(GetWorld(), AILocation,
+			CapsuleHalfHeight, CapsuleRadius, FQuat::Identity, FColor::Red, false, 0.5f);
+	}
 
-	FColor DrawColor = IsCollision ? FColor::Red : FColor::Green;
-
+	FColor	DrawColor = IsDetected ? FColor::Red : FColor::Green;
 	// (월드, 위치, 반지름, 세그먼트(값이 클수록 구가 정교함), 색, 지속여부, 틱타임)
 	DrawDebugSphere(GetWorld(), AILocation,
 		AIState->mInteractionDistance, 20, DrawColor, false, 0.35f);
@@ -56,7 +83,7 @@ void UBTServiece_DetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp,
 #endif
 
 	// 충돌이 됐을 경우 (Target을 찾았을 경우)
-	if (IsCollision)
+	if (IsDetected || IsAttacked)
 	{
 		// AIController에 지정된 Blackboard에 Target을 저장한다.
 		// result.GetActor() : 충돌된 액터를 얻어온다.
@@ -64,7 +91,7 @@ void UBTServiece_DetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp,
 	}
 
 	// 충돌이 안됐을 경우
-	if (!IsCollision)
+	if (!IsDetected && !IsAttacked)
 	{
 		// AIController에 지정된 Blackboard에 nullptr을 저장한다.
 		Controller->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), nullptr);

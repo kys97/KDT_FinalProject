@@ -72,7 +72,9 @@ protected:
 public:
 	void DeathEnd();
 
+	UFUNCTION(NetMulticast, Reliable)
 	virtual void ChangeAIAnimType(uint8 AnimType);
+	virtual void ChangeAIAnimType_Implementation(uint8 AnimType);
 
 	virtual bool AIIsOverlap()
 	{

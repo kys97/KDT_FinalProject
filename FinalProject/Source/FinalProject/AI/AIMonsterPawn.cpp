@@ -24,6 +24,7 @@ AAIMonsterPawn::AAIMonsterPawn()
 	AIControllerClass = ADefaultAIController::StaticClass();
 
 	mCapsule->SetCollisionProfileName(TEXT("Monster"));
+	mCapsule->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
 
 	static ConstructorHelpers::FObjectFinder<UDataTable> 
 		MonsterTable(TEXT("/Script/Engine.DataTable'/Game/AI/Monster/DT_MonsterData.DT_MonsterData'"));
@@ -41,9 +42,10 @@ AAIMonsterPawn::AAIMonsterPawn()
 	mDeadDuration = 5.f;
 }
 
-void AAIMonsterPawn::ChangeAIAnimType(uint8 AnimType)
+void AAIMonsterPawn::ChangeAIAnimType_Implementation(uint8 AnimType)
 {
-	mAnimInst->ChangeAnimType((EMonsterAnimType)AnimType);
+	if(IsValid(mAnimInst))
+		mAnimInst->ChangeAnimType((EMonsterAnimType)AnimType);
 }
 
 void AAIMonsterPawn::DeathEnd()
@@ -100,25 +102,28 @@ void AAIMonsterPawn::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 	mOverlap = true;
 }
 
+// 서버에서만 동작
 float AAIMonsterPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
 	AController* EventInstigator, AActor* DamageCauser)
 {
 	Damage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Cyan, FString::Printf(TEXT("Monster Attack Damage(In Wizard) : %d"), (int)Damage));
 
 	mMonsterState = GetState<UMonsterState>();
 
 	if (mMonsterState->mHP > 0 && !mDeathEnd)
 	{
 		mMonsterState->mHP -= Damage;
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Cyan, FString::Printf(TEXT("Monster mHP : %d"), mMonsterState->mHP));
-		
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Client Log! AAIMonsterPawn/Monster mHP : %d"), mMonsterState->mHP));
+		UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/Monster mHP : %d"), mMonsterState->mHP);
+
 		ADefaultAIController* AIController = Cast<ADefaultAIController>(GetController());
 
 		if (mMonsterState->mHP <= 0)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("Monster Dead"));
-			mAnimInst->ChangeAnimType(EMonsterAnimType::Death);
+			UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/Monster Dead"));
+
+			ChangeAIAnimType((uint8)EMonsterAnimType::Death);
 
 			AIController->UnPossess();
 		}
