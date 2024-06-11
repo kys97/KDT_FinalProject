@@ -153,7 +153,10 @@ void ABlueWizard::SecondSkill()
 	if (mAnimInstance->AttackEnable())
 	{
 		// Set Animation
-		mAnimInstance->PlayAnimation(EWizardAttackAnimTypes::SecondSkill);
+		if (HasAuthority())
+			mAnimInstance->PlayAnimation(EWizardAttackAnimTypes::SecondSkill);
+		else
+			ServerPlayAnimation(this, EWizardAttackAnimTypes::SecondSkill);
 
 		// Respawn Skill
 		UWorld* const World = GetWorld();
@@ -200,4 +203,13 @@ void ABlueWizard::FourthSkill()
 		// Set Animation
 		mAnimInstance->PlayAnimation(EWizardAttackAnimTypes::FourthSkill);
 	}
+}
+
+void ABlueWizard::ServerPlayAnimation_Implementation(AWizard* TargetWizard, EWizardAttackAnimTypes AnimType)
+{
+	TargetWizard->GetAnimInstance()->PlayAnimation(AnimType);
+}
+bool ABlueWizard::ServerPlayAnimation_Validate(AWizard* TargetWizard, EWizardAttackAnimTypes AnimType)
+{
+	return true;
 }

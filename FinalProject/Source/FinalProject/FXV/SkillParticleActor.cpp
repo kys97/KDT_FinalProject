@@ -19,6 +19,9 @@ ASkillParticleActor::ASkillParticleActor()
 	mOutSideCollision->SetCollisionProfileName(TEXT("Skill"));
 	mOutSideCollision->CanCharacterStepUpOn = ECB_No;
 
+	// Set Replicate
+	bReplicates = true;
+	SetReplicateMovement(true);
 }
 
 // Called when the game starts or when spawned

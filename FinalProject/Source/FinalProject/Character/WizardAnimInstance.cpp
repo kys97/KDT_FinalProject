@@ -22,6 +22,15 @@ void UWizardAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	Super::NativeUpdateAnimation(DeltaSeconds);
 }
 
+void UWizardAnimInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UWizardAnimInstance, IsMove);
+	DOREPLIFETIME(UWizardAnimInstance, IsAttack);
+	DOREPLIFETIME(UWizardAnimInstance, IsDeath);
+}
+
 
 void UWizardAnimInstance::AnimNotify_AttackStart()
 {

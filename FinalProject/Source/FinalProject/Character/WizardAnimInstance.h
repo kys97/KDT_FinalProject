@@ -16,13 +16,13 @@ public:
 	UWizardAnimInstance();
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	bool IsMove;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	bool IsAttack;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	bool IsDeath;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -50,6 +50,7 @@ public:
 public:
 	virtual void NativeInitializeAnimation();
 	virtual void NativeUpdateAnimation(float DeltaSeconds);
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 public:
 	UFUNCTION()

@@ -32,16 +32,16 @@ protected:
 	class UWizardAnimInstance* mAnimInstance;
 
 public:
+	UWizardAnimInstance* GetAnimInstance() { return mAnimInstance; }
 	bool GetMoveEnabled() { return mAnimInstance->MoveEnable(); }
 	void SetMove(bool move) { mAnimInstance->SetMove(move); }
+
 protected:
 	virtual void BeginPlay() override;
 
 public:	
 	virtual void Tick(float DeltaTime) override;
-
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 public:
