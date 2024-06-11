@@ -176,9 +176,7 @@ void ABlueWizard::SecondSkill()
 
 			// Skill Spawn
 			AThunder* Thunder = World->SpawnActor<AThunder>(mSecondSkillParticle, SpawnLocation, SpawnRotation, ActorSpawnParam);
-			Thunder->SkillOwner = this;
-			Thunder->SkillDamage = State->mSecondSkillAttackDamage;
-			Thunder->Job = State->mJob;
+			Thunder->Initialize(this, State->mSecondSkillAttackDamage, State->mJob);
 
 			// Use MP
 			State->mMP -= 50; // TODO : MP사용량 나중에 추후 수정

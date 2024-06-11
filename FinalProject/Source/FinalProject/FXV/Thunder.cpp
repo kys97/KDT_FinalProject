@@ -19,18 +19,19 @@ AThunder::AThunder()
 	// OutSide Collision Set
 	mOutSideCollision->SetCapsuleSize(180.f, 350.f);
 	mOutSideCollision->SetRelativeLocation(FVector(0.f, 0.f, 165.f));
+	mOutSideCollision->OnComponentBeginOverlap.AddDynamic(this, &AThunder::OnCapsuleOverlapBegin);
+	
+	// mParticle->OnParticleDeath.AddDynamic(this, &AThunder::OnSkillOver);
+	// mParticle->OnParticleCollide.AddDynamic(this, &AThunder::OnSkillCollide);
 
 	// Enable Set
+	mOutSideCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetRootComponent()->bAutoActivate = false;
 }
 
 void AThunder::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	// Delay
-	FTimerHandle TimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AThunder::BeginDelayOver, 0.5f, false);
 }
 
 void AThunder::Tick(float DeltaTime)
@@ -38,40 +39,27 @@ void AThunder::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AThunder::NotifyActorBeginOverlap(AActor* OtherActor)
+void AThunder::OnCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	Super::NotifyActorBeginOverlap(OtherActor);
-
-	if(SkillOwner)
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue, FString::Printf(TEXT("[Thunder] SkillOwner True")));
-	else
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("[Thunder] SkillOwner False")));
-
-
 	AAIMonsterPawn* Monster = Cast<AAIMonsterPawn>(OtherActor);
-	if (Monster && SkillOwner)
+	if (OtherActor && SkillOwner && (OtherActor != SkillOwner) && Monster)
 	{
 		// Monster->TakeDamage()
 		FDamageEvent DmgEvent;
-		if (SkillOwner->HasAuthority())
+		if (HasAuthority())
 		{
 			Monster->TakeDamage(SkillDamage, DmgEvent, SkillOwner->GetController(), this);
-			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Cyan, FString::Printf(TEXT("[Thunder] Server Attack Monster : %d"), SkillDamage));
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Emerald, FString::Printf(TEXT("[Thunder] Server Attack Monster : %d"), SkillDamage));
 		}
-		else 
+		else
 		{
 			SkillOwner->ServerAttack(Monster, SkillDamage, DmgEvent, SkillOwner->GetController(), this);
-			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Cyan, FString::Printf(TEXT("[Thunder] Client Attack Monster : %d"), SkillDamage));
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Emerald, FString::Printf(TEXT("[Thunder] Client Attack Monster : %d"), SkillDamage));
 		}
 	}
 }
 
-void AThunder::NotifyActorEndOverlap(AActor* OtherActor)
-{
-	Super::NotifyActorEndOverlap(OtherActor);
-}
-
-void AThunder::BeginDelayOver()
+void AThunder::SkillBegin()
 {
 	// Skill Color Set
 	switch (Job)
@@ -84,4 +72,19 @@ void AThunder::BeginDelayOver()
 
 	// Activate
 	mParticle->Activate();
+	mOutSideCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+}
+
+void AThunder::OnSkillOver(FName EventName, float EmitterTime, int32 ParticleTime, const FVector& Location, const FVector& Velocity, const FVector& Direction)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Purple, FString::Printf(TEXT("[Thunder] OnParticleDeath")));
+}
+
+void AThunder::Initialize(AWizard* owner, int32 damage, EWizardJob job)
+{
+	SkillOwner = owner;
+	SkillDamage = damage;
+	Job = job;
+
+	SkillBegin();
 }
