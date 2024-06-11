@@ -48,13 +48,8 @@ void UBTServiece_DetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp,
 		FQuat::Identity, ECC_GameTraceChannel1,
 		FCollisionShape::MakeSphere(AIState->mInteractionDistance), Param);
 
-	FHitResult AttackedResult;
-	bool IsAttacked = GetWorld()->SweepSingleByChannel(AttackedResult, AILocation, AILocation,
-		FQuat::Identity, ECC_GameTraceChannel3,
-		FCollisionShape::MakeCapsule(CapsuleRadius, CapsuleHalfHeight), Param);
-
 	FHitResult DetectedResult;
-	if (IsDetected && !IsAttacked)
+	if (IsDetected)
 	{
 		DetectedResult = DetectedArray[0];
 		for (int32 i = 1; i < DetectedArray.Num(); ++i)
@@ -66,32 +61,16 @@ void UBTServiece_DetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp,
 		}
 	}
 
-	FHitResult result = IsAttacked ? AttackedResult : DetectedResult;
-
-#if ENABLE_DRAW_DEBUG
-	if (IsAttacked)
-	{
-		DrawDebugCapsule(GetWorld(), AILocation,
-			CapsuleHalfHeight, CapsuleRadius, FQuat::Identity, FColor::Red, false, 0.5f);
-	}
-
-	FColor	DrawColor = IsDetected ? FColor::Red : FColor::Green;
-	// (월드, 위치, 반지름, 세그먼트(값이 클수록 구가 정교함), 색, 지속여부, 틱타임)
-	DrawDebugSphere(GetWorld(), AILocation,
-		AIState->mInteractionDistance, 20, DrawColor, false, 0.35f);
-
-#endif
-
 	// 충돌이 됐을 경우 (Target을 찾았을 경우)
-	if (IsDetected || IsAttacked)
+	if (IsDetected)
 	{
 		// AIController에 지정된 Blackboard에 Target을 저장한다.
 		// result.GetActor() : 충돌된 액터를 얻어온다.
-		Controller->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), result.GetActor());
+		Controller->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), DetectedResult.GetActor());
 	}
 
 	// 충돌이 안됐을 경우
-	if (!IsDetected && !IsAttacked)
+	if (!IsDetected)
 	{
 		// AIController에 지정된 Blackboard에 nullptr을 저장한다.
 		Controller->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), nullptr);

@@ -83,13 +83,9 @@ void AAIDragonTheSoulEater::NormalAttack()
 			{
 				// TakeDamage() : 데미지 정도, 데미지 이벤트, 가해자 컨트롤러, 가해자 액터
 				resultArray[i].GetActor()->TakeDamage(mMonsterState->mAttackPower, DmgEvent, GetController(), this);
-				UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/resultArray : %d"), i);
-
 			}
 			else
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Client Log! AAIMonsterPawn/resultArray : %d"), i));
-
 				// 이펙트 출력 및 사운드 재생
 				FActorSpawnParameters SpawnParam;
 
