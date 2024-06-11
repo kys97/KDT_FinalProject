@@ -25,7 +25,7 @@ AAIDragonTheSoulEater::AAIDragonTheSoulEater()
 	mCapsule->SetCapsuleHalfHeight(100.f);
 	mCapsule->SetCapsuleRadius(100.f);
 
-	mTableRowName = TEXT("Dragon_SoulEater");
+	//mTableRowName = TEXT("Dragon_SoulEater");
 }
 
 void AAIDragonTheSoulEater::BeginPlay()
@@ -56,7 +56,7 @@ void AAIDragonTheSoulEater::NormalAttack()
 	TArray<FHitResult> resultArray;
 	// 시작위치에서 끝 위치 사이에 감지되는 결과
 	bool IsCollision = GetWorld()->SweepMultiByChannel(resultArray, StartLocation, EndLocation,
-		FQuat::Identity, ECC_GameTraceChannel5, FCollisionShape::MakeSphere(Radius + 3.f), param);
+		FQuat::Identity, ECC_GameTraceChannel5, FCollisionShape::MakeSphere(Radius), param);
 
 #if ENABLE_DRAW_DEBUG
 
@@ -66,7 +66,7 @@ void AAIDragonTheSoulEater::NormalAttack()
 	Center = StartLocation + (GetActorForwardVector() * FVector::Dist(StartLocation, EndLocation));
 
 	DrawDebugCapsule(GetWorld(), Center,
-		(Radius + mMonsterState->mAttackDistance), (Radius + 3.f),
+		(Radius + mMonsterState->mAttackDistance), (Radius),
 		FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(),
 		DrawColor, false, 0.2f);
 
@@ -83,10 +83,13 @@ void AAIDragonTheSoulEater::NormalAttack()
 			{
 				// TakeDamage() : 데미지 정도, 데미지 이벤트, 가해자 컨트롤러, 가해자 액터
 				resultArray[i].GetActor()->TakeDamage(mMonsterState->mAttackPower, DmgEvent, GetController(), this);
+				UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/resultArray : %d"), i);
 
 			}
 			else
 			{
+				GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Client Log! AAIMonsterPawn/resultArray : %d"), i));
+
 				// 이펙트 출력 및 사운드 재생
 				FActorSpawnParameters SpawnParam;
 
