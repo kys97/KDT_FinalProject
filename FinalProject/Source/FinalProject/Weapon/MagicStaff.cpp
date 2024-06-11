@@ -3,6 +3,8 @@
 
 #include "MagicStaff.h"
 
+#include "../Character/WizardPlayerState.h"
+
 
 // Sets default values
 AMagicStaff::AMagicStaff()
@@ -74,10 +76,6 @@ void AMagicStaff::SecondSkill(AWizard* Character)
 {
 	// Character First Skill
 	Character->SecondSkill();
-
-	// Respawn Effect
-	GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Cyan, FString::Printf(TEXT("pressed key 2")));
-
 }
 
 void AMagicStaff::ThirdSkill(AWizard* Character)

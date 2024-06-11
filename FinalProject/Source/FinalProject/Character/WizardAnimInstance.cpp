@@ -20,23 +20,6 @@ void UWizardAnimInstance::NativeInitializeAnimation()
 void UWizardAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
-
-	if (!IsAttack)
-	{
-		AWizard* Character = Cast<AWizard>(TryGetPawnOwner());
-
-		if (IsValid(Character))
-		{
-			UCharacterMovementComponent* Movement = Character->GetCharacterMovement();
-			if (IsValid(Movement))
-			{
-				if (Movement->Velocity.Length() > 0.0f)
-					IsMove = true;
-				else
-					IsMove = false;
-			}
-		}
-	}
 }
 
 

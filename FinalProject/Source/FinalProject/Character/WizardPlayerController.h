@@ -26,4 +26,5 @@ protected:
 
 protected:
 	void OnMove(const FInputActionValue& InputActionValue);
+	void EndMove(const FInputActionValue& InputActionValue);
 };

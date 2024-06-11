@@ -26,6 +26,7 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* mMesh;
 
+
 public:
 	void SetMesh(UStaticMesh* Mesh) { mMesh->SetStaticMesh(Mesh); }
 

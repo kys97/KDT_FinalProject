@@ -37,7 +37,7 @@ void AWizardPlayerController::SetupInputComponent()
 	ensure(EnhancedInputComponent);
 	const UInputDataConfig* MainInputDataConfig = GetDefault<UInputDataConfig>();
 	EnhancedInputComponent->BindAction(MainInputDataConfig->Move, ETriggerEvent::Triggered, this, &ThisClass::OnMove);
-
+	EnhancedInputComponent->BindAction(MainInputDataConfig->Move, ETriggerEvent::Completed, this, &ThisClass::EndMove);
 }
 
 void AWizardPlayerController::OnMove(const FInputActionValue& InputActionValue)
@@ -49,6 +49,8 @@ void AWizardPlayerController::OnMove(const FInputActionValue& InputActionValue)
 		if (Wizard->GetMoveEnabled())
 		{
 			// Set Move
+			Wizard->SetMove(true);
+
 			// InputVector.X > 0 ? Right1 : Left-1
 			// InputVector.Y > 0 ? Fwd1 : Bwd-1 
 			FVector2D InputVector = InputActionValue.Get<FVector2D>();
@@ -64,4 +66,12 @@ void AWizardPlayerController::OnMove(const FInputActionValue& InputActionValue)
 			SetControlRotation(NewRotation);
 		}
 	}
+}
+
+void AWizardPlayerController::EndMove(const FInputActionValue& InputActionValue)
+{
+	AWizard* Wizard = Cast<AWizard>(GetPawn());
+	
+	if(Wizard)
+		Wizard->SetMove(false);
 }

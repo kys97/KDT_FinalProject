@@ -30,6 +30,7 @@
 
 DECLARE_LOG_CATEGORY_EXTERN(Network, Log, All);
 
+// 플레이어 공격 Animation ENUM
 UENUM(BlueprintType)
 enum class EWizardAttackAnimTypes : uint8
 { 
@@ -38,6 +39,19 @@ enum class EWizardAttackAnimTypes : uint8
 	SecondSkill,
 	ThirdSkill,
 	FourthSkill
+};
+
+// 플레이어 직업 ENUM
+UENUM(BlueprintType)
+enum class EWizardJob : uint8
+{
+	None,
+	Blue,
+	Green,
+	Red,
+	White,
+	Black,
+	Count
 };
 
 // TODO : AnimInstance C++로 변환작업

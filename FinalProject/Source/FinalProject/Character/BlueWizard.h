@@ -19,6 +19,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class AStorm> mFirstSkillParticle;
+	TSubclassOf<class AThunder> mSecondSkillParticle;
 
 protected:
 	virtual void BeginPlay() override;
@@ -31,8 +32,5 @@ public:
 	virtual void ThirdSkill() override;
 	virtual void FourthSkill() override;
 
-private:
-	UFUNCTION(Server, Reliable, WithValidation)
-	void ServerNormalAttack(AActor* DamagedActor, float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser);
 
 };

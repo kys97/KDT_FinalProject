@@ -8,6 +8,7 @@
 
 #include "../AI/AIMonsterPawn.h"
 #include "../FXV/Storm.h"
+#include "../FXV/Thunder.h"
 
 
 ABlueWizard::ABlueWizard()
@@ -26,8 +27,7 @@ ABlueWizard::ABlueWizard()
 	}
 
 	mFirstSkillParticle = AStorm::StaticClass();
-
-	
+	mSecondSkillParticle = AThunder::StaticClass();
 }
 
 void ABlueWizard::BeginPlay()
@@ -102,7 +102,7 @@ void ABlueWizard::NormalAttack()
 				if (HasAuthority())
 					Monster->TakeDamage((float)State->mNormalAttackPoint, DmgEvent, GetController(), this);
 				else
-					ServerNormalAttack(Monster, (float)State->mNormalAttackPoint, DmgEvent, GetController(), this);
+					ServerAttack(Monster, (float)State->mNormalAttackPoint, DmgEvent, GetController(), this);
 
 				// 이펙트 출력 및 사운드 재생.
 			}
@@ -154,6 +154,33 @@ void ABlueWizard::SecondSkill()
 	{
 		// Set Animation
 		mAnimInstance->PlayAnimation(EWizardAttackAnimTypes::SecondSkill);
+
+		// Respawn Skill
+		UWorld* const World = GetWorld();
+		if (World != nullptr)
+		{
+			// Get Wizard State
+			AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+
+			// Spawn Rotation
+			FRotator SpawnRotation = GetActorRotation();
+
+			// Spawn Location
+			FVector	EndLocation = GetActorLocation() + GetActorForwardVector() * State->mSecondSkillAttackDistance;
+			FVector SpawnLocation = (GetActorLocation() + EndLocation) / 2.f;
+			SpawnLocation.Z = 0.f;
+
+			// Spawn Parameter
+			FActorSpawnParameters ActorSpawnParam;
+			ActorSpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+			// Skill Spawn
+			AThunder* Thunder = World->SpawnActor<AThunder>(mSecondSkillParticle, SpawnLocation, SpawnRotation, ActorSpawnParam);
+			Thunder->Initialize(this, State->mSecondSkillAttackDamage, State->mJob);
+
+			// Use MP
+			State->mMP -= 50; // TODO : MP사용량 나중에 추후 수정
+		}
 	}
 }
 
@@ -173,16 +200,4 @@ void ABlueWizard::FourthSkill()
 		// Set Animation
 		mAnimInstance->PlayAnimation(EWizardAttackAnimTypes::FourthSkill);
 	}
-}
-
-void ABlueWizard::ServerNormalAttack_Implementation(AActor* DamagedActor, float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
-{
-	if (DamagedActor)
-	{
-		DamagedActor->TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
-	}
-}
-bool ABlueWizard::ServerNormalAttack_Validate(AActor* DamagedActor, float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
-{	
-	return true;
 }

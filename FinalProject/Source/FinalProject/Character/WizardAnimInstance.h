@@ -34,9 +34,13 @@ protected:
 public:
 	bool MoveEnable() 
 	{ 
-		if (!IsAttack) return true;
-		else return false;
+		if (!IsAttack) 
+			return true; // 공격 안함
+		else 
+			return false; // 공격중
 	}
+
+	void SetMove(bool move) { IsMove = move; }
 
 	bool AttackEnable()
 	{
