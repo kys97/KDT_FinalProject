@@ -45,6 +45,14 @@ public:
 	UPROPERTY(EditAnywhere)
 	int32	mAttackDistance;
 
+public:
+	virtual void ChangeHP(float Event)
+	{
+		mHP += Event;
+
+		if (mHP < 0)
+			mHP = 0;
+	}
 
 public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

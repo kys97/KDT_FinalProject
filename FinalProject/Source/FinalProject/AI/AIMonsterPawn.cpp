@@ -58,6 +58,16 @@ void AAIMonsterPawn::NormalAttack()
 {
 }
 
+void AAIMonsterPawn::SetBlackboardValue(const AController* EventInstigator, AController* AIController)
+{
+	ADefaultAIController* DefaultAIController = Cast<ADefaultAIController>(AIController);
+
+	APawn* EnemyPawn = EventInstigator->GetPawn();
+
+	DefaultAIController->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), EnemyPawn);
+	mSetBlackboardValue = true;
+}
+
 void AAIMonsterPawn::BeginPlay()
 {
 	Super::BeginPlay();
@@ -120,19 +130,18 @@ float AAIMonsterPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
 
 	ADefaultAIController* AIController = Cast<ADefaultAIController>(GetController());
 
-	APawn* EnemyPawn = EventInstigator->GetPawn();
-
-	AIController->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), EnemyPawn);
-	mSetBlackboardValue = true;
+	SetBlackboardValue(EventInstigator, AIController);
 
 	mMonsterState = GetState<UMonsterState>();
 
+	Damage -= mMonsterState->mArmorPower;
+	Damage = Damage < 1.f ? 1.f : Damage;
+
 	if (mMonsterState->mHP > 0 && !mDeathEnd)
 	{
-		mMonsterState->mHP -= Damage;
+		mMonsterState->ChangeHP(-Damage);
 		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Client Log! AAIMonsterPawn/Monster mHP : %d"), mMonsterState->mHP));
 		UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/Monster mHP : %d"), mMonsterState->mHP);
-
 
 		if (mMonsterState->mHP <= 0)
 		{
