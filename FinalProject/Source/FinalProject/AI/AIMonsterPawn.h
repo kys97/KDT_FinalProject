@@ -76,7 +76,6 @@ protected:
 public:
 	virtual bool IsSetBlackboardValue()
 	{
-		UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/mSetBlackboardValue : %d"), mSetBlackboardValue);
 		return mSetBlackboardValue;
 	}
 

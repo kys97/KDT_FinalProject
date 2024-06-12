@@ -120,7 +120,9 @@ float AAIMonsterPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
 
 	ADefaultAIController* AIController = Cast<ADefaultAIController>(GetController());
 
-	AIController->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), DamageCauser);
+	APawn* EnemyPawn = EventInstigator->GetPawn();
+
+	AIController->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), EnemyPawn);
 	mSetBlackboardValue = true;
 
 	mMonsterState = GetState<UMonsterState>();
