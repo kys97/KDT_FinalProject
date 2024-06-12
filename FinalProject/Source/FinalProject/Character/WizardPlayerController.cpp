@@ -49,7 +49,10 @@ void AWizardPlayerController::OnMove(const FInputActionValue& InputActionValue)
 		if (Wizard->GetMoveEnabled())
 		{
 			// Set Move
-			Wizard->SetMove(true);
+			if (Wizard->HasAuthority())
+				Wizard->SetMove(true);
+			else
+				Wizard->ServerSetMove(Wizard, true);
 
 			// InputVector.X > 0 ? Right1 : Left-1
 			// InputVector.Y > 0 ? Fwd1 : Bwd-1 
@@ -71,7 +74,13 @@ void AWizardPlayerController::OnMove(const FInputActionValue& InputActionValue)
 void AWizardPlayerController::EndMove(const FInputActionValue& InputActionValue)
 {
 	AWizard* Wizard = Cast<AWizard>(GetPawn());
-	
-	if(Wizard)
-		Wizard->SetMove(false);
+
+	if (Wizard)
+	{
+		if (Wizard->HasAuthority())
+			Wizard->SetMove(false);
+		else
+			Wizard->ServerSetMove(Wizard, false);
+	}
 }
+

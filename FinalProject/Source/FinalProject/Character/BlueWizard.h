@@ -32,7 +32,6 @@ public:
 	virtual void ThirdSkill() override;
 	virtual void FourthSkill() override;
 
-public:
-	UFUNCTION(Server, Reliable, WithValidation)
-	void ServerPlayAnimation(AWizard* TargetWizard, EWizardAttackAnimTypes AnimType);
+private:
+	void PlayAttackAnimation(AWizard* TargetWizard, EWizardAttackAnimTypes AnimType);
 };

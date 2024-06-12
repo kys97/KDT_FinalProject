@@ -92,6 +92,8 @@ void AWizard::SecondSkill() {}
 void AWizard::ThirdSkill() {}
 void AWizard::FourthSkill() {}
 
+
+
 void AWizard::ServerTakeDamge_Implementation(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
@@ -111,4 +113,26 @@ void AWizard::ServerAttack_Implementation(AActor* DamagedActor, float Damage, FD
 bool AWizard::ServerAttack_Validate(AActor* DamagedActor, float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	return true;
+}
+
+
+
+void AWizard::ChangeAttackAnimInstance_Implementation(EWizardAttackAnimTypes animType)
+{
+	mAnimInstance->PlayAnimation(animType);
+}
+void AWizard::ServerChangeAttackAnimInstance_Implementation(AWizard* MoveActor, EWizardAttackAnimTypes animType)
+{
+	MoveActor->mAnimInstance->PlayAnimation(animType);
+}
+
+
+
+void AWizard::SetMove_Implementation(bool move)
+{
+	mAnimInstance->SetMove(move);
+}
+void AWizard::ServerSetMove_Implementation(AWizard* MoveActor, bool move)
+{
+	MoveActor->SetMove(move);
 }

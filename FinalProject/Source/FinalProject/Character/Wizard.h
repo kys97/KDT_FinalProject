@@ -32,9 +32,8 @@ protected:
 	class UWizardAnimInstance* mAnimInstance;
 
 public:
-	UWizardAnimInstance* GetAnimInstance() { return mAnimInstance; }
 	bool GetMoveEnabled() { return mAnimInstance->MoveEnable(); }
-	void SetMove(bool move) { mAnimInstance->SetMove(move); }
+	// void SetMove(bool move) { mAnimInstance->SetMove(move); }
 
 protected:
 	virtual void BeginPlay() override;
@@ -54,8 +53,18 @@ public:
 public:
 	UFUNCTION(Server, Reliable, WithValidation)
 	void ServerTakeDamge(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser);
-
 	UFUNCTION(Server, Reliable, WithValidation)
 	void ServerAttack(AActor* DamagedActor, float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser);
 
+
+	UFUNCTION(NetMulticast, Reliable)
+	void ChangeAttackAnimInstance(EWizardAttackAnimTypes animType);
+	UFUNCTION(Server, Reliable)
+	void ServerChangeAttackAnimInstance(AWizard* MoveActor, EWizardAttackAnimTypes animType);
+
+
+	UFUNCTION(NetMulticast, Reliable)
+	void SetMove(bool move);
+	UFUNCTION(Server, Reliable)
+	void ServerSetMove(AWizard* MoveActor, bool move);
 };

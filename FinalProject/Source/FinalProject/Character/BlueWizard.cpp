@@ -58,7 +58,7 @@ void ABlueWizard::NormalAttack()
 	if (mAnimInstance->AttackEnable())
 	{
 		// Set Animation
-		mAnimInstance->PlayAnimation(EWizardAttackAnimTypes::NormalAttack);
+		PlayAttackAnimation(this, EWizardAttackAnimTypes::NormalAttack);
 
 		// Get Wizard State
 		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
@@ -115,7 +115,7 @@ void ABlueWizard::FirstSkill()
 	if (mAnimInstance->AttackEnable())
 	{
 		// Set Animation
-		mAnimInstance->PlayAnimation(EWizardAttackAnimTypes::FirstSkill);
+		PlayAttackAnimation(this, EWizardAttackAnimTypes::FirstSkill);
 
 		// Respawn Skill
 		UWorld* const World = GetWorld();
@@ -153,10 +153,7 @@ void ABlueWizard::SecondSkill()
 	if (mAnimInstance->AttackEnable())
 	{
 		// Set Animation
-		if (HasAuthority())
-			mAnimInstance->PlayAnimation(EWizardAttackAnimTypes::SecondSkill);
-		else
-			ServerPlayAnimation(this, EWizardAttackAnimTypes::SecondSkill);
+		PlayAttackAnimation(this, EWizardAttackAnimTypes::SecondSkill);
 
 		// Respawn Skill
 		UWorld* const World = GetWorld();
@@ -192,7 +189,7 @@ void ABlueWizard::ThirdSkill()
 	if (mAnimInstance->AttackEnable())
 	{
 		// Set Animation
-		mAnimInstance->PlayAnimation(EWizardAttackAnimTypes::ThirdSkill);
+		PlayAttackAnimation(this, EWizardAttackAnimTypes::ThirdSkill);
 	}
 }
 
@@ -201,15 +198,14 @@ void ABlueWizard::FourthSkill()
 	if (mAnimInstance->AttackEnable())
 	{
 		// Set Animation
-		mAnimInstance->PlayAnimation(EWizardAttackAnimTypes::FourthSkill);
+		PlayAttackAnimation(this, EWizardAttackAnimTypes::FourthSkill);
 	}
 }
 
-void ABlueWizard::ServerPlayAnimation_Implementation(AWizard* TargetWizard, EWizardAttackAnimTypes AnimType)
+void ABlueWizard::PlayAttackAnimation(AWizard* TargetWizard, EWizardAttackAnimTypes AnimType)
 {
-	TargetWizard->GetAnimInstance()->PlayAnimation(AnimType);
-}
-bool ABlueWizard::ServerPlayAnimation_Validate(AWizard* TargetWizard, EWizardAttackAnimTypes AnimType)
-{
-	return true;
+	if (HasAuthority())
+		TargetWizard->ChangeAttackAnimInstance(AnimType);
+	else
+		TargetWizard->ServerChangeAttackAnimInstance(TargetWizard, AnimType);
 }

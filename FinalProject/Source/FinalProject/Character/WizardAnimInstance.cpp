@@ -29,6 +29,7 @@ void UWizardAnimInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(UWizardAnimInstance, IsMove);
 	DOREPLIFETIME(UWizardAnimInstance, IsAttack);
 	DOREPLIFETIME(UWizardAnimInstance, IsDeath);
+	DOREPLIFETIME(UWizardAnimInstance, AttackIndex);
 }
 
 
