@@ -20,7 +20,7 @@ ASkillParticleActor::ASkillParticleActor()
 	mOutSideCollision->CanCharacterStepUpOn = ECB_No;
 
 	// Set Replicate
-	bReplicates = true;
+	SetReplicates(true);
 	SetReplicateMovement(true);
 }
 

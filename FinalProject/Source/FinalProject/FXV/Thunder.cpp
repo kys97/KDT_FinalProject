@@ -21,9 +21,6 @@ AThunder::AThunder()
 	mOutSideCollision->SetRelativeLocation(FVector(0.f, 0.f, 165.f));
 	mOutSideCollision->OnComponentBeginOverlap.AddDynamic(this, &AThunder::OnCapsuleOverlapBegin);
 	
-	// mParticle->OnParticleDeath.AddDynamic(this, &AThunder::OnSkillOver);
-	// mParticle->OnParticleCollide.AddDynamic(this, &AThunder::OnSkillCollide);
-
 	// Enable Set
 	mOutSideCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetRootComponent()->bAutoActivate = false;

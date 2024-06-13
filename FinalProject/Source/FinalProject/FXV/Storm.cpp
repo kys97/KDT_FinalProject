@@ -20,7 +20,8 @@ AStorm::AStorm()
 	// OutSide Collision Set
 	mOutSideCollision->SetCapsuleSize(200.f, 420.f);
 	mOutSideCollision->SetRelativeLocation(FVector(0.f, 0.f, 220.f));
-	// mOutSideCollision->Deactivate();
+	mOutSideCollision->OnComponentBeginOverlap.AddDynamic(this, &AStorm::OnOutSideCapsuleOverlapBegin);
+
 
 	// InSide Collision Set
 	mInsideCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("InsideCollision"));
@@ -29,7 +30,7 @@ AStorm::AStorm()
 	mInsideCollision->SetRelativeLocation(FVector(0.f, 0.f, 270.f));
 	mInsideCollision->SetCollisionProfileName(TEXT("Skill"));
 	mInsideCollision->CanCharacterStepUpOn = ECB_No;
-	// mInsideCollision->Deactivate();
+	mInsideCollision->OnComponentBeginOverlap.AddDynamic(this, &AStorm::OnInSideCapsuleOverlapBegin);
 
 	// Enable Set
 	GetRootComponent()->bAutoActivate = false;
@@ -89,37 +90,32 @@ void AStorm::Tick(float DeltaTime)
 	}
 }
 
-void AStorm::NotifyActorBeginOverlap(AActor* OtherActor)
+void AStorm::OnOutSideCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	Super::NotifyActorBeginOverlap(OtherActor);
-
-	if (SkillOwner)
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("[Storm] SkillOwner True")));
-	else
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("[Storm] SkillOwner False")));
-
-
 	AAIMonsterPawn* Monster = Cast<AAIMonsterPawn>(OtherActor);
 	if (Monster && SkillOwner)
 	{
 		// Monster->TakeDamage()
 		FDamageEvent DmgEvent;
 		if (SkillOwner->HasAuthority())
-		{
-			Monster->TakeDamage(SkillDamage, DmgEvent, SkillOwner->GetController(), this);
-			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Cyan, FString::Printf(TEXT("[Storm] Server Attack Monster : %d"), SkillDamage));
-		}
+			Monster->TakeDamage(SkillDamage / 2, DmgEvent, SkillOwner->GetController(), this);
 		else
-		{
-			SkillOwner->ServerAttack(Monster, SkillDamage, DmgEvent, SkillOwner->GetController(), this);
-			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Cyan, FString::Printf(TEXT("[Storm] Client Attack Monster : %d"), SkillDamage));
-		}
+			SkillOwner->ServerAttack(Monster, SkillDamage / 2, DmgEvent, SkillOwner->GetController(), this);
 	}
 }
 
-void AStorm::NotifyActorEndOverlap(AActor* OtherActor)
+void AStorm::OnInSideCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	Super::NotifyActorEndOverlap(OtherActor);
+	AAIMonsterPawn* Monster = Cast<AAIMonsterPawn>(OtherActor);
+	if (Monster && SkillOwner)
+	{
+		// Monster->TakeDamage()
+		FDamageEvent DmgEvent;
+		if (SkillOwner->HasAuthority())
+			Monster->TakeDamage(SkillDamage, DmgEvent, SkillOwner->GetController(), this);
+		else
+			SkillOwner->ServerAttack(Monster, SkillDamage, DmgEvent, SkillOwner->GetController(), this);
+	}
 }
 
 
