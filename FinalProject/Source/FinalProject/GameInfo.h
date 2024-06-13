@@ -13,6 +13,9 @@
 #include "SocketSubsystem.h"
 #include "Net/UnrealNetwork.h"
 
+#include "HAL/Runnable.h"
+#include "HAL/RunnableThread.h"
+
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/BlackboardComponent.h"
