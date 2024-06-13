@@ -125,7 +125,10 @@ void AWizard::ChangeAttackAnimInstance_Implementation(EWizardAttackAnimTypes ani
 }
 void AWizard::ServerChangeAttackAnimInstance_Implementation(AWizard* MoveActor, EWizardAttackAnimTypes animType)
 {
-	MoveActor->mAnimInstance->PlayAnimation(animType);
+	if(MoveActor)
+	{
+		MoveActor->mAnimInstance->PlayAnimation(animType);
+	}
 }
 
 

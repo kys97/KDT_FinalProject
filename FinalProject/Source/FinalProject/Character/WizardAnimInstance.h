@@ -32,20 +32,10 @@ protected:
 	int32 AttackIndex;
 
 public:
-	bool MoveEnable() 
-	{ 
-		if (!IsAttack) 
-			return true; // 공격 안함
-		else 
-			return false; // 공격중
-	}
+	bool MoveEnable() { return !IsAttack; }
+	bool AttackEnable() { return !IsAttack; }
 
 	void SetMove(bool move) { IsMove = move; }
-
-	bool AttackEnable()
-	{
-		return !IsAttack;
-	}
 
 	int32 GetAttackIndex() { return AttackIndex; }
 

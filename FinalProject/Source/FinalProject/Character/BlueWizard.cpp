@@ -214,13 +214,7 @@ void ABlueWizard::PlayAttackAnimation(AWizard* TargetWizard, EWizardAttackAnimTy
 		ChangeAttackAnimInstance(AnimType);
 	else
 	{
-		ChangeAttackAnimInstance(AnimType);
+		ServerChangeAttackAnimInstance(TargetWizard, AnimType);
 		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Emerald, FString::Printf(TEXT("Client [%d] Attack Index : %d"), ((int)AnimType), mAnimInstance->GetAttackIndex()));
-
-		if(mAnimInstance->AttackEnable())
-			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Emerald, FString::Printf(TEXT("Client [%d] AttackEnable True")));
-		else
-			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Emerald, FString::Printf(TEXT("Client [%d] AttackEnable False")));
-
 	}
 }
