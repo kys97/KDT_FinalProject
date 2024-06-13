@@ -47,6 +47,8 @@ public:
 		return !IsAttack;
 	}
 
+	int32 GetAttackIndex() { return AttackIndex; }
+
 public:
 	virtual void NativeInitializeAnimation();
 	virtual void NativeUpdateAnimation(float DeltaSeconds);

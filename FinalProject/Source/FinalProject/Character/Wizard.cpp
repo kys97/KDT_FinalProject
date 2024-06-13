@@ -78,8 +78,10 @@ float AWizard::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AContro
 
 	if (State->mHP <= 0)
 	{
-		mAnimInstance->SetDeath(true);
-
+		if (HasAuthority())
+			SetDeath(true);
+		else
+			ServerSetDeath(this, true);
 		// TODO : 사망처리 추후 어떻게 할건지?
 	}
 
@@ -135,4 +137,16 @@ void AWizard::SetMove_Implementation(bool move)
 void AWizard::ServerSetMove_Implementation(AWizard* MoveActor, bool move)
 {
 	MoveActor->SetMove(move);
+}
+
+
+
+void AWizard::SetDeath_Implementation(bool death)
+{
+	mAnimInstance->SetDeath(death);
+}
+
+void AWizard::ServerSetDeath_Implementation(AWizard* DeathActor, bool death)
+{
+	DeathActor->mAnimInstance->SetDeath(death);
 }

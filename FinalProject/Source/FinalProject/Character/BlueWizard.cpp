@@ -153,7 +153,13 @@ void ABlueWizard::SecondSkill()
 	if (mAnimInstance->AttackEnable())
 	{
 		// Set Animation
-		PlayAttackAnimation(this, EWizardAttackAnimTypes::SecondSkill);
+		if (HasAuthority())
+			ChangeAttackAnimInstance(EWizardAttackAnimTypes::SecondSkill);
+		else
+		{
+			ServerChangeAttackAnimInstance(this, EWizardAttackAnimTypes::SecondSkill);
+		}
+		// PlayAttackAnimation(this, EWizardAttackAnimTypes::SecondSkill);
 
 		// Respawn Skill
 		UWorld* const World = GetWorld();
@@ -205,7 +211,16 @@ void ABlueWizard::FourthSkill()
 void ABlueWizard::PlayAttackAnimation(AWizard* TargetWizard, EWizardAttackAnimTypes AnimType)
 {
 	if (HasAuthority())
-		TargetWizard->ChangeAttackAnimInstance(AnimType);
+		ChangeAttackAnimInstance(AnimType);
 	else
-		TargetWizard->ServerChangeAttackAnimInstance(TargetWizard, AnimType);
+	{
+		ChangeAttackAnimInstance(AnimType);
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Emerald, FString::Printf(TEXT("Client [%d] Attack Index : %d"), ((int)AnimType), mAnimInstance->GetAttackIndex()));
+
+		if(mAnimInstance->AttackEnable())
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Emerald, FString::Printf(TEXT("Client [%d] AttackEnable True")));
+		else
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Emerald, FString::Printf(TEXT("Client [%d] AttackEnable False")));
+
+	}
 }

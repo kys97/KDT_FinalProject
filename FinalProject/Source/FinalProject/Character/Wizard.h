@@ -67,4 +67,9 @@ public:
 	void SetMove(bool move);
 	UFUNCTION(Server, Reliable)
 	void ServerSetMove(AWizard* MoveActor, bool move);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void SetDeath(bool death);
+	UFUNCTION(Server, Reliable)
+	void ServerSetDeath(AWizard* DeathActor, bool death);
 };
