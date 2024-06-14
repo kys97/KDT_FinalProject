@@ -145,12 +145,7 @@ void ABlueWizard::SecondSkill()
 	if (mAnimInstance->AttackEnable())
 	{
 		// Set Animation
-		if (HasAuthority())
-			ChangeAttackAnimInstance(EWizardAttackAnimTypes::SecondSkill);
-		else
-		{
-			ServerChangeAttackAnimInstance(this, EWizardAttackAnimTypes::SecondSkill);
-		}
+		PlayAttackAnimation(this, EWizardAttackAnimTypes::SecondSkill);
 
 		// Respawn Skill
 		UWorld* const World = GetWorld();
@@ -183,7 +178,6 @@ void ABlueWizard::ThirdSkill()
 		PlayAttackAnimation(this, EWizardAttackAnimTypes::ThirdSkill);
 	}
 }
-
 void ABlueWizard::FourthSkill()
 {
 	if (mAnimInstance->AttackEnable())
@@ -195,7 +189,6 @@ void ABlueWizard::FourthSkill()
 
 
 
-
 void ABlueWizard::PlayAttackAnimation(AWizard* TargetWizard, EWizardAttackAnimTypes AnimType)
 {
 	ChangeAttackAnimInstance(AnimType);
@@ -204,7 +197,25 @@ void ABlueWizard::PlayAttackAnimation(AWizard* TargetWizard, EWizardAttackAnimTy
 		ServerChangeAttackAnimInstance(TargetWizard, AnimType);
 }
 
+
 void ABlueWizard::ServerFirstSkillSpawn_Implementation(FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage)
+{
+	UWorld* const World = GetWorld();
+	if (World != nullptr)
+	{
+		// Spawn Parameter
+		FActorSpawnParameters ActorSpawnParam;
+		ActorSpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+		// Skill Spawn
+		AStorm* Storm = World->SpawnActor<AStorm>(mFirstSkillParticle, SpawnLocation, SpawnRotation, ActorSpawnParam);
+		Storm->mMoveDir = GetActorForwardVector();
+		Storm->SkillOwner = this;
+		Storm->SkillDamage = SkillDamage;
+		FirstSkillSpawn(SpawnLocation, SpawnRotation, SkillDamage);
+	}
+}
+void ABlueWizard::FirstSkillSpawn_Implementation(FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage)
 {
 	UWorld* const World = GetWorld();
 	if (World != nullptr)
@@ -221,7 +232,23 @@ void ABlueWizard::ServerFirstSkillSpawn_Implementation(FVector SpawnLocation, FR
 	}
 }
 
+
 void ABlueWizard::ServerSecondSkillSpawn_Implementation(FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage, EWizardJob Job)
+{
+	UWorld* const World = GetWorld();
+	if (World != nullptr)
+	{
+		// Spawn Parameter
+		FActorSpawnParameters ActorSpawnParam;
+		ActorSpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+		// Skill Spawn
+		AThunder* Thunder = World->SpawnActor<AThunder>(mSecondSkillParticle, SpawnLocation, SpawnRotation, ActorSpawnParam);
+		Thunder->Initialize(this, SkillDamage, Job);
+		SecondSkillSpawn(SpawnLocation, SpawnRotation, SkillDamage, Job);
+	}
+}
+void ABlueWizard::SecondSkillSpawn_Implementation(FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage, EWizardJob Job)
 {
 	UWorld* const World = GetWorld();
 	if (World != nullptr)
@@ -236,6 +263,7 @@ void ABlueWizard::ServerSecondSkillSpawn_Implementation(FVector SpawnLocation, F
 	}
 }
 
+
 void ABlueWizard::ServerThirdSkillSpawn_Implementation(FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage)
 {
 	UWorld* const World = GetWorld();
@@ -246,6 +274,19 @@ void ABlueWizard::ServerThirdSkillSpawn_Implementation(FVector SpawnLocation, FR
 		ActorSpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 		// Skill Spawn
-		
+		ThirdSkillSpawn(SpawnLocation, SpawnRotation, SkillDamage);
+	}
+}
+void ABlueWizard::ThirdSkillSpawn_Implementation(FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage)
+{
+	UWorld* const World = GetWorld();
+	if (World != nullptr)
+	{
+		// Spawn Parameter
+		FActorSpawnParameters ActorSpawnParam;
+		ActorSpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+		// Skill Spawn
+
 	}
 }
