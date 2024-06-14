@@ -70,11 +70,17 @@ void AThunder::SkillBegin()
 	// Activate
 	mParticle->Activate();
 	mOutSideCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+
+	// Delay
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AThunder::SkillOver, 1.0f, false);
 }
 
-void AThunder::OnSkillOver(FName EventName, float EmitterTime, int32 ParticleTime, const FVector& Location, const FVector& Velocity, const FVector& Direction)
+void AThunder::SkillOver()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Purple, FString::Printf(TEXT("[Thunder] OnParticleDeath")));
+	mParticle->Deactivate();
+	mOutSideCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Destroy();
 }
 
 void AThunder::Initialize(AWizard* owner, int32 damage, EWizardJob job)

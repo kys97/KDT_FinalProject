@@ -40,12 +40,10 @@ public:
 	UFUNCTION()
 	void OnCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	UFUNCTION()
-	void OnSkillOver(FName EventName, float EmitterTime, int32 ParticleTime, const FVector& Location, const FVector& Velocity, const FVector& Direction);
-
 private:
 	void SkillBegin();
-	
+	void SkillOver();
+
 public:
 	void Initialize(AWizard* owner, int32 damage, EWizardJob job);
 };
