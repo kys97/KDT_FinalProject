@@ -151,7 +151,6 @@ void ABlueWizard::SecondSkill()
 		{
 			ServerChangeAttackAnimInstance(this, EWizardAttackAnimTypes::SecondSkill);
 		}
-		// PlayAttackAnimation(this, EWizardAttackAnimTypes::SecondSkill);
 
 		// Respawn Skill
 		UWorld* const World = GetWorld();
@@ -199,9 +198,9 @@ void ABlueWizard::FourthSkill()
 
 void ABlueWizard::PlayAttackAnimation(AWizard* TargetWizard, EWizardAttackAnimTypes AnimType)
 {
-	if (HasAuthority())
-		ChangeAttackAnimInstance(AnimType);
-	else
+	ChangeAttackAnimInstance(AnimType);
+	
+	if (!HasAuthority())
 		ServerChangeAttackAnimInstance(TargetWizard, AnimType);
 }
 
