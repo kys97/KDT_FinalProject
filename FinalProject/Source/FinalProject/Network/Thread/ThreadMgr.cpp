@@ -3,12 +3,35 @@
 
 #include "ThreadMgr.h"
 
+CThreadMgr* CThreadMgr::mInst = nullptr;
+
 CThreadMgr::CThreadMgr()
 {
 }
 
 CThreadMgr::~CThreadMgr()
 {
+	for (auto& Thread : mThreadMap)
+	{
+		Thread.Value->Worker->Exit();
+
+		// 스레드를 종료시킨다.
+		Thread.Value->Thread->Kill();
+
+		// 실제 스레드가 종료될때까지 대기한다.
+		Thread.Value->Thread->WaitForCompletion();
+
+		// 동적할당된 스레드 객체와 스레드가 동작시켜주는 클래스의 객체를
+		// 제거시켜준다.
+		delete Thread.Value->Thread;
+		delete Thread.Value->Worker;
+		delete Thread.Value;
+	}
+}
+
+bool CThreadMgr::Init()
+{
+	return true;
 }
 
 bool CThreadMgr::SuspendThread(const FString& Name, bool Pause)

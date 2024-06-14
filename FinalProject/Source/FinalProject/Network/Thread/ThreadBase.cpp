@@ -31,4 +31,5 @@ void CThreadBase::Stop()
 
 void CThreadBase::Exit()
 {
+	mLoop = false;
 }

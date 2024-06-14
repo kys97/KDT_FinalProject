@@ -22,6 +22,21 @@ private:
 	uint8 mSendBuffer[1024] = {};
 
 public:
+	void SetName(const FString Name)
+	{
+		mName = Name;
+	}
+
+	const FString& GetName() const
+	{
+		return mName;
+	}
+
+	bool IsConnect() const
+	{
+		return mConnect;
+	}
+
 	bool Connect(const FString& IPAddr, int32 Port);
 	void Close();
 };
