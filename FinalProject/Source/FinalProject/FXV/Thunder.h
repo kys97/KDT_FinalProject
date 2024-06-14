@@ -22,14 +22,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EWizardJob Job;
 
-	bool Init = false;
-
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FVector Color;
-
-private:
-	float timer = 0.f;
 
 protected:
 	virtual void BeginPlay() override;
