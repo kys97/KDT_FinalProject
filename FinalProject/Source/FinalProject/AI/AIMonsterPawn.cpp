@@ -38,7 +38,7 @@ AAIMonsterPawn::AAIMonsterPawn()
 	mAttackEnd = false;
 
 	mDeathEnd = false;
-	mDeadTime = 0.f;
+	mAccTime = 0.f;
 	mDeadDuration = 5.f;
 }
 
@@ -51,11 +51,21 @@ void AAIMonsterPawn::ChangeAIAnimType_Implementation(uint8 AnimType)
 void AAIMonsterPawn::DeathEnd()
 {
 	mDeathEnd = true;
-	mDeadTime = 0.f;
+	mAccTime = 0.f;
 }
 
 void AAIMonsterPawn::NormalAttack()
 {
+}
+
+void AAIMonsterPawn::SetBlackboardValue(const AController* EventInstigator, AController* AIController)
+{
+	ADefaultAIController* DefaultAIController = Cast<ADefaultAIController>(AIController);
+
+	APawn* EnemyPawn = EventInstigator->GetPawn();
+
+	DefaultAIController->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), EnemyPawn);
+	mSetBlackboardValue = true;
 }
 
 void AAIMonsterPawn::BeginPlay()
@@ -80,16 +90,26 @@ void AAIMonsterPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (mSetBlackboardValue)
+	{
+		mAccTime += DeltaTime;
+		if (mAccTime >= mBlackboardResetDuration)
+		{
+			mSetBlackboardValue = false;
+			mAccTime = 0.f;
+		}
+	}
+
 	if (mDeathEnd)
 	{
-		mDeadTime += DeltaTime;
+		mAccTime += DeltaTime;
 
-		if (mDeadTime >= mDeadDuration)
+		if (mAccTime >= mDeadDuration)
 		{
 			Destroy();
 
 			mDeathEnd = false;
-			mDeadTime = 0.f;
+			mAccTime = 0.f;
 		}
 	}
 }
@@ -108,15 +128,20 @@ float AAIMonsterPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
 {
 	Damage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
+	ADefaultAIController* AIController = Cast<ADefaultAIController>(GetController());
+
+	SetBlackboardValue(EventInstigator, AIController);
+
 	mMonsterState = GetState<UMonsterState>();
+
+	Damage -= mMonsterState->mArmorPower;
+	Damage = Damage < 1.f ? 1.f : Damage;
 
 	if (mMonsterState->mHP > 0 && !mDeathEnd)
 	{
-		mMonsterState->mHP -= Damage;
+		mMonsterState->ChangeHP(-Damage);
 		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Client Log! AAIMonsterPawn/Monster mHP : %d"), mMonsterState->mHP));
 		UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/Monster mHP : %d"), mMonsterState->mHP);
-
-		ADefaultAIController* AIController = Cast<ADefaultAIController>(GetController());
 
 		if (mMonsterState->mHP <= 0)
 		{

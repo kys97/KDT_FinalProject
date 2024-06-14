@@ -14,6 +14,8 @@ struct FMonsterData : public FTableRowBase
 	GENERATED_USTRUCT_BODY()
 
 public:
+	UPROPERTY(EditAnywhere)
+	FString		mName = TEXT("Monster");
 	// 공격력
 	UPROPERTY(EditAnywhere)
 	int32	mAttackPower = 50;
@@ -64,10 +66,14 @@ protected:
 	bool mAttackEnd;
 
 	bool mDeathEnd;
-	float mDeadTime;
+	//float mDeadTime;
+	float mAccTime;
 
 	UPROPERTY(EditAnywhere)
 	float mDeadDuration;
+
+	bool mSetBlackboardValue = false;
+	float mBlackboardResetDuration = 3.f;
 
 public:
 	void DeathEnd();
@@ -96,6 +102,13 @@ public:
 	virtual bool IsAttackEnd()
 	{
 		return mAttackEnd;
+	}
+
+	void SetBlackboardValue(const AController* EventInstigator, AController* AIController);
+
+	virtual bool IsSetBlackboardValue()
+	{
+		return mSetBlackboardValue;
 	}
 
 protected:

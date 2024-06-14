@@ -113,6 +113,8 @@ public:
 	virtual bool AIIsOverlap();
 	virtual void ChangeOverlapVlaue(bool Value);
 
+	virtual bool IsSetBlackboardValue();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -16,6 +16,7 @@ void UMonsterState::BeginPlay()
 
 	if (Data)
 	{
+		mName = Data->mName;
 		mMoveSpeed = Data->mMoveSpeed;
 		mInteractionDistance = Data->mDetectDistance;
 

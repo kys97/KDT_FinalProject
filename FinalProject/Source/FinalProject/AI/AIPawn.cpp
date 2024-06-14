@@ -86,6 +86,11 @@ void AAIPawn::ChangeOverlapVlaue(bool Value)
 {
 }
 
+bool AAIPawn::IsSetBlackboardValue()
+{
+	return false;
+}
+
 // Called when the game starts or when spawned
 void AAIPawn::BeginPlay()
 {

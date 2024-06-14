@@ -16,6 +16,8 @@ public:
 	UAIState();
 
 public:
+	UPROPERTY(EditAnywhere)
+	FString		mName;
 	// 이동 속도
 	UPROPERTY(EditAnywhere)
 	int32	mMoveSpeed;
@@ -25,6 +27,9 @@ public:
 	int32	mInteractionDistance;
 
 	FString	mDataTableRowName;
+
+public:
+	virtual void ChangeHP(float Event);
 
 protected:
 	// Called when the game starts
