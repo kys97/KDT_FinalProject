@@ -52,9 +52,18 @@ void UMonsterAnimInstance::AnimNotify_DeathEnd()
 	Pawn->DeathEnd();
 }
 
+void UMonsterAnimInstance::AnimNotify_HitReactEnd()
+{
+	AAIMonsterPawn* Pawn = Cast<AAIMonsterPawn>(TryGetPawnOwner());
+
+	Pawn->SetAttackEnable(false);
+	mLoopAnimation = false;
+}
+
 void UMonsterAnimInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(UMonsterAnimInstance, mAnimType);
+	DOREPLIFETIME(UMonsterAnimInstance, mLoopAnimation);
 }

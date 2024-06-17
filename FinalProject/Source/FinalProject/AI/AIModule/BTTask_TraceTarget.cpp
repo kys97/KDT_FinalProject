@@ -40,13 +40,27 @@ EBTNodeResult::Type UBTTask_TraceTarget::ExecuteTask(UBehaviorTreeComponent& Own
 		return EBTNodeResult::Failed;
 	}
 
+	UMonsterState* MonsterState = Pawn->GetState<UMonsterState>();
+
+	if (!IsValid(MonsterState))
+		return EBTNodeResult::Failed;
+
+	if (!Pawn->IsAttackEnable())
+	{
+		Pawn->SetMoveSpeed((float)MonsterState->mMoveSpeed);
+
+		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Walk);
+	}
+	else {
+		Pawn->SetMoveSpeed((float)MonsterState->mMaxMoveSpeed);
+		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Run);
+	}
+
 	mOnGroundLocation = Pawn->GetActorLocation();
 
 	// 타겟을 찾으면 Target을 향해 이동
 										// (이동시킬 대상, 목표지점)
 	UAIBlueprintHelperLibrary::SimpleMoveToActor(Controller, Target);
-
-	Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Run);
 
 	return EBTNodeResult::InProgress;
 }
@@ -67,6 +81,11 @@ void UBTTask_TraceTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 		Controller->StopMovement();
 
 		return;
+	}
+
+	if (!Pawn->IsAttackEnable())
+	{
+		Pawn->SetAttackEnable(true);
 	}
 
 	UPawnMovementComponent* Movement = Pawn->GetMovementComponent();
@@ -97,8 +116,6 @@ void UBTTask_TraceTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 
 	if (!IsValid(MonsterState))
 		return;
-
-	Pawn->SetMoveSpeed((float)MonsterState->mMaxMoveSpeed);
 
 	// 타겟과의 거리 체크
 	FVector AILocation = Pawn->GetActorLocation();
@@ -138,15 +155,16 @@ void UBTTask_TraceTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 	if (IsValid(TargetCapsule))
 		Distance -= TargetCapsule->GetScaledCapsuleRadius();
 
-	if (Distance < MonsterState->mAttackDistance)
+	if (Distance <= MonsterState->mAttackDistance)
 	{
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 
 		Controller->StopMovement();
 
-		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
+		//Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
 	}
-	else if (Distance > MonsterState->mAttackDistance && Pawn->GetMovementComponent()->Velocity == FVector(0))
+	
+	if(Pawn->GetMovementComponent()->Velocity == FVector(0))
 	{
 		UAIBlueprintHelperLibrary::SimpleMoveToActor(Controller, Target);
 	}

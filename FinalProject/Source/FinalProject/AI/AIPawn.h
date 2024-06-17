@@ -108,6 +108,9 @@ public:
 	virtual void SetAttackEnd(bool End);
 	virtual bool IsAttackEnd();
 
+	virtual void SetAttackEnable(bool End);
+	virtual bool IsAttackEnable();
+
 public:
 	virtual void ChangeAIAnimType(uint8 AnimType);
 	virtual bool AIIsOverlap();

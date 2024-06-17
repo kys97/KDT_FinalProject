@@ -57,13 +57,20 @@ public:
 	AAIMonsterPawn();
 
 protected:
+	FVector AILocation;
+	FVector HitReactLocation;
+
 	class UMonsterAnimInstance* mAnimInst;
 	FString mTableRowName;
 
 	class UMonsterState* mMonsterState;
 
+	bool mTakeDamage;
+	float mTakeDamageTime;
+
 	bool mOverlap;
 	bool mAttackEnd;
+	bool mAttackEnable;
 
 	bool mDeathEnd;
 	//float mDeadTime;
@@ -81,6 +88,10 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void ChangeAIAnimType(uint8 AnimType);
 	virtual void ChangeAIAnimType_Implementation(uint8 AnimType);
+
+	UFUNCTION(NetMulticast, Reliable)
+	virtual void ChangeAnimLoop(bool Loop);
+	virtual void ChangeAnimLoop_Implementation(bool Loop);
 
 	virtual bool AIIsOverlap()
 	{
@@ -104,12 +115,26 @@ public:
 		return mAttackEnd;
 	}
 
+	virtual void SetAttackEnable(bool End)
+	{
+		mAttackEnable = End;
+	}
+
+	virtual bool IsAttackEnable()
+	{
+
+		return mAttackEnable;
+	}
+
 	void SetBlackboardValue(const AController* EventInstigator, AController* AIController);
 
 	virtual bool IsSetBlackboardValue()
 	{
 		return mSetBlackboardValue;
 	}
+
+protected:
+	void SetReactLocation(AActor* DamageCauser);
 
 protected:
 	// Called when the game starts or when spawned

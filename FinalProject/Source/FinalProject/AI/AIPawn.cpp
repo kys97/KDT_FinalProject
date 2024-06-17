@@ -73,6 +73,15 @@ bool AAIPawn::IsAttackEnd()
 	return false;
 }
 
+void AAIPawn::SetAttackEnable(bool End)
+{
+}
+
+bool AAIPawn::IsAttackEnable()
+{
+	return false;
+}
+
 void AAIPawn::ChangeAIAnimType(uint8 AnimType)
 {
 }

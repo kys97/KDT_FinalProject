@@ -30,10 +30,18 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
 	EMonsterAnimType mAnimType;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
+	bool mLoopAnimation = false;
+
 public:
 	void ChangeAnimType(EMonsterAnimType Type)
 	{
 		mAnimType = Type;
+	}
+
+	void ChangeAnimLoop(bool Loop)
+	{
+		mLoopAnimation = Loop;
 	}
 
 public:
@@ -49,6 +57,9 @@ public:
 
 	UFUNCTION()
 	void AnimNotify_DeathEnd();
+
+	UFUNCTION()
+	void AnimNotify_HitReactEnd();
 
 public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
