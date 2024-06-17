@@ -27,6 +27,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UCapsuleComponent* mOutSideCollision;
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EWizardJob Job;
 
 public:
 	AWizard* SkillOwner = nullptr;

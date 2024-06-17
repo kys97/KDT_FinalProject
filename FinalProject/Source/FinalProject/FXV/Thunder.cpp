@@ -21,6 +21,9 @@ AThunder::AThunder()
 	mOutSideCollision->SetRelativeLocation(FVector(0.f, 0.f, 165.f));
 	mOutSideCollision->OnComponentBeginOverlap.AddDynamic(this, &AThunder::OnCapsuleOverlapBegin);
 	
+	SetActorHiddenInGame(false);
+	
+
 	// Enable Set
 	mOutSideCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetRootComponent()->bAutoActivate = false;
@@ -29,6 +32,10 @@ AThunder::AThunder()
 void AThunder::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// Delay
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AThunder::SkillBegin, 0.5f, false);
 }
 
 void AThunder::Tick(float DeltaTime)
@@ -67,6 +74,10 @@ void AThunder::SkillBegin()
 	}
 	mParticle->SetVectorParameter(TEXT("color"), Color);
 
+	// UE_LOG(Network, Warning, TEXT("%s "), *(SkillOwner->GetName()));
+	if (SkillOwner)
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Magenta, FString::Printf(TEXT("Thunder SkillOwner")));
+
 	// Activate
 	mParticle->Activate();
 	mOutSideCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
@@ -89,5 +100,5 @@ void AThunder::Initialize(AWizard* owner, int32 damage, EWizardJob job)
 	SkillDamage = damage;
 	Job = job;
 
-	SkillBegin();
+	// SkillBegin();
 }

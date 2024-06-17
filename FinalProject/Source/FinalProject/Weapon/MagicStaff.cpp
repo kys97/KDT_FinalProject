@@ -82,10 +82,6 @@ void AMagicStaff::ThirdSkill(AWizard* Character)
 {
 	// Character First Skill
 	Character->ThirdSkill();
-
-	// Respawn Effect
-	GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Cyan, FString::Printf(TEXT("pressed key 3")));
-
 }
 
 void AMagicStaff::FourthSkill(AWizard* Character)

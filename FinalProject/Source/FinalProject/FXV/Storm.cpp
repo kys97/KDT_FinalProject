@@ -95,6 +95,7 @@ void AStorm::OnOutSideCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComp, A
 	AAIMonsterPawn* Monster = Cast<AAIMonsterPawn>(OtherActor);
 	if (Monster && SkillOwner)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Magenta, FString::Printf(TEXT("%s"), *(SkillOwner->GetName())));
 		// Monster->TakeDamage()
 		FDamageEvent DmgEvent;
 		if (SkillOwner->HasAuthority())

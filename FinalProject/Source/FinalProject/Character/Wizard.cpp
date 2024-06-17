@@ -64,28 +64,49 @@ void AWizard::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 float AWizard::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	if (HasAuthority())
-	{
-		Damage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);	
-	}
-	else
-	{
-		ServerTakeDamge(Damage, DamageEvent, EventInstigator, DamageCauser);
-	}
-
-	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
-	State->mHP -= Damage;
-
-	if (State->mHP <= 0)
+	// If Player is Invincible, Player doesnt take damage
+	if (!Invincibility)
 	{
 		if (HasAuthority())
-			SetDeath(true);
+		{
+			Damage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+		}
 		else
-			ServerSetDeath(this, true);
-		// TODO : 사망처리 추후 어떻게 할건지?
+		{
+			ServerTakeDamge(Damage, DamageEvent, EventInstigator, DamageCauser);
+		}
+
+		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+		State->mHP -= Damage;
+
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, FString::Printf(TEXT("Player HP : %f"), State->mHP));
+
+		if (State->mHP <= 0)
+		{
+			if (HasAuthority())
+				SetDeath(true);
+			else
+				ServerSetDeath(this, true);
+			// TODO : 사망처리 추후 어떻게 할건지?
+		}
 	}
 
 	return Damage;
+}
+
+void AWizard::HealHP(float deltaTime)
+{
+	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+	float healingPoint = State->mHPMax * 0.8 * deltaTime;
+	if (State->mHP < State->mHPMax)
+	{
+		if (State->mHP > State->mHPMax) State->mHP = State->mHPMax;
+		else
+		{
+			FDamageEvent DmgEvent;
+			ServerTakeDamge(healingPoint * (-1), DmgEvent, GetController(), this);
+		}
+	}
 }
 
 void AWizard::NormalAttack() {}
@@ -137,6 +158,7 @@ void AWizard::SetMove_Implementation(bool move)
 {
 	mAnimInstance->SetMove(move);
 }
+
 void AWizard::ServerSetMove_Implementation(AWizard* MoveActor, bool move)
 {
 	MoveActor->SetMove(move);

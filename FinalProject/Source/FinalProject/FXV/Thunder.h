@@ -18,10 +18,6 @@ class FINALPROJECT_API AThunder : public ASkillParticleActor
 public:
 	AThunder();
 
-public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	EWizardJob Job;
-
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FVector Color;
@@ -35,10 +31,11 @@ public:
 	UFUNCTION()
 	void OnCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+public:
+	void Initialize(AWizard* owner, int32 damage, EWizardJob job);
+
 private:
 	void SkillBegin();
 	void SkillOver();
 
-public:
-	void Initialize(AWizard* owner, int32 damage, EWizardJob job);
 };

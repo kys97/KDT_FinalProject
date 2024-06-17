@@ -5,7 +5,7 @@
 
 AWizardPlayerState::AWizardPlayerState()
 {
-	static ConstructorHelpers::FObjectFinder<UDataTable> WizardDataAsset(TEXT("/Script/Engine.DataTable'/Game/Blueprint/Character/DT_WizardDataTable.DT_WizardDataTable'"));
+	static ConstructorHelpers::FObjectFinder<UDataTable> WizardDataAsset(TEXT("/Script/Engine.DataTable'/Game/Blueprint/Character/WizardData.WizardData'"));
 	if (WizardDataAsset.Succeeded())
 	{
 		mWizardDataTable = WizardDataAsset.Object;
@@ -42,5 +42,8 @@ void AWizardPlayerState::BeginPlay()
 		mMP = mMPMax;
 		mLevel = 1;
 		mExp = 0;
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("[State]Player HP : %f"), mHPMax));
+
 	}
 }

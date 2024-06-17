@@ -31,8 +31,14 @@ protected:
 
 	class UWizardAnimInstance* mAnimInstance;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool Invincibility = false;
+
 public:
 	bool GetMoveEnabled() { return mAnimInstance->MoveEnable(); }
+	void OnInvincibility() { Invincibility = true; }
+	void OffInvincibility() { Invincibility = false; }
+	bool GetInvincibility() { return Invincibility; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -41,6 +47,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	void HealHP(float deltaTime);
 
 public:
 	virtual void NormalAttack();

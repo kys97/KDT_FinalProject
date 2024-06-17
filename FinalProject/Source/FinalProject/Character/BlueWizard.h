@@ -20,6 +20,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class AStorm> mFirstSkillParticle;
 	TSubclassOf<class AThunder> mSecondSkillParticle;
+	TSubclassOf<class AAOE> mThirdSkillParticle;
 
 protected:
 	virtual void BeginPlay() override;
@@ -43,14 +44,14 @@ private:
 
 
 	UFUNCTION(Server, Reliable)
-	void ServerSecondSkillSpawn(FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage, EWizardJob Job);
+	void ServerSecondSkillSpawn(AWizard* SkillOwner, FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage, EWizardJob Job);
 	UFUNCTION(NetMulticast, Reliable)
 	void SecondSkillSpawn(FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage, EWizardJob Job);
 
 
 	UFUNCTION(Server, Reliable)
-	void ServerThirdSkillSpawn(FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage);
+	void ServerThirdSkillSpawn(FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage, EWizardJob Job);
 	UFUNCTION(NetMulticast, Reliable)
-	void ThirdSkillSpawn(FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage);
+	void ThirdSkillSpawn(FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage, EWizardJob Job);
 
 };

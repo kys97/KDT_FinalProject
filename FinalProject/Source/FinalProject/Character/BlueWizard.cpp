@@ -9,6 +9,7 @@
 #include "../AI/AIMonsterPawn.h"
 #include "../FXV/Storm.h"
 #include "../FXV/Thunder.h"
+#include "../FXV/AOE.h"
 
 
 ABlueWizard::ABlueWizard()
@@ -28,6 +29,7 @@ ABlueWizard::ABlueWizard()
 
 	mFirstSkillParticle = AStorm::StaticClass();
 	mSecondSkillParticle = AThunder::StaticClass();
+	mThirdSkillParticle = AAOE::StaticClass();
 }
 
 void ABlueWizard::BeginPlay()
@@ -162,7 +164,7 @@ void ABlueWizard::SecondSkill()
 			FVector SpawnLocation = (GetActorLocation() + EndLocation) / 2.f;
 			SpawnLocation.Z = 0.f;
 
-			ServerSecondSkillSpawn(SpawnLocation, SpawnRotation, State->mSecondSkillAttackDamage, State->mJob);
+			ServerSecondSkillSpawn(this, SpawnLocation, SpawnRotation, State->mSecondSkillAttackDamage, State->mJob);
 
 			// Use MP
 			State->mMP -= 50; // TODO : MP사용량 나중에 추후 수정
@@ -176,6 +178,27 @@ void ABlueWizard::ThirdSkill()
 	{
 		// Set Animation
 		PlayAttackAnimation(this, EWizardAttackAnimTypes::ThirdSkill);
+
+		// Respawn Skill
+		UWorld* const World = GetWorld();
+		if (World != nullptr)
+		{
+			// Get Wizard State
+			AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+
+			// Spawn Rotation
+			FRotator SpawnRotation = GetActorRotation();
+
+			// Spawn Location
+			FVector	EndLocation = GetActorLocation() + GetActorForwardVector() * State->mThirdSkillAttackDistance;
+			FVector SpawnLocation = (GetActorLocation() + EndLocation) / 2.f;
+			SpawnLocation.Z = 0.f;
+
+			ServerThirdSkillSpawn(GetActorLocation(), GetActorRotation(), State->mThirdSkillAttackDamage, State->mJob);
+
+			// Use MP
+			State->mMP -= 50; // TODO : MP사용량 나중에 추후 수정
+		}
 	}
 }
 void ABlueWizard::FourthSkill()
@@ -209,10 +232,14 @@ void ABlueWizard::ServerFirstSkillSpawn_Implementation(FVector SpawnLocation, FR
 
 		// Skill Spawn
 		AStorm* Storm = World->SpawnActor<AStorm>(mFirstSkillParticle, SpawnLocation, SpawnRotation, ActorSpawnParam);
+		//Storm->Initialize(this, SkillDamage, GetActorForwardVector());
+		
 		Storm->mMoveDir = GetActorForwardVector();
 		Storm->SkillOwner = this;
 		Storm->SkillDamage = SkillDamage;
-		FirstSkillSpawn(SpawnLocation, SpawnRotation, SkillDamage);
+
+		if(!HasAuthority())
+			FirstSkillSpawn(SpawnLocation, SpawnRotation, SkillDamage);
 	}
 }
 void ABlueWizard::FirstSkillSpawn_Implementation(FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage)
@@ -233,8 +260,10 @@ void ABlueWizard::FirstSkillSpawn_Implementation(FVector SpawnLocation, FRotator
 }
 
 
-void ABlueWizard::ServerSecondSkillSpawn_Implementation(FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage, EWizardJob Job)
+void ABlueWizard::ServerSecondSkillSpawn_Implementation(AWizard* SkillOwner, FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage, EWizardJob Job)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("Server       Second Skill")));
+
 	UWorld* const World = GetWorld();
 	if (World != nullptr)
 	{
@@ -244,12 +273,20 @@ void ABlueWizard::ServerSecondSkillSpawn_Implementation(FVector SpawnLocation, F
 
 		// Skill Spawn
 		AThunder* Thunder = World->SpawnActor<AThunder>(mSecondSkillParticle, SpawnLocation, SpawnRotation, ActorSpawnParam);
-		Thunder->Initialize(this, SkillDamage, Job);
-		SecondSkillSpawn(SpawnLocation, SpawnRotation, SkillDamage, Job);
+		Thunder->SkillOwner = this;
+		Thunder->SkillDamage = SkillDamage;
+		Thunder->Job = Job;
+		
+		// Thunder->Initialize(SkillOwner, SkillDamage, Job);
+
+		if (!HasAuthority())
+			SecondSkillSpawn(SpawnLocation, SpawnRotation, SkillDamage, Job);
 	}
 }
 void ABlueWizard::SecondSkillSpawn_Implementation(FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage, EWizardJob Job)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("Client       Second Skill")));
+
 	UWorld* const World = GetWorld();
 	if (World != nullptr)
 	{
@@ -264,8 +301,10 @@ void ABlueWizard::SecondSkillSpawn_Implementation(FVector SpawnLocation, FRotato
 }
 
 
-void ABlueWizard::ServerThirdSkillSpawn_Implementation(FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage)
+void ABlueWizard::ServerThirdSkillSpawn_Implementation(FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage, EWizardJob Job)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Server       Third Skill")));
+
 	UWorld* const World = GetWorld();
 	if (World != nullptr)
 	{
@@ -274,11 +313,17 @@ void ABlueWizard::ServerThirdSkillSpawn_Implementation(FVector SpawnLocation, FR
 		ActorSpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 		// Skill Spawn
-		ThirdSkillSpawn(SpawnLocation, SpawnRotation, SkillDamage);
+		AAOE* AOE = World->SpawnActor<AAOE>(mThirdSkillParticle, SpawnLocation, SpawnRotation, ActorSpawnParam);
+		AOE->Initialize(this, SkillDamage, Job);
+
+		if (!HasAuthority())
+			ThirdSkillSpawn(SpawnLocation, SpawnRotation, SkillDamage, Job);
 	}
 }
-void ABlueWizard::ThirdSkillSpawn_Implementation(FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage)
+void ABlueWizard::ThirdSkillSpawn_Implementation(FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage, EWizardJob Job)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Client       Third Skill")));
+
 	UWorld* const World = GetWorld();
 	if (World != nullptr)
 	{
@@ -287,6 +332,7 @@ void ABlueWizard::ThirdSkillSpawn_Implementation(FVector SpawnLocation, FRotator
 		ActorSpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 		// Skill Spawn
-
+		AAOE* AOE = World->SpawnActor<AAOE>(mThirdSkillParticle, SpawnLocation, SpawnRotation, ActorSpawnParam);
+		AOE->Initialize(this, SkillDamage, Job);
 	}
 }

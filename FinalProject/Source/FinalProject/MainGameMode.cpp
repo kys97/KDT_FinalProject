@@ -9,7 +9,7 @@
 
 AMainGameMode::AMainGameMode()
 {
-	
+	PlayerStateClass = AWizardPlayerState::StaticClass();
 }
 
 void AMainGameMode::BeginPlay()

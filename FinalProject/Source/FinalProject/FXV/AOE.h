@@ -18,6 +18,12 @@ public:
 	AAOE();
 
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector Color;
+
+private:
+	
+protected:
 	virtual void BeginPlay() override;
 
 public:
@@ -25,11 +31,15 @@ public:
 
 	UFUNCTION()
 	void OnCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void OnCapsuleOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+public:
+	void Initialize(AWizard* owner, int32 damage, EWizardJob job);
 
 private:
 	void SkillBegin();
 	void SkillOver();
+	void SkillDestroy();
 
-public:
-	void Initialize(AWizard* owner, int32 damage, EWizardJob job);
 };
