@@ -38,6 +38,7 @@ EBTNodeResult::Type UBTTask_NormalAttack::ExecuteTask(UBehaviorTreeComponent& Ow
 		Controller->StopMovement();
 
 		// 애니메이션을 Idle 로 변경한다.
+		Pawn->SetActorRotation(Pawn->GetCurrentRotation());
 		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
 
 		return EBTNodeResult::Failed;
@@ -77,6 +78,7 @@ void UBTTask_NormalAttack::TickTask(UBehaviorTreeComponent& OwnerComp,
 	{
 		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 
+		Pawn->SetActorRotation(Pawn->GetCurrentRotation());
 		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
 
 		return;

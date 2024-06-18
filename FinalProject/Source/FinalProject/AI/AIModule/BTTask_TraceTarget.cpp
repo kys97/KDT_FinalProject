@@ -35,6 +35,7 @@ EBTNodeResult::Type UBTTask_TraceTarget::ExecuteTask(UBehaviorTreeComponent& Own
 	{
 		Controller->StopMovement();
 
+		Pawn->SetActorRotation(Pawn->GetCurrentRotation());
 		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
 
 		return EBTNodeResult::Failed;
@@ -47,8 +48,6 @@ EBTNodeResult::Type UBTTask_TraceTarget::ExecuteTask(UBehaviorTreeComponent& Own
 
 	if (!Pawn->IsAttackEnable())
 	{
-		Controller->StopMovement();
-
 		return EBTNodeResult::Failed;
 	}
 
@@ -61,11 +60,11 @@ EBTNodeResult::Type UBTTask_TraceTarget::ExecuteTask(UBehaviorTreeComponent& Own
 	else {
 		Pawn->SetMoveSpeed((float)MonsterState->mMaxMoveSpeed);
 	}
+	Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Run);
 
 	// 타겟을 찾으면 Target을 향해 이동
 										// (이동시킬 대상, 목표지점)
 	UAIBlueprintHelperLibrary::SimpleMoveToActor(Controller, Target);
-	Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Run);
 
 	return EBTNodeResult::InProgress;
 }
@@ -112,6 +111,7 @@ void UBTTask_TraceTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 
 		Controller->StopMovement();
 
+		Pawn->SetActorRotation(Pawn->GetCurrentRotation());
 		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
 
 		return;
@@ -122,16 +122,14 @@ void UBTTask_TraceTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 
 	SetDirection(Pawn, AILocation, TargetLocation);
 
-	if (!Pawn->IsAttackEnable())
+	if (Pawn->IsStun())
 	{
-		return;
-	}
-	else if (Pawn->IsAttackEnable() && Pawn->IsStun()){
 		mAccTime += DeltaSeconds;
 
 		if (mAccTime >= mStunDuration)
 		{
 			Pawn->SetMoveSpeed((float)MonsterState->mMaxMoveSpeed);
+			Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Run);;
 
 			Pawn->SetStunState(false);
 
@@ -150,10 +148,16 @@ void UBTTask_TraceTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 		//Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
 	}
 	
-	/*if(Pawn->GetMovementComponent()->Velocity == FVector(0))
+	if(Pawn->GetAnimType() == (uint8)EMonsterAnimType::Run
+		&& Pawn->GetMovementComponent()->Velocity == FVector(0))
 	{
 		UAIBlueprintHelperLibrary::SimpleMoveToActor(Controller, Target);
-	}*/
+	}
+	else if (Pawn->GetAnimType() != (uint8)EMonsterAnimType::Run
+		&& Pawn->GetMovementComponent()->Velocity != FVector(0)) 
+	{
+		Controller->StopMovement();
+	}
 }
 
 void UBTTask_TraceTarget::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult)

@@ -31,6 +31,24 @@ void UMonsterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 }
 
+void UMonsterAnimInstance::AnimNotify_AnimStart()
+{
+	StartTime = clock();
+}
+
+void UMonsterAnimInstance::AnimNotify_AnimEnd()
+{
+	EndTime = clock();
+
+	clock_t result = EndTime - StartTime;
+	do { result *= 10; }
+	while (result / CLOCKS_PER_SEC >= 10);
+
+	PlayTime = (float)(result / CLOCKS_PER_SEC);
+
+	FrameFPS = PlayTime * 30.f;
+}
+
 void UMonsterAnimInstance::AnimNotify_Attack()
 {
 	AAIMonsterPawn* Pawn = Cast<AAIMonsterPawn>(TryGetPawnOwner());
@@ -58,6 +76,8 @@ void UMonsterAnimInstance::AnimNotify_HitReactStart()
 
 	Pawn->SetAttackEnable(false);
 	Pawn->SetStunState(true);
+
+	mLoopAnimation = true;
 }
 
 void UMonsterAnimInstance::AnimNotify_HitReactEnd()
@@ -66,6 +86,9 @@ void UMonsterAnimInstance::AnimNotify_HitReactEnd()
 
 	Pawn->SetAttackEnable(true);
 	mLoopAnimation = false;
+
+	Pawn->SetActorRotation(Pawn->GetCurrentRotation());
+	Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
 }
 
 void UMonsterAnimInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

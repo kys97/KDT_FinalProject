@@ -39,6 +39,7 @@ EBTNodeResult::Type UBTTask_Patrol::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	{
 		Controller->StopMovement();
 
+		Pawn->SetActorRotation(Pawn->GetCurrentRotation());
 		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
 
 		return EBTNodeResult::Failed;
@@ -82,6 +83,7 @@ void UBTTask_Patrol::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 		// 타겟이 있으면 이동을 멈추고
 		Controller->StopMovement();
 
+		Pawn->SetActorRotation(Pawn->GetCurrentRotation());
 		// 애니메이션을 Idle로 변경하고
 		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
 
@@ -118,6 +120,7 @@ void UBTTask_Patrol::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 		// 타겟이 있으면 이동을 멈추고
 		Controller->StopMovement();
 
+		Pawn->SetActorRotation(Pawn->GetCurrentRotation());
 		// 애니메이션을 Idle로 변경하고
 		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
 

@@ -82,14 +82,25 @@ protected:
 	float mDeadDuration;
 
 	bool mSetBlackboardValue = false;
-	float mBlackboardResetDuration = 3.f;
+
+	UPROPERTY(EditAnywhere)
+	float mBlackboardResetDuration = 5.f;
+
+	FRotator mCurrentRotaion;
 
 public:
+	virtual FRotator GetCurrentRotation()
+	{
+		return mCurrentRotaion;
+	}
+
 	void DeathEnd();
 
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void ChangeAIAnimType(uint8 AnimType);
 	virtual void ChangeAIAnimType_Implementation(uint8 AnimType);
+
+	virtual uint8 GetAnimType();
 
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void ChangeAnimLoop(bool Loop);
@@ -144,6 +155,8 @@ public:
 	{
 		return mStun;
 	}
+
+	virtual void SetMoveSpeed(float Speed);
 
 protected:
 	void SetReactLocation(AActor* DamageCauser);

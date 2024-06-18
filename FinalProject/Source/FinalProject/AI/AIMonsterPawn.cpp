@@ -54,6 +54,14 @@ void AAIMonsterPawn::ChangeAIAnimType_Implementation(uint8 AnimType)
 		mAnimInst->ChangeAnimType((EMonsterAnimType)AnimType);
 }
 
+uint8 AAIMonsterPawn::GetAnimType()
+{
+	if (IsValid(mAnimInst))
+		return mAnimInst->GetAnimType();
+	else
+		return uint8();
+}
+
 void AAIMonsterPawn::ChangeAnimLoop_Implementation(bool Loop)
 {
 	if (IsValid(mAnimInst))
@@ -74,10 +82,24 @@ void AAIMonsterPawn::SetBlackboardValue(const AController* EventInstigator, ACon
 {
 	ADefaultAIController* DefaultAIController = Cast<ADefaultAIController>(AIController);
 
-	APawn* EnemyPawn = EventInstigator->GetPawn();
+	APawn* EnemyPawn;
+	if (EventInstigator != nullptr)
+		EnemyPawn = EventInstigator->GetPawn();
+	else
+		EnemyPawn = nullptr;
 
 	DefaultAIController->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), EnemyPawn);
 	mSetBlackboardValue = true;
+}
+
+void AAIMonsterPawn::SetMoveSpeed(float Speed)
+{
+	mMovement->MaxSpeed = Speed;
+
+	if (IsValid(mAnimInst))
+	{
+		mAnimInst->SetAnimSpeed(Speed);
+	}
 }
 
 void AAIMonsterPawn::SetReactLocation(AActor* DamageCauser)
@@ -101,6 +123,8 @@ void AAIMonsterPawn::BeginPlay()
 {
 	Super::BeginPlay();
 
+	mCapsule->bApplyImpulseOnDamage = true;
+
 	mAnimInst = Cast<UMonsterAnimInstance>(mMesh->GetAnimInstance());
 
 	mCapsule->OnComponentBeginOverlap.AddDynamic(this, &AAIMonsterPawn::BeginOverlap);
@@ -118,6 +142,8 @@ void AAIMonsterPawn::OnConstruction(const FTransform& Transform)
 void AAIMonsterPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	mCurrentRotaion = GetActorRotation();
 
 	if (mSetBlackboardValue)
 	{
@@ -168,34 +194,40 @@ float AAIMonsterPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
 
 	ADefaultAIController* AIController = Cast<ADefaultAIController>(GetController());
 
-	SetBlackboardValue(EventInstigator, AIController);
+	if (!IsValid(AIController))
+		return 0;
 
 	mMonsterState = GetState<UMonsterState>();
 
 	Damage -= mMonsterState->mArmorPower;
 	Damage = Damage < 1.f ? 1.f : Damage;
 
-	if (mMonsterState->mHP > 0 && !mDeathEnd)
+	if (mMonsterState->mHP > 0)
 	{
+		SetBlackboardValue(EventInstigator, AIController);
+
 		mMonsterState->ChangeHP(-Damage);
 		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Client Log! AAIMonsterPawn/Monster mHP : %d"), mMonsterState->mHP));
 		UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/Monster mHP : %d"), mMonsterState->mHP);
 
 		if (Damage >= 10.f)
 		{
-			ChangeAIAnimType((uint8)EMonsterAnimType::TakeDamage);
 			ChangeAnimLoop(true);
+			ChangeAIAnimType((uint8)EMonsterAnimType::TakeDamage);
 
 			SetReactLocation(DamageCauser);
 		}
 
 		if (mMonsterState->mHP <= 0)
 		{
+			SetBlackboardValue(nullptr, AIController);
+			mCapsule->bApplyImpulseOnDamage = false;
+
 			ChangeAIAnimType((uint8)EMonsterAnimType::Death);
 
 			AIController->UnPossess();
 		}
-	}	
+	}
 
 	return Damage;
 }

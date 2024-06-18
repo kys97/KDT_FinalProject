@@ -33,10 +33,32 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
 	bool mLoopAnimation = false;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
+	float PlayRate = 1.f;
+
+	clock_t StartTime = 0;
+	clock_t EndTime = 0;
+	float PlayTime = 0.f;
+	// 프레임 수
+	float FrameFPS = 30.f;
+
 public:
+	void SetAnimSpeed(int32 Speed)
+	{
+		if (FrameFPS > 0.f)
+		{
+			PlayRate = FMath::Clamp<float>((float)Speed / FrameFPS, 1.f, 2.f);
+		}
+	}
+
 	void ChangeAnimType(EMonsterAnimType Type)
 	{
 		mAnimType = Type;
+	}
+
+	const uint8 GetAnimType()
+	{
+		return (uint8)mAnimType;
 	}
 
 	void ChangeAnimLoop(bool Loop)
@@ -49,6 +71,12 @@ public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds);
 
 public:
+	UFUNCTION()
+	void AnimNotify_AnimStart();
+
+	UFUNCTION()
+	void AnimNotify_AnimEnd();
+
 	UFUNCTION()
 	void AnimNotify_Attack();
 

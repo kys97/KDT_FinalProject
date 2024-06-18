@@ -46,10 +46,9 @@ protected:
 	int32 mPatrolDir;
 
 public:
-	void SetMoveSpeed(float Speed)
-	{
-		mMovement->MaxSpeed = Speed;
-	}
+	virtual FRotator GetCurrentRotation();
+
+	virtual void SetMoveSpeed(float Speed);
 
 	template <typename T>
 	T* GetState()
@@ -116,6 +115,7 @@ public:
 
 public:
 	virtual void ChangeAIAnimType(uint8 AnimType);
+	virtual uint8 GetAnimType();
 	virtual bool AIIsOverlap();
 	virtual void ChangeOverlapVlaue(bool Value);
 

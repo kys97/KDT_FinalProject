@@ -44,6 +44,15 @@ AAIPawn::AAIPawn()
 	mPatrolDir = 1;
 }
 
+FRotator AAIPawn::GetCurrentRotation()
+{
+	return FRotator();
+}
+
+void AAIPawn::SetMoveSpeed(float Speed)
+{
+}
+
 void AAIPawn::SetPointActorArray(const TArray<class APatrolPointActor*>& PointActorArray)
 {
 	if (PointActorArray.IsEmpty())
@@ -93,6 +102,11 @@ bool AAIPawn::IsStun()
 
 void AAIPawn::ChangeAIAnimType(uint8 AnimType)
 {
+}
+
+uint8 AAIPawn::GetAnimType()
+{
+	return uint8();
 }
 
 bool AAIPawn::AIIsOverlap()
