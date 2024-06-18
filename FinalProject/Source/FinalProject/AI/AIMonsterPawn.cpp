@@ -44,6 +44,8 @@ AAIMonsterPawn::AAIMonsterPawn()
 
 	mTakeDamage = false;
 	mTakeDamageTime = 0.f;
+
+	mStun = false;
 }
 
 void AAIMonsterPawn::ChangeAIAnimType_Implementation(uint8 AnimType)
@@ -89,7 +91,7 @@ void AAIMonsterPawn::SetReactLocation(AActor* DamageCauser)
 
 	Dir.Normalize();
 
-	HitReactLocation = AILocation + Dir * (mMonsterState->mAttackDistance * 1.5f);
+	HitReactLocation = AILocation + Dir * (mMonsterState->mAttackDistance * 2.f);
 
 	mTakeDamage = true;
 	mTakeDamageTime = 0.f;

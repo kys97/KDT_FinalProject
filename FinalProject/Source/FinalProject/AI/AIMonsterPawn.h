@@ -72,6 +72,8 @@ protected:
 	bool mAttackEnd;
 	bool mAttackEnable;
 
+	bool mStun;
+
 	bool mDeathEnd;
 	//float mDeadTime;
 	float mAccTime;
@@ -131,6 +133,16 @@ public:
 	virtual bool IsSetBlackboardValue()
 	{
 		return mSetBlackboardValue;
+	}
+
+	virtual void SetStunState(bool Stun)
+	{
+		mStun = Stun;
+	}
+
+	virtual bool IsStun()
+	{
+		return mStun;
 	}
 
 protected:

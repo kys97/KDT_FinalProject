@@ -43,6 +43,11 @@ EBTNodeResult::Type UBTTask_NormalAttack::ExecuteTask(UBehaviorTreeComponent& Ow
 		return EBTNodeResult::Failed;
 	}
 
+	if (!Pawn->IsAttackEnable())
+	{
+		return EBTNodeResult::Failed;
+	}
+
 	Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Attack);
 
 	return EBTNodeResult::InProgress;
@@ -75,6 +80,11 @@ void UBTTask_NormalAttack::TickTask(UBehaviorTreeComponent& OwnerComp,
 		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
 
 		return;
+	}
+
+	if (!Pawn->IsAttackEnable())
+	{
+		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 	}
 
 	if (Pawn->IsAttackEnd())
@@ -126,7 +136,7 @@ void UBTTask_NormalAttack::TickTask(UBehaviorTreeComponent& OwnerComp,
 			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 
 			// 애니메이션을 Idle 로 변경한다.
-			Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
+			//Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
 		}
 	}
 }

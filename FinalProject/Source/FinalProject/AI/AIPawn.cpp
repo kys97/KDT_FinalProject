@@ -82,6 +82,15 @@ bool AAIPawn::IsAttackEnable()
 	return false;
 }
 
+void AAIPawn::SetStunState(bool Stun)
+{
+}
+
+bool AAIPawn::IsStun()
+{
+	return false;
+}
+
 void AAIPawn::ChangeAIAnimType(uint8 AnimType)
 {
 }

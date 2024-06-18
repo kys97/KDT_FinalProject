@@ -52,11 +52,19 @@ void UMonsterAnimInstance::AnimNotify_DeathEnd()
 	Pawn->DeathEnd();
 }
 
-void UMonsterAnimInstance::AnimNotify_HitReactEnd()
+void UMonsterAnimInstance::AnimNotify_HitReactStart()
 {
 	AAIMonsterPawn* Pawn = Cast<AAIMonsterPawn>(TryGetPawnOwner());
 
 	Pawn->SetAttackEnable(false);
+	Pawn->SetStunState(true);
+}
+
+void UMonsterAnimInstance::AnimNotify_HitReactEnd()
+{
+	AAIMonsterPawn* Pawn = Cast<AAIMonsterPawn>(TryGetPawnOwner());
+
+	Pawn->SetAttackEnable(true);
 	mLoopAnimation = false;
 }
 

@@ -59,6 +59,9 @@ public:
 	void AnimNotify_DeathEnd();
 
 	UFUNCTION()
+	void AnimNotify_HitReactStart();
+
+	UFUNCTION()
 	void AnimNotify_HitReactEnd();
 
 public:
