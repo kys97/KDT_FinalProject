@@ -2,7 +2,7 @@
 
 
 #include "Wizard.h"
-#include "WizardPlayerState.h"
+
 
 
 // Sets default values
@@ -40,6 +40,11 @@ AWizard::AWizard()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
+}
+
+AWizardPlayerState* AWizard::GetWizardPlayerState()
+{
+	return GetPlayerState<AWizardPlayerState>();
 }
 
 // Called when the game starts or when spawned

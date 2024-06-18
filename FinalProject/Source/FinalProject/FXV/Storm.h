@@ -34,6 +34,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+private:
+	void BeginDelayOver();
+
 public:	
 	virtual void Tick(float DeltaTime) override;
 	
@@ -44,7 +47,6 @@ public:
 	void OnInSideCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 private:
-	void BeginDelayOver();
 	void SkillDelayOver();
 	void DestoyStorm();
 

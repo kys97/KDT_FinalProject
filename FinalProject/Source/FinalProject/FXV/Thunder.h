@@ -19,10 +19,6 @@ public:
 	AThunder();
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	FVector Color;
-
-protected:
 	virtual void BeginPlay() override;
 
 public:
@@ -30,9 +26,6 @@ public:
 
 	UFUNCTION()
 	void OnCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-public:
-	void Initialize(AWizard* owner, int32 damage, EWizardJob job);
 
 private:
 	void SkillBegin();

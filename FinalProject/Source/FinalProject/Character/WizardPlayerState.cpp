@@ -42,8 +42,5 @@ void AWizardPlayerState::BeginPlay()
 		mMP = mMPMax;
 		mLevel = 1;
 		mExp = 0;
-
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("[State]Player HP : %f"), mHPMax));
-
 	}
 }

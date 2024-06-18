@@ -48,6 +48,7 @@ void AAOE::OnCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Ot
 	if (Player) 
 	{
 		// [Network] TODO : Add Player to Heal List
+		// - Player OnInvincibility
 	}
 }
 
@@ -57,6 +58,7 @@ void AAOE::OnCapsuleOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* Othe
 	if (Player)
 	{
 		// [Network] TODO : Delete Player to Heal List
+		// - Player OffInvincibility
 	}
 }
 
@@ -64,7 +66,6 @@ void AAOE::Initialize(AWizard* owner, int32 damage, EWizardJob job)
 {
 	SkillOwner = owner;
 	SkillDamage = damage;
-	Job = job;
 	
 	SkillOwner->OnInvincibility();
 
@@ -98,6 +99,7 @@ void AAOE::SkillOver()
 {
 	mParticle->Deactivate();
 	mOutSideCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
 
 	SkillOwner->OffInvincibility();
 

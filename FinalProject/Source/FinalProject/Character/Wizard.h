@@ -5,6 +5,7 @@
 #include "../GameInfo.h"
 
 #include "WizardAnimInstance.h"
+#include "WizardPlayerState.h"
 
 #include "GameFramework/Character.h"
 #include "Wizard.generated.h"
@@ -39,6 +40,7 @@ public:
 	void OnInvincibility() { Invincibility = true; }
 	void OffInvincibility() { Invincibility = false; }
 	bool GetInvincibility() { return Invincibility; }
+	AWizardPlayerState* GetWizardPlayerState();
 
 protected:
 	virtual void BeginPlay() override;

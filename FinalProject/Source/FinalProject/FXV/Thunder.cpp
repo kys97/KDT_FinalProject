@@ -20,9 +20,6 @@ AThunder::AThunder()
 	mOutSideCollision->SetCapsuleSize(180.f, 350.f);
 	mOutSideCollision->SetRelativeLocation(FVector(0.f, 0.f, 165.f));
 	mOutSideCollision->OnComponentBeginOverlap.AddDynamic(this, &AThunder::OnCapsuleOverlapBegin);
-	
-	SetActorHiddenInGame(false);
-	
 
 	// Enable Set
 	mOutSideCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -43,6 +40,7 @@ void AThunder::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+
 void AThunder::OnCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	AAIMonsterPawn* Monster = Cast<AAIMonsterPawn>(OtherActor);
@@ -50,34 +48,13 @@ void AThunder::OnCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 	{
 		// Monster->TakeDamage()
 		FDamageEvent DmgEvent;
-		if (SkillOwner->HasAuthority())
-		{
-			Monster->TakeDamage(SkillDamage, DmgEvent, SkillOwner->GetController(), this);
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, FString::Printf(TEXT("[Thunder] Server Attack Monster : %d"), SkillDamage));
-		}
-		else
-		{
-			SkillOwner->ServerAttack(Monster, SkillDamage, DmgEvent, SkillOwner->GetController(), this);
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, FString::Printf(TEXT("[Thunder] Client Attack Monster : %d"), SkillDamage));
-		}
+		Monster->TakeDamage(SkillDamage, DmgEvent, SkillOwner->GetController(), SkillOwner);
 	}
 }
 
+
 void AThunder::SkillBegin()
 {
-	// Skill Color Set
-	switch (Job)
-	{
-	case EWizardJob::Blue:
-		Color = FVector(0.0f, 3.0f, 8.0f);
-		break;
-	}
-	mParticle->SetVectorParameter(TEXT("color"), Color);
-
-	// UE_LOG(Network, Warning, TEXT("%s "), *(SkillOwner->GetName()));
-	if (SkillOwner)
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Magenta, FString::Printf(TEXT("Thunder SkillOwner")));
-
 	// Activate
 	mParticle->Activate();
 	mOutSideCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
@@ -94,11 +71,3 @@ void AThunder::SkillOver()
 	Destroy();
 }
 
-void AThunder::Initialize(AWizard* owner, int32 damage, EWizardJob job)
-{
-	SkillOwner = owner;
-	SkillDamage = damage;
-	Job = job;
-
-	// SkillBegin();
-}

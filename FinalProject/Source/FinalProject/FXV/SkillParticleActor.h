@@ -27,12 +27,11 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UCapsuleComponent* mOutSideCollision;
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EWizardJob Job;
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AWizard* SkillOwner = nullptr;
+
 	int32 SkillDamage = 0;
 
 protected:
@@ -42,5 +41,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 
 };

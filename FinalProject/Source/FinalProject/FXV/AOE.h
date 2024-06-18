@@ -17,10 +17,6 @@ class FINALPROJECT_API AAOE : public ASkillParticleActor
 public:
 	AAOE();
 
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector Color;
-
 private:
 	
 protected:

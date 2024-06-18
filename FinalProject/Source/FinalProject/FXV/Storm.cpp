@@ -95,13 +95,9 @@ void AStorm::OnOutSideCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComp, A
 	AAIMonsterPawn* Monster = Cast<AAIMonsterPawn>(OtherActor);
 	if (Monster && SkillOwner)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Magenta, FString::Printf(TEXT("%s"), *(SkillOwner->GetName())));
 		// Monster->TakeDamage()
 		FDamageEvent DmgEvent;
-		if (SkillOwner->HasAuthority())
-			Monster->TakeDamage(SkillDamage / 2, DmgEvent, SkillOwner->GetController(), this);
-		else
-			SkillOwner->ServerAttack(Monster, SkillDamage / 2, DmgEvent, SkillOwner->GetController(), this);
+		Monster->TakeDamage(SkillDamage / 2, DmgEvent, SkillOwner->GetController(), SkillOwner);
 	}
 }
 
@@ -112,10 +108,7 @@ void AStorm::OnInSideCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 	{
 		// Monster->TakeDamage()
 		FDamageEvent DmgEvent;
-		if (SkillOwner->HasAuthority())
-			Monster->TakeDamage(SkillDamage, DmgEvent, SkillOwner->GetController(), this);
-		else
-			SkillOwner->ServerAttack(Monster, SkillDamage, DmgEvent, SkillOwner->GetController(), this);
+		Monster->TakeDamage(SkillDamage, DmgEvent, SkillOwner->GetController(), SkillOwner);
 	}
 }
 

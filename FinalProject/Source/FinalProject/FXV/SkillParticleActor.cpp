@@ -2,6 +2,7 @@
 
 
 #include "SkillParticleActor.h"
+#include "../Character/WizardPlayerState.h"
 
 // Sets default values
 ASkillParticleActor::ASkillParticleActor()
@@ -36,3 +37,7 @@ void ASkillParticleActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void ASkillParticleActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+}
