@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BoseAIController.h"
+#include "BossAIController.h"
 
-ABoseAIController::ABoseAIController()
+ABossAIController::ABossAIController()
 {
 	static ConstructorHelpers::FObjectFinder<UBehaviorTree> AITree(TEXT(
-		"/Script/AIModule.BehaviorTree'/Game/AI/Monster/BT_Bose.BT_Bose'"));
+		"/Script/AIModule.BehaviorTree'/Game/AI/Monster/BT_Boss.BT_Boss'"));
 
 	if (AITree.Succeeded())
 		mBehaviorTree = AITree.Object;
@@ -29,15 +29,15 @@ ABoseAIController::ABoseAIController()
 	mAIPerception->SetDominantSense(mSightConfig->GetSenseImplementation());
 }
 
-void ABoseAIController::BeginPlay()
+void ABossAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
 	mAIPerception->OnTargetPerceptionUpdated.AddDynamic(
-		this, &ABoseAIController::OnTargetDetect);
+		this, &ABossAIController::OnTargetDetect);
 }
 
-void ABoseAIController::OnPossess(APawn* InPawn)
+void ABossAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
@@ -57,17 +57,17 @@ void ABoseAIController::OnPossess(APawn* InPawn)
 	}
 }
 
-void ABoseAIController::OnUnPossess()
+void ABossAIController::OnUnPossess()
 {
 	Super::OnUnPossess();
 }
 
-void ABoseAIController::Tick(float DeltaTime)
+void ABossAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-void ABoseAIController::OnTargetDetect(AActor* Target, FAIStimulus const Stimulus)
+void ABossAIController::OnTargetDetect(AActor* Target, FAIStimulus const Stimulus)
 {
 	UE_LOG(Network, Warning, TEXT("Target Detect"));
 
@@ -91,13 +91,13 @@ void ABoseAIController::OnTargetDetect(AActor* Target, FAIStimulus const Stimulu
 	}
 }
 
-void ABoseAIController::SetSightConfig()
+void ABossAIController::SetSightConfig()
 {
 	// 시야 감지 추가
 	mSightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
 
 	// 시야 반경
-	mSightConfig->SightRadius = 700.f;
+	mSightConfig->SightRadius = 2500.f;
 	// 시야를 읽기 시작하는 부분
 	mSightConfig->LoseSightRadius = mSightConfig->SightRadius + 150.f;
 	// 시야 각도
@@ -112,7 +112,7 @@ void ABoseAIController::SetSightConfig()
 	mSightConfig->DetectionByAffiliation.bDetectNeutrals = true;
 }
 
-void ABoseAIController::StopAI()
+void ABossAIController::StopAI()
 {
 	UBehaviorTreeComponent* BehaviorTreeComponent = Cast<UBehaviorTreeComponent>(BrainComponent);
 	if (IsValid(BehaviorTreeComponent))

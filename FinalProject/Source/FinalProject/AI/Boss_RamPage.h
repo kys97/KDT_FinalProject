@@ -3,18 +3,18 @@
 #pragma once
 
 #include "AIMonsterPawn.h"
-#include "Bose_RamPage.generated.h"
+#include "Boss_RamPage.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FINALPROJECT_API ABose_RamPage : public AAIMonsterPawn
+class FINALPROJECT_API ABoss_RamPage : public AAIMonsterPawn
 {
 	GENERATED_BODY()
 
 public:
-	ABose_RamPage();
+	ABoss_RamPage();
 
 protected:
 	// Called when the game starts or when spawned

@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Bose_RamPage.h"
-#include "BoseAIController.h"
+#include "Boss_RamPage.h"
+#include "BossAIController.h"
 
-ABose_RamPage::ABose_RamPage()
+ABoss_RamPage::ABoss_RamPage()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -17,7 +17,7 @@ ABose_RamPage::ABose_RamPage()
 	if (AnimAsset.Succeeded())
 		mMesh->SetAnimInstanceClass(AnimAsset.Class);
 
-	AIControllerClass = ABoseAIController::StaticClass();
+	AIControllerClass = ABossAIController::StaticClass();
 
 	mMesh->SetRelativeLocation(FVector(0.f, 0.f, -100.f));
 	mMesh->SetRelativeRotation(FRotator(0.f, -90.f, 0.f)); // Pitch(Y), Yaw(Z), Roll(X)
@@ -30,16 +30,16 @@ ABose_RamPage::ABose_RamPage()
 	mTableRowName = TEXT("Dragon_SoulEater");
 }
 
-void ABose_RamPage::BeginPlay()
+void ABoss_RamPage::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-void ABose_RamPage::Tick(float DeltaTime)
+void ABoss_RamPage::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-void ABose_RamPage::NormalAttack()
+void ABoss_RamPage::NormalAttack()
 {
 }

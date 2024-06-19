@@ -4,18 +4,18 @@
 
 #include "../GameInfo.h"
 #include "AIController.h"
-#include "BoseAIController.generated.h"
+#include "BossAIController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FINALPROJECT_API ABoseAIController : public AAIController
+class FINALPROJECT_API ABossAIController : public AAIController
 {
 	GENERATED_BODY()
 
 public:
-	ABoseAIController();
+	ABossAIController();
 
 protected:
 	UBehaviorTree* mBehaviorTree;
