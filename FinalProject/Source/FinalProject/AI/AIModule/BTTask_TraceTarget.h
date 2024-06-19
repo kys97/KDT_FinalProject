@@ -27,6 +27,8 @@ protected:
 	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds);
 	virtual void OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult);
 	
+	void SetStopTask(UBehaviorTreeComponent& OwnerComp, AAIController* Controller);
+
 	void SetDirection(AActor* AIPawn, FVector& AILocation, FVector& TargetLocation);
 	float GetDistance(AActor* AIPawn, AActor* Target, FVector& AILocation, FVector& TargetLocation);
 };

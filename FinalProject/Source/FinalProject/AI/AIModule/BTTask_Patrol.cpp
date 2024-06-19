@@ -130,6 +130,17 @@ void UBTTask_Patrol::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 		Pawn->ChangeOverlapVlaue(false);
 	}
 
+	if (Pawn->GetAnimType() == (uint8)EMonsterAnimType::Walk
+		&& Pawn->GetMovementComponent()->Velocity.IsZero())
+	{
+		UAIBlueprintHelperLibrary::SimpleMoveToActor(Controller, Target);
+	}
+	else if (Pawn->GetAnimType() != (uint8)EMonsterAnimType::Walk
+		&& !Pawn->GetMovementComponent()->Velocity.IsZero())
+	{
+		Controller->StopMovement();
+	}
+
 	// -----------------타겟 간의 거리를 이용한 Task 관리-------------------
 	
 	//FVector AILocation = Pawn->GetActorLocation();

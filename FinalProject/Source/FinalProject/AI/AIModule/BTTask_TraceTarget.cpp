@@ -46,25 +46,23 @@ EBTNodeResult::Type UBTTask_TraceTarget::ExecuteTask(UBehaviorTreeComponent& Own
 	if (!IsValid(MonsterState))
 		return EBTNodeResult::Failed;
 
-	if (!Pawn->IsAttackEnable())
-	{
-		return EBTNodeResult::Failed;
-	}
-
 	mOnGroundLocation = Pawn->GetActorLocation();
 
-	if (Pawn->IsStun())
+	if (Pawn->IsAttackEnable())
 	{
-		Pawn->SetMoveSpeed((float)MonsterState->mMoveSpeed);
-	}
-	else {
-		Pawn->SetMoveSpeed((float)MonsterState->mMaxMoveSpeed);
-	}
-	Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Run);
+		if (Pawn->IsStun())
+		{
+			Pawn->SetMoveSpeed((float)MonsterState->mMoveSpeed);
+		}
+		else {
+			Pawn->SetMoveSpeed((float)MonsterState->mMaxMoveSpeed);
+		}
+		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Run);
 
-	// 타겟을 찾으면 Target을 향해 이동
-										// (이동시킬 대상, 목표지점)
-	UAIBlueprintHelperLibrary::SimpleMoveToActor(Controller, Target);
+		// 타겟을 찾으면 Target을 향해 이동
+											// (이동시킬 대상, 목표지점)
+		UAIBlueprintHelperLibrary::SimpleMoveToActor(Controller, Target);
+	}
 
 	return EBTNodeResult::InProgress;
 }
@@ -76,93 +74,116 @@ void UBTTask_TraceTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 	AAIController* Controller = OwnerComp.GetAIOwner();
 
 	AAIPawn* Pawn = Cast<AAIPawn>(Controller->GetPawn());
-
-	// Controller가 빙의되어 있는 Pawn이 없으면 Task 종료
-	if (!IsValid(Pawn))
-	{
-		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-
-		Controller->StopMovement();
-
-		return;
-	}
-
 	UMonsterState* MonsterState = Pawn->GetState<UMonsterState>();
-
-	if (!IsValid(MonsterState))
-		return;
-
 	UPawnMovementComponent* Movement = Pawn->GetMovementComponent();
-	if (IsValid(Movement))
-	{
-		if (!Movement->IsMovingOnGround())
-		{
-			FVector Location = Pawn->GetActorLocation();
-			Pawn->SetActorRelativeLocation(FVector(Location.X, Location.Y, mOnGroundLocation.Z));
-		}
-	}
-
 	AActor* Target = Cast<AActor>(Controller->GetBlackboardComponent()->GetValueAsObject(TEXT("Target")));
-
-	// 타겟이 없어도 Task 종료
-	if (!IsValid(Target))
 	{
-		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-
-		Controller->StopMovement();
-
-		Pawn->SetActorRotation(Pawn->GetCurrentRotation());
-		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
-
-		return;
-	}
-
-	FVector AILocation = Pawn->GetActorLocation();
-	FVector TargetLocation = Target->GetActorLocation();
-
-	SetDirection(Pawn, AILocation, TargetLocation);
-
-	if (Pawn->IsStun())
-	{
-		mAccTime += DeltaSeconds;
-
-		if (mAccTime >= mStunDuration)
+		// Controller가 빙의되어 있는 Pawn이 없으면 Task 종료
+		if (!IsValid(Pawn))
 		{
-			Pawn->SetMoveSpeed((float)MonsterState->mMaxMoveSpeed);
-			Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Run);;
+			SetStopTask(OwnerComp, Controller);
+			return;
+		}
 
-			Pawn->SetStunState(false);
+		if (!IsValid(MonsterState))
+		{
+			SetStopTask(OwnerComp, Controller);
+			return;
+		}
 
-			mAccTime = 0.f;
+		if (IsValid(Movement))
+		{
+			if (!Movement->IsMovingOnGround())
+			{
+				FVector Location = Pawn->GetActorLocation();
+				Pawn->SetActorRelativeLocation(FVector(Location.X, Location.Y, mOnGroundLocation.Z));
+			}
+		}
+
+		// 타겟이 없어도 Task 종료
+		if (!IsValid(Target))
+		{
+			SetStopTask(OwnerComp, Controller);
+
+			Pawn->SetActorRotation(Pawn->GetCurrentRotation());
+			Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
+
+			return;
+		}
+		else if (Pawn->GetAnimType() == (uint8)EMonsterAnimType::Idle)
+		{
+			Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Run);
 		}
 	}
 
-	float Distance = GetDistance(Pawn, Target, AILocation, TargetLocation);
-
-	if (Distance <= MonsterState->mAttackDistance)
+	if (!Pawn->IsAttackEnable())
 	{
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-
-		Controller->StopMovement();
-
-		//Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
+		if(Pawn->GetMovementComponent()->Velocity.Size() <= 0.f)
+		{
+			Controller->StopMovement();
+		}
 	}
-	
-	if(Pawn->GetAnimType() == (uint8)EMonsterAnimType::Run
-		&& Pawn->GetMovementComponent()->Velocity == FVector(0))
+	if (Pawn->IsAttackEnable())
 	{
-		UAIBlueprintHelperLibrary::SimpleMoveToActor(Controller, Target);
-	}
-	else if (Pawn->GetAnimType() != (uint8)EMonsterAnimType::Run
-		&& Pawn->GetMovementComponent()->Velocity != FVector(0)) 
-	{
-		Controller->StopMovement();
+		if (Pawn->GetAnimType() == (uint8)EMonsterAnimType::Run
+			&& (Pawn->GetMovementComponent()->Velocity.Size() <= 0.f))
+		{
+			UAIBlueprintHelperLibrary::SimpleMoveToActor(Controller, Target);
+		}
+		else if (Pawn->GetAnimType() != (uint8)EMonsterAnimType::Run
+			&& (Pawn->GetMovementComponent()->Velocity.Size() > 0.f))
+		{
+			Controller->StopMovement();
+		}
+
+		FVector AILocation = Pawn->GetActorLocation();
+		FVector TargetLocation = Target->GetActorLocation();
+
+		SetDirection(Pawn, AILocation, TargetLocation);
+
+		if (Pawn->IsStun())
+		{
+			mAccTime += DeltaSeconds;
+
+			Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Run);;
+			Pawn->SetMoveSpeed((float)MonsterState->mMoveSpeed);
+			UAIBlueprintHelperLibrary::SimpleMoveToActor(Controller, Target);
+
+			if (mAccTime >= mStunDuration)
+			{
+				Pawn->SetMoveSpeed((float)MonsterState->mMaxMoveSpeed);
+
+				Pawn->SetStunState(false);
+
+				mAccTime = 0.f;
+			}
+		}
+
+		float Distance = GetDistance(Pawn, Target, AILocation, TargetLocation);
+
+		if (Distance <= MonsterState->mAttackDistance)
+		{
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+
+			Controller->StopMovement();
+
+			Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
+		}
 	}
 }
 
 void UBTTask_TraceTarget::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult)
 {
 	Super::OnTaskFinished(OwnerComp, NodeMemory, TaskResult); 
+}
+
+
+void UBTTask_TraceTarget::SetStopTask(UBehaviorTreeComponent& OwnerComp,
+	AAIController* Controller)
+{
+	FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+
+	Controller->StopMovement();
 }
 
 void UBTTask_TraceTarget::SetDirection(AActor* AIPawn, FVector& AILocation, FVector& TargetLocation)

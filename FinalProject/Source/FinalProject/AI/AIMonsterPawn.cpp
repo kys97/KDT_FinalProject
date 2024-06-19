@@ -89,7 +89,9 @@ void AAIMonsterPawn::SetBlackboardValue(const AController* EventInstigator, ACon
 		EnemyPawn = nullptr;
 
 	DefaultAIController->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), EnemyPawn);
+	
 	mSetBlackboardValue = true;
+	mAccTime = 0.f;
 }
 
 void AAIMonsterPawn::SetMoveSpeed(float Speed)
@@ -148,6 +150,7 @@ void AAIMonsterPawn::Tick(float DeltaTime)
 	if (mSetBlackboardValue)
 	{
 		mAccTime += DeltaTime;
+
 		if (mAccTime >= mBlackboardResetDuration)
 		{
 			mSetBlackboardValue = false;
@@ -199,21 +202,22 @@ float AAIMonsterPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
 
 	mMonsterState = GetState<UMonsterState>();
 
-	Damage -= mMonsterState->mArmorPower;
+	Damage -= (float)mMonsterState->mArmorPower;
 	Damage = Damage < 1.f ? 1.f : Damage;
 
 	if (mMonsterState->mHP > 0)
 	{
-		SetBlackboardValue(EventInstigator, AIController);
-
 		mMonsterState->ChangeHP(-Damage);
 		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Client Log! AAIMonsterPawn/Monster mHP : %d"), mMonsterState->mHP));
-		UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/Monster mHP : %d"), mMonsterState->mHP);
+		UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/Monster mHP : %f"), mMonsterState->mHP);
 
 		if (Damage >= 10.f)
 		{
 			ChangeAnimLoop(true);
 			ChangeAIAnimType((uint8)EMonsterAnimType::TakeDamage);
+
+			if (IsAttackEnable())
+				SetBlackboardValue(EventInstigator, AIController);
 
 			SetReactLocation(DamageCauser);
 		}
