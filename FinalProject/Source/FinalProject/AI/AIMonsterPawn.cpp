@@ -230,6 +230,7 @@ float AAIMonsterPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
 			ChangeAIAnimType((uint8)EMonsterAnimType::Death);
 
 			AIController->UnPossess();
+			AIController->StopAI();
 		}
 	}
 

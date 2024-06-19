@@ -27,4 +27,7 @@ protected:
 	// AI에서 빙의 해지 될 때 함수
 	virtual void OnUnPossess() override;
 
+public:
+	void StopAI();
+
 };
