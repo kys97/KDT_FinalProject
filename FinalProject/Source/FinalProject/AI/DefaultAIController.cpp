@@ -42,3 +42,10 @@ void ADefaultAIController::OnUnPossess()
 {
 	Super::OnUnPossess();
 }
+
+void ADefaultAIController::StopAI()
+{
+	UBehaviorTreeComponent* BehaviorTreeComponent = Cast<UBehaviorTreeComponent>(BrainComponent);
+	if (IsValid(BehaviorTreeComponent))
+		BehaviorTreeComponent->StopTree(EBTStopMode::Safe);
+}
