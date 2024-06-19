@@ -57,13 +57,22 @@ public:
 	AAIMonsterPawn();
 
 protected:
+	FVector AILocation;
+	FVector HitReactLocation;
+
 	class UMonsterAnimInstance* mAnimInst;
 	FString mTableRowName;
 
 	class UMonsterState* mMonsterState;
 
+	bool mTakeDamage;
+	float mTakeDamageTime;
+
 	bool mOverlap;
 	bool mAttackEnd;
+	bool mAttackEnable;
+
+	bool mStun;
 
 	bool mDeathEnd;
 	//float mDeadTime;
@@ -73,14 +82,29 @@ protected:
 	float mDeadDuration;
 
 	bool mSetBlackboardValue = false;
-	float mBlackboardResetDuration = 3.f;
+
+	UPROPERTY(EditAnywhere)
+	float mBlackboardResetDuration = 5.f;
+
+	FRotator mCurrentRotaion;
 
 public:
+	virtual FRotator GetCurrentRotation()
+	{
+		return mCurrentRotaion;
+	}
+
 	void DeathEnd();
 
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void ChangeAIAnimType(uint8 AnimType);
 	virtual void ChangeAIAnimType_Implementation(uint8 AnimType);
+
+	virtual uint8 GetAnimType();
+
+	UFUNCTION(NetMulticast, Reliable)
+	virtual void ChangeAnimLoop(bool Loop);
+	virtual void ChangeAnimLoop_Implementation(bool Loop);
 
 	virtual bool AIIsOverlap()
 	{
@@ -104,12 +128,38 @@ public:
 		return mAttackEnd;
 	}
 
+	virtual void SetAttackEnable(bool End)
+	{
+		mAttackEnable = End;
+	}
+
+	virtual bool IsAttackEnable()
+	{
+
+		return mAttackEnable;
+	}
+
 	void SetBlackboardValue(const AController* EventInstigator, AController* AIController);
 
 	virtual bool IsSetBlackboardValue()
 	{
 		return mSetBlackboardValue;
 	}
+
+	virtual void SetStunState(bool Stun)
+	{
+		mStun = Stun;
+	}
+
+	virtual bool IsStun()
+	{
+		return mStun;
+	}
+
+	virtual void SetMoveSpeed(float Speed);
+
+protected:
+	void SetReactLocation(AActor* DamageCauser);
 
 protected:
 	// Called when the game starts or when spawned

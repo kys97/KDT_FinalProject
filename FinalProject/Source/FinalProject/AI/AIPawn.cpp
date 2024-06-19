@@ -44,6 +44,15 @@ AAIPawn::AAIPawn()
 	mPatrolDir = 1;
 }
 
+FRotator AAIPawn::GetCurrentRotation()
+{
+	return FRotator();
+}
+
+void AAIPawn::SetMoveSpeed(float Speed)
+{
+}
+
 void AAIPawn::SetPointActorArray(const TArray<class APatrolPointActor*>& PointActorArray)
 {
 	if (PointActorArray.IsEmpty())
@@ -73,8 +82,31 @@ bool AAIPawn::IsAttackEnd()
 	return false;
 }
 
+void AAIPawn::SetAttackEnable(bool End)
+{
+}
+
+bool AAIPawn::IsAttackEnable()
+{
+	return false;
+}
+
+void AAIPawn::SetStunState(bool Stun)
+{
+}
+
+bool AAIPawn::IsStun()
+{
+	return false;
+}
+
 void AAIPawn::ChangeAIAnimType(uint8 AnimType)
 {
+}
+
+uint8 AAIPawn::GetAnimType()
+{
+	return uint8();
 }
 
 bool AAIPawn::AIIsOverlap()

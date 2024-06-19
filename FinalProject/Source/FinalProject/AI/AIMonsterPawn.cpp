@@ -36,16 +36,36 @@ AAIMonsterPawn::AAIMonsterPawn()
 	mOverlap = false;
 
 	mAttackEnd = false;
+	mAttackEnable = true;
 
 	mDeathEnd = false;
 	mAccTime = 0.f;
 	mDeadDuration = 5.f;
+
+	mTakeDamage = false;
+	mTakeDamageTime = 0.f;
+
+	mStun = false;
 }
 
 void AAIMonsterPawn::ChangeAIAnimType_Implementation(uint8 AnimType)
 {
 	if(IsValid(mAnimInst))
 		mAnimInst->ChangeAnimType((EMonsterAnimType)AnimType);
+}
+
+uint8 AAIMonsterPawn::GetAnimType()
+{
+	if (IsValid(mAnimInst))
+		return mAnimInst->GetAnimType();
+	else
+		return uint8();
+}
+
+void AAIMonsterPawn::ChangeAnimLoop_Implementation(bool Loop)
+{
+	if (IsValid(mAnimInst))
+		mAnimInst->ChangeAnimLoop(Loop);
 }
 
 void AAIMonsterPawn::DeathEnd()
@@ -62,15 +82,50 @@ void AAIMonsterPawn::SetBlackboardValue(const AController* EventInstigator, ACon
 {
 	ADefaultAIController* DefaultAIController = Cast<ADefaultAIController>(AIController);
 
-	APawn* EnemyPawn = EventInstigator->GetPawn();
+	APawn* EnemyPawn;
+	if (EventInstigator != nullptr)
+		EnemyPawn = EventInstigator->GetPawn();
+	else
+		EnemyPawn = nullptr;
 
 	DefaultAIController->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), EnemyPawn);
+	
 	mSetBlackboardValue = true;
+	mAccTime = 0.f;
+}
+
+void AAIMonsterPawn::SetMoveSpeed(float Speed)
+{
+	mMovement->MaxSpeed = Speed;
+
+	if (IsValid(mAnimInst))
+	{
+		mAnimInst->SetAnimSpeed(Speed);
+	}
+}
+
+void AAIMonsterPawn::SetReactLocation(AActor* DamageCauser)
+{
+	AILocation = GetActorLocation();
+	FVector TargetLocation = DamageCauser->GetActorLocation();
+
+	// 공격 방향을 구한다.
+	FVector	Dir = AILocation - TargetLocation;
+	Dir.Z = 0.0;
+
+	Dir.Normalize();
+
+	HitReactLocation = AILocation + Dir * (mMonsterState->mAttackDistance * 2.f);
+
+	mTakeDamage = true;
+	mTakeDamageTime = 0.f;
 }
 
 void AAIMonsterPawn::BeginPlay()
 {
 	Super::BeginPlay();
+
+	mCapsule->bApplyImpulseOnDamage = true;
 
 	mAnimInst = Cast<UMonsterAnimInstance>(mMesh->GetAnimInstance());
 
@@ -90,9 +145,12 @@ void AAIMonsterPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	mCurrentRotaion = GetActorRotation();
+
 	if (mSetBlackboardValue)
 	{
 		mAccTime += DeltaTime;
+
 		if (mAccTime >= mBlackboardResetDuration)
 		{
 			mSetBlackboardValue = false;
@@ -112,14 +170,23 @@ void AAIMonsterPawn::Tick(float DeltaTime)
 			mAccTime = 0.f;
 		}
 	}
-}
 
-void AAIMonsterPawn::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("Monster BeginOverlap"));
+	if (mTakeDamage)
+	{
+		mTakeDamageTime += DeltaTime;
 
-	mOverlap = true;
+		float Alpha = mTakeDamageTime / 0.2f;
+
+		FVector NewLocation = FMath::Lerp(AILocation, HitReactLocation, Alpha);
+
+		SetActorLocation(NewLocation);
+
+		if (mTakeDamageTime >= 0.2)
+		{
+			mTakeDamage = false;
+			mTakeDamageTime = 0.f;
+		}
+	}
 }
 
 // 서버에서만 동작
@@ -130,31 +197,52 @@ float AAIMonsterPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
 
 	ADefaultAIController* AIController = Cast<ADefaultAIController>(GetController());
 
-	SetBlackboardValue(EventInstigator, AIController);
+	if (!IsValid(AIController))
+		return 0;
 
 	mMonsterState = GetState<UMonsterState>();
 
-	Damage -= mMonsterState->mArmorPower;
+	Damage -= (float)mMonsterState->mArmorPower;
 	Damage = Damage < 1.f ? 1.f : Damage;
 
-	if (mMonsterState->mHP > 0 && !mDeathEnd)
+	if (mMonsterState->mHP > 0)
 	{
 		mMonsterState->ChangeHP(-Damage);
 		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Client Log! AAIMonsterPawn/Monster mHP : %d"), mMonsterState->mHP));
-		UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/Monster mHP : %d"), mMonsterState->mHP);
+		UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/Monster mHP : %f"), mMonsterState->mHP);
+
+		if (Damage >= 10.f)
+		{
+			ChangeAnimLoop(true);
+			ChangeAIAnimType((uint8)EMonsterAnimType::TakeDamage);
+
+			if (IsAttackEnable())
+				SetBlackboardValue(EventInstigator, AIController);
+
+			SetReactLocation(DamageCauser);
+		}
 
 		if (mMonsterState->mHP <= 0)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("Monster Dead"));
-			UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/Monster Dead"));
+			SetBlackboardValue(nullptr, AIController);
+			mCapsule->bApplyImpulseOnDamage = false;
 
 			ChangeAIAnimType((uint8)EMonsterAnimType::Death);
 
 			AIController->UnPossess();
+			AIController->StopAI();
 		}
-	}	
+	}
 
 	return Damage;
+}
+
+void AAIMonsterPawn::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("Monster BeginOverlap"));
+
+	mOverlap = true;
 }
 
 void AAIMonsterPawn::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
