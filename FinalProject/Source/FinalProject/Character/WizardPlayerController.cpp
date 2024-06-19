@@ -4,10 +4,16 @@
 #include "WizardPlayerController.h"
 #include "Wizard.h"
 
+#include "Blueprint/UserWidget.h"
+
 
 AWizardPlayerController::AWizardPlayerController()
 {
-
+	static ConstructorHelpers::FClassFinder<UUserWidget> GameWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprint/UI/GameUI.GameUI'"));
+	if (GameWidgetClass.Succeeded())
+	{
+		mGameWidget = GameWidgetClass.Class;
+	}
 }
 
 void AWizardPlayerController::BeginPlay()

@@ -20,6 +20,9 @@ class FINALPROJECT_API AWizardPlayerController : public APlayerController
 public:
 	AWizardPlayerController();
 
+private:
+	TSubclassOf<UUserWidget> mGameWidget;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
