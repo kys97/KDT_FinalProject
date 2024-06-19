@@ -75,3 +75,5 @@ FinalProject/DerivedDataCache/*
 
 # Uproject File Ignore
 FinalProject/*.uproject
+
+FinalProject/Content/ParagonRampage
