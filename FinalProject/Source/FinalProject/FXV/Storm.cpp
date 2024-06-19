@@ -21,7 +21,7 @@ AStorm::AStorm()
 	mOutSideCollision->SetCapsuleSize(200.f, 420.f);
 	mOutSideCollision->SetRelativeLocation(FVector(0.f, 0.f, 220.f));
 	mOutSideCollision->OnComponentBeginOverlap.AddDynamic(this, &AStorm::OnOutSideCapsuleOverlapBegin);
-
+	mOutSideCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	// InSide Collision Set
 	mInsideCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("InsideCollision"));
@@ -59,6 +59,7 @@ void AStorm::BeginDelayOver()
 
 	// Activate
 	mParticle->Activate();
+	mOutSideCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 }
 
 
@@ -92,9 +93,11 @@ void AStorm::Tick(float DeltaTime)
 
 void AStorm::OnOutSideCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("몬스터 충돌")));
 	AAIMonsterPawn* Monster = Cast<AAIMonsterPawn>(OtherActor);
 	if (Monster && SkillOwner)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("몬스터 충돌 : Skill Owner 있음")));
 		// Monster->TakeDamage()
 		FDamageEvent DmgEvent;
 		Monster->TakeDamage(SkillDamage / 2, DmgEvent, SkillOwner->GetController(), SkillOwner);
