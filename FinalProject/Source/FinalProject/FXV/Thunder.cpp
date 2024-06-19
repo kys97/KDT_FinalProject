@@ -9,7 +9,7 @@ AThunder::AThunder()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Thunder Particle Set
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> ThunderParticle{ TEXT("/Script/Engine.ParticleSystem'/Game/Blueprint/FXV/P_ky_lightning3.P_ky_lightning3'") };
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> ThunderParticle{ TEXT("/Script/Engine.ParticleSystem'/Game/Blueprint/FXV/BlueThunder.BlueThunder'") };
 	if (ThunderParticle.Succeeded())
 	{
 		mParticle->SetTemplate(ThunderParticle.Object);

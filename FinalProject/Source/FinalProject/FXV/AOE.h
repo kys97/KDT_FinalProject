@@ -30,9 +30,6 @@ public:
 	UFUNCTION()
 	void OnCapsuleOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-public:
-	void Initialize(AWizard* owner, int32 damage, EWizardJob job);
-
 private:
 	void SkillBegin();
 	void SkillOver();

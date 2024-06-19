@@ -164,7 +164,7 @@ void ABlueWizard::SecondSkill()
 			FVector SpawnLocation = (GetActorLocation() + EndLocation) / 2.f;
 			SpawnLocation.Z = 0.f;
 
-			ServerSecondSkillSpawn(this, SpawnLocation, SpawnRotation, State->mSecondSkillAttackDamage, State->mJob);
+			ServerSecondSkillSpawn(this, SpawnLocation, SpawnRotation, State->mSecondSkillAttackDamage);
 
 			// Use MP
 			State->mMP -= 50; // TODO : MP사용량 나중에 추후 수정
@@ -186,15 +186,7 @@ void ABlueWizard::ThirdSkill()
 			// Get Wizard State
 			AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
 
-			// Spawn Rotation
-			FRotator SpawnRotation = GetActorRotation();
-
-			// Spawn Location
-			FVector	EndLocation = GetActorLocation() + GetActorForwardVector() * State->mThirdSkillAttackDistance;
-			FVector SpawnLocation = (GetActorLocation() + EndLocation) / 2.f;
-			SpawnLocation.Z = 0.f;
-
-			ServerThirdSkillSpawn(this, GetActorLocation(), GetActorRotation(), State->mThirdSkillAttackDamage, State->mJob);
+			ServerThirdSkillSpawn(this, GetActorLocation(), GetActorRotation(), State->mThirdSkillAttackDamage);
 
 			// Use MP
 			State->mMP -= 50; // TODO : MP사용량 나중에 추후 수정
@@ -239,7 +231,7 @@ void ABlueWizard::ServerFirstSkillSpawn_Implementation(AWizard* SkillOwner, FVec
 }
 
 
-void ABlueWizard::ServerSecondSkillSpawn_Implementation(AWizard* SkillOwner, FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage, EWizardJob Job)
+void ABlueWizard::ServerSecondSkillSpawn_Implementation(AWizard* SkillOwner, FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage)
 {
 	UWorld* const World = GetWorld();
 	if (World != nullptr)
@@ -256,7 +248,7 @@ void ABlueWizard::ServerSecondSkillSpawn_Implementation(AWizard* SkillOwner, FVe
 }
 
 
-void ABlueWizard::ServerThirdSkillSpawn_Implementation(AWizard* SkillOwner, FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage, EWizardJob Job)
+void ABlueWizard::ServerThirdSkillSpawn_Implementation(AWizard* SkillOwner, FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage)
 {
 	UWorld* const World = GetWorld();
 	if (World != nullptr)

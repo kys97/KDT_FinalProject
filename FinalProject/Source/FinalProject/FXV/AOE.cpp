@@ -8,7 +8,7 @@ AAOE::AAOE()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// AOE Particle Set
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> AOEParticle{ TEXT("/Script/Engine.ParticleSystem'/Game/Blueprint/FXV/HealAura.HealAura'") };
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> AOEParticle{ TEXT("/Script/Engine.ParticleSystem'/Game/Blueprint/FXV/BlueHeal.BlueHeal'") };
 	if (AOEParticle.Succeeded())
 	{
 		mParticle->SetTemplate(AOEParticle.Object);
@@ -30,6 +30,9 @@ AAOE::AAOE()
 void AAOE::BeginPlay()
 {
 	Super::BeginPlay();
+
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AAOE::SkillBegin, 1.5f, false);
 }
 
 void AAOE::Tick(float DeltaTime)
@@ -62,29 +65,10 @@ void AAOE::OnCapsuleOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* Othe
 	}
 }
 
-void AAOE::Initialize(AWizard* owner, int32 damage, EWizardJob job)
-{
-	SkillOwner = owner;
-	SkillDamage = damage;
-	
-	SkillOwner->OnInvincibility();
-
-	FTimerHandle TimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AAOE::SkillBegin, 1.5f, false);
-}
-
 void AAOE::SkillBegin()
 {
-	// Skill Color Set
-	/*
-	switch (Job)
-	{
-	case EWizardJob::Blue:
-		Color = FVector(0.0f, 3.0f, 8.0f);
-		break;
-	}
-	mParticle->SetVectorParameter(TEXT("color"), Color);
-	*/
+	if(SkillOwner)
+		SkillOwner->OnInvincibility();
 
 	// Activate
 	mParticle->Activate();

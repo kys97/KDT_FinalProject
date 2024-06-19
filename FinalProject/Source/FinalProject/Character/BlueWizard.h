@@ -36,14 +36,11 @@ public:
 private:
 	void PlayAttackAnimation(AWizard* TargetWizard, EWizardAttackAnimTypes AnimType);
 
-
 	UFUNCTION(Server, Reliable)
 	void ServerFirstSkillSpawn(AWizard* SkillOwner, FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage);
-
 	UFUNCTION(Server, Reliable)
-	void ServerSecondSkillSpawn(AWizard* SkillOwner, FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage, EWizardJob Job);
-
+	void ServerSecondSkillSpawn(AWizard* SkillOwner, FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage);
 	UFUNCTION(Server, Reliable)
-	void ServerThirdSkillSpawn(AWizard* SkillOwner, FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage, EWizardJob Job);
+	void ServerThirdSkillSpawn(AWizard* SkillOwner, FVector SpawnLocation, FRotator SpawnRotation, int32 SkillDamage);
 
 };

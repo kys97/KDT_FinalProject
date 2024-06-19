@@ -11,7 +11,7 @@ AStorm::AStorm()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Storm Particle Set
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> StormParticle{ TEXT("/Script/Engine.ParticleSystem'/Game/Blueprint/FXV/P_ky_aquaStorm.P_ky_aquaStorm'") };
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> StormParticle{ TEXT("/Script/Engine.ParticleSystem'/Game/Blueprint/FXV/BlueStorm.BlueStorm'") };
 	if (StormParticle.Succeeded())
 	{
 		mParticle->SetTemplate(StormParticle.Object);
