@@ -16,21 +16,21 @@ public:
 	UWizardAnimInstance();
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite/*, Replicated*/)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsMove;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MoveSpeed;
 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite/*, Replicated*/)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsAttack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<TObjectPtr<UAnimMontage>> mAttackMontageArray;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite/*, Replicated*/)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 AttackIndex;
 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite/*, Replicated*/)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsDeath;
 
 public:
