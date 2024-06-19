@@ -19,6 +19,12 @@
 
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 
+#include "Perception/AIPerceptionComponent.h"
+#include "Perception/AIPerceptionTypes.h"
+#include "Perception/AISenseConfig_Sight.h"
+#include "Perception/AISenseConfig_Hearing.h"
+#include "Perception/AISenseConfig_Damage.h"
+
 // Server
 #include "Networking.h"
 #include "Sockets.h"
