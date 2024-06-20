@@ -37,9 +37,6 @@ protected:
 
 public:
 	bool GetMoveEnabled() { return mAnimInstance->MoveEnable(); }
-	void OnInvincibility() { Invincibility = true; }
-	void OffInvincibility() { Invincibility = false; }
-	bool GetInvincibility() { return Invincibility; }
 	AWizardPlayerState* GetWizardPlayerState();
 
 protected:
@@ -49,7 +46,11 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
-	void HealHP(float deltaTime);
+	
+	void HealHP(bool IsHealing) { Invincibility = IsHealing; }
+
+protected:
+	void SetHPUI(const float hp_rate);
 
 public:
 	virtual void NormalAttack();

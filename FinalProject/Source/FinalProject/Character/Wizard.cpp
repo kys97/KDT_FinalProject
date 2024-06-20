@@ -125,6 +125,12 @@ void AWizard::SetHPUI(const float hp_rate)
 	GetController<AWizardPlayerController>()->GetGameWidget()->SetHPBar(hp_rate);
 }
 
+void AWizard::SetMPUI(const float mp_rate)
+{
+	// MP UI Set
+	GetController<AWizardPlayerController>()->GetGameWidget()->SetMPBar(mp_rate);
+}
+
 void AWizard::NormalAttack() {}
 void AWizard::FirstSkill() {}
 void AWizard::SecondSkill() {}

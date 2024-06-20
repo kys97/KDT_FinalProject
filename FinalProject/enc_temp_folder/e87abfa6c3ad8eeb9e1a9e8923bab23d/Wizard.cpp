@@ -2,7 +2,8 @@
 
 
 #include "Wizard.h"
-
+#include "WizardPlayerController.h"
+#include "../UI/GameWidget.h"
 
 
 // Sets default values
@@ -59,6 +60,21 @@ void AWizard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (Invincibility)
+	{
+		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+		float healingPoint = State->mHPMax * 0.8 * DeltaTime;
+		if (State->mHP < State->mHPMax)
+		{
+			if (State->mHP > State->mHPMax)
+				State->mHP = State->mHPMax;
+			else
+			{
+				FDamageEvent DmgEvent;
+				ServerTakeDamge(healingPoint * (-1), DmgEvent, GetController(), this);
+			}
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -70,8 +86,9 @@ void AWizard::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 float AWizard::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	// If Player is Invincible, Player doesnt take damage
-	if (!Invincibility)
+	if (((!Invincibility) && Damage > 0) || (Invincibility && Damage < 0))
 	{
+		// Authority Check
 		if (HasAuthority())
 		{
 			Damage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
@@ -81,11 +98,14 @@ float AWizard::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AContro
 			ServerTakeDamge(Damage, DamageEvent, EventInstigator, DamageCauser);
 		}
 
+		// Hp Set
 		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
 		State->mHP -= Damage;
 
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, FString::Printf(TEXT("Player HP : %f"), State->mHP));
-
+		// Set HP UI
+		SetHPUI(State->mHP / State->mHPMax);
+		
+		// Death Check
 		if (State->mHP <= 0)
 		{
 			if (HasAuthority())
@@ -99,19 +119,10 @@ float AWizard::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AContro
 	return Damage;
 }
 
-void AWizard::HealHP(float deltaTime)
+void AWizard::SetHPUI(const float hp_rate)
 {
-	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
-	float healingPoint = State->mHPMax * 0.8 * deltaTime;
-	if (State->mHP < State->mHPMax)
-	{
-		if (State->mHP > State->mHPMax) State->mHP = State->mHPMax;
-		else
-		{
-			FDamageEvent DmgEvent;
-			ServerTakeDamge(healingPoint * (-1), DmgEvent, GetController(), this);
-		}
-	}
+	// HP UI Set
+	GetController<AWizardPlayerController>()->GetGameWidget()->SetHPBar(hp_rate);
 }
 
 void AWizard::NormalAttack() {}

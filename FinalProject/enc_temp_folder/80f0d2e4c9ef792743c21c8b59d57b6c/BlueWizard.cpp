@@ -138,9 +138,6 @@ void ABlueWizard::FirstSkill()
 
 			// Use MP
 			State->mMP -= 50; // TODO : MP사용량 나중에 추후 수정
-			
-			// Set HP UI
-			SetMPUI(State->mMP / State->mMPMax);
 		}
 	}
 }
@@ -171,9 +168,6 @@ void ABlueWizard::SecondSkill()
 
 			// Use MP
 			State->mMP -= 50; // TODO : MP사용량 나중에 추후 수정
-
-			// Set HP UI
-			SetMPUI(State->mMP / State->mMPMax);
 		}
 	}
 }
@@ -196,9 +190,6 @@ void ABlueWizard::ThirdSkill()
 
 			// Use MP
 			State->mMP -= 50; // TODO : MP사용량 나중에 추후 수정
-
-			// Set HP UI
-			SetMPUI(State->mMP / State->mMPMax);
 		}
 	}
 }

@@ -22,6 +22,12 @@ protected:
 	UProgressBar* mHPBar;
 	UProgressBar* mMPBar;
 
+private:
+	bool mIsAttack = false;
+	float mNewHp;
+	float mSpeed = 10.f;
+	float tempHp;
+
 protected:
 	// 위젯 생성시 한번
 	virtual void NativeOnInitialized();

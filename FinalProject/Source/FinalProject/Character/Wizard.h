@@ -51,6 +51,7 @@ public:
 
 protected:
 	void SetHPUI(const float hp_rate);
+	void SetMPUI(const float mp_rate);
 
 public:
 	virtual void NormalAttack();
