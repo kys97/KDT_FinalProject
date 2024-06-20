@@ -29,7 +29,8 @@ private:
 	float mNewHp;
 	float tempHp;
 
-	bool mUseSkill = false;
+	bool mChangeMP = false;
+	int mGainOrLoose = 0;
 	float mNewMp;
 	float tempMp;
 

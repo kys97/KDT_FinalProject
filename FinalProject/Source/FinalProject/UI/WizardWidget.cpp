@@ -30,6 +30,7 @@ void UWizardWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
+	// Take Damage
 	if (mIsAttack)
 	{
 		tempHp = mNewHp * InDeltaTime * mSpeed;
@@ -44,29 +45,34 @@ void UWizardWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 		}
 	}
 
-	if (mUseSkill)
+	// Use Skill
+	if (mChangeMP)
 	{
-		tempMp = mNewMp * InDeltaTime * mSpeed;
-		mMPBar->SetPercent(mMPBar->GetPercent() - tempMp);
-		mNewMp -= tempMp;
+		tempMp = mNewMp * InDeltaTime * mSpeed * mGainOrLoose;
+		mMPBar->SetPercent(mMPBar->GetPercent() + tempMp);
+		mNewMp += tempMp;
 
 		if (mNewMp < 0.0001f)
 		{
-			mMPBar->SetPercent(mMPBar->GetPercent() - mNewMp);
+			mMPBar->SetPercent(mMPBar->GetPercent() + mNewMp);
 			mNewMp = 0.f;
-			mUseSkill = false;
+			mChangeMP = false;
 		}
+	}
+	else if(mMPBar->GetPercent() < 1) // Add MP
+	{
+		mMPBar->SetPercent(mMPBar->GetPercent() + InDeltaTime * 0.01f);
 	}
 }
 
 void UWizardWidget::SetHPBar(const float hp_per)
 {
-	if (mHPBar->GetPercent() > hp_per)
+	if (mHPBar->GetPercent() > hp_per) // loose hp
 	{
 		mNewHp = mHPBar->GetPercent() - hp_per;
 		mIsAttack = true;
 	}
-	else
+	else //  heal hp : healing tick is calling in Wizard
 	{
 		mHPBar->SetPercent(hp_per);
 	}
@@ -74,13 +80,16 @@ void UWizardWidget::SetHPBar(const float hp_per)
 
 void UWizardWidget::SetMPBar(const float mp_per)
 {
-	if (mMPBar->GetPercent() > mp_per)
+	if (mMPBar->GetPercent() > mp_per) // loose mp
 	{
+		mGainOrLoose = -1;
 		mNewMp = mMPBar->GetPercent() - mp_per;
-		mUseSkill = true;
 	}
-	else
+	else // gain mp
 	{
-		mMPBar->SetPercent(mp_per);
+		mGainOrLoose = 1;
+		mNewMp = mp_per - mMPBar->GetPercent();
 	}
+
+	mChangeMP = true;
 }
