@@ -51,9 +51,6 @@ public:
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	void HealHP(float deltaTime);
 
-protected:
-	void SetHPUI(const float hp_rate);
-
 public:
 	virtual void NormalAttack();
 	virtual void FirstSkill();

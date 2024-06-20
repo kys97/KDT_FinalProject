@@ -24,9 +24,6 @@ protected:
 	TSubclassOf<UUserWidget> mGameWidgetClass;
 	class UGameWidget* mGameWidget;
 	
-public:
-	UGameWidget* GetGameWidget() { return mGameWidget; }
-
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;

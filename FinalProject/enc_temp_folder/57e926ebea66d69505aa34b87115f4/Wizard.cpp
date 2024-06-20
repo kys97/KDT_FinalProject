@@ -2,8 +2,7 @@
 
 
 #include "Wizard.h"
-#include "WizardPlayerController.h"
-#include "../UI/GameWidget.h"
+
 
 
 // Sets default values
@@ -73,7 +72,6 @@ float AWizard::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AContro
 	// If Player is Invincible, Player doesnt take damage
 	if (!Invincibility)
 	{
-		// Authority Check
 		if (HasAuthority())
 		{
 			Damage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
@@ -83,14 +81,11 @@ float AWizard::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AContro
 			ServerTakeDamge(Damage, DamageEvent, EventInstigator, DamageCauser);
 		}
 
-		// Hp Set
 		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
 		State->mHP -= Damage;
 
-		// Set HP UI
-		SetHPUI(State->mHP / State->mHPMax);
-		
-		// Death Check
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, FString::Printf(TEXT("Player HP : %f"), State->mHP));
+
 		if (State->mHP <= 0)
 		{
 			if (HasAuthority())
@@ -117,12 +112,6 @@ void AWizard::HealHP(float deltaTime)
 			ServerTakeDamge(healingPoint * (-1), DmgEvent, GetController(), this);
 		}
 	}
-}
-
-void AWizard::SetHPUI(const float hp_rate)
-{
-	// HP UI Set
-	GetController<AWizardPlayerController>()->GetGameWidget()->SetHPBar(hp_rate);
 }
 
 void AWizard::NormalAttack() {}

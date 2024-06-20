@@ -4,22 +4,23 @@
 
 #include "../GameInfo.h"
 
-
+#include "Blueprint/UserWidget.h"
+#include "Components/ProgressBar.h"
 
 #include "Blueprint/UserWidget.h"
-#include "GameWidget.generated.h"
+#include "WizardWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FINALPROJECT_API UGameWidget : public UUserWidget
+class FINALPROJECT_API UWizardWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(meta=(BindWidget))
-	class UWizardWidget* WizardWidget;
+	UProgressBar* mHPBar;
+	UProgressBar* mMPBar;
 
 protected:
 	// 위젯 생성시 한번
@@ -28,7 +29,7 @@ protected:
 	// AddToViewport
 	virtual void NativePreConstruct();
 	virtual void NativeConstruct(); // 생성
-
+	
 	// Viewport에서 Remove될때
 	virtual void NativeDestruct();
 
