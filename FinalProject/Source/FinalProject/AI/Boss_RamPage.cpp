@@ -2,6 +2,7 @@
 
 #include "Boss_RamPage.h"
 #include "BossAIController.h"
+#include "MonsterAnimInstance.h"
 
 ABoss_RamPage::ABoss_RamPage()
 {
@@ -12,7 +13,7 @@ ABoss_RamPage::ABoss_RamPage()
 	if (MeshAsset.Succeeded())
 		mMesh->SetSkeletalMesh(MeshAsset.Object);
 
-	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/AI/Monster/Animation/AB_RamPage.AB_RamPage_C'"));
+	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/AI/Monster/Animation/RamPage/AB_RamPage.AB_RamPage_C'"));
 
 	if (AnimAsset.Succeeded())
 		mMesh->SetAnimInstanceClass(AnimAsset.Class);
@@ -33,6 +34,11 @@ ABoss_RamPage::ABoss_RamPage()
 void ABoss_RamPage::BeginPlay()
 {
 	Super::BeginPlay();
+
+	mAnimInst->SetBossCondition(EBossCondition::Nomal);
+
+	ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
+	//PlaySkillMontage((uint8)EBossCondition::Nomal);
 }
 
 void ABoss_RamPage::Tick(float DeltaTime)
@@ -40,6 +46,3 @@ void ABoss_RamPage::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ABoss_RamPage::NormalAttack()
-{
-}

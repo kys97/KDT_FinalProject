@@ -20,6 +20,7 @@ AAIMonsterPawn::AAIMonsterPawn()
 	PrimaryActorTick.bCanEverTick = true;
 
 	mState = CreateDefaultSubobject<UMonsterState>(TEXT("MonsterState"));
+	//mAnimInst = CreateDefaultSubobject<UMonsterAnimInstance>(TEXT("MonsterAnimInstance"));
 
 	AIControllerClass = ADefaultAIController::StaticClass();
 
@@ -60,6 +61,12 @@ uint8 AAIMonsterPawn::GetAnimType()
 		return mAnimInst->GetAnimType();
 	else
 		return uint8();
+}
+
+void AAIMonsterPawn::PlaySkillMontage_Implementation(uint8 BossState)
+{
+	if (IsValid(mAnimInst))
+		mAnimInst->PlaySkillMontage(BossState);
 }
 
 void AAIMonsterPawn::ChangeAnimLoop_Implementation(bool Loop)

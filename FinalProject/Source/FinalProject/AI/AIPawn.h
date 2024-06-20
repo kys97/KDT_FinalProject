@@ -116,6 +116,9 @@ public:
 public:
 	virtual void ChangeAIAnimType(uint8 AnimType);
 	virtual uint8 GetAnimType();
+
+	virtual void PlaySkillMontage(uint8 BossState);
+
 	virtual bool AIIsOverlap();
 	virtual void ChangeOverlapVlaue(bool Value);
 

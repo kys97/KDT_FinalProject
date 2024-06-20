@@ -109,6 +109,10 @@ uint8 AAIPawn::GetAnimType()
 	return uint8();
 }
 
+void AAIPawn::PlaySkillMontage(uint8 BossState)
+{
+}
+
 bool AAIPawn::AIIsOverlap()
 {
 	return false;
