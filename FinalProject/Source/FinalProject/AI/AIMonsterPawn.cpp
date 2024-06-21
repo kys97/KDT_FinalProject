@@ -69,6 +69,10 @@ void AAIMonsterPawn::PlaySkillMontage_Implementation(uint8 BossState)
 		mAnimInst->PlaySkillMontage(BossState);
 }
 
+void AAIMonsterPawn::SkillSetting(int32 Num)
+{
+}
+
 void AAIMonsterPawn::ChangeAnimLoop_Implementation(bool Loop)
 {
 	if (IsValid(mAnimInst))

@@ -22,8 +22,8 @@ enum class EMonsterAnimType : uint8
 enum class EBossCondition : uint8
 {
 	Nomal = 3,	// Skill Num
-	Angry = 5,
-	Danger = 6
+	Angry = 4,
+	Danger = 5
 };
 
 
@@ -85,6 +85,11 @@ public:
 		return BossCondition;
 	}
 
+	int32 GetSkillMontageIndex()
+	{
+		return mSkillIndex;
+	}
+
 public:
 	void SetAnimSpeed(int32 Speed)
 	{
@@ -130,6 +135,19 @@ public:
 
 	UFUNCTION()
 	void AnimNotify_HitReactEnd();
+
+public:
+	UFUNCTION()
+	void AnimNotify_SKillStart();
+
+	UFUNCTION()
+	void AnimNotify_SkillEnd();
+
+	UFUNCTION()
+	void AnimNotify_ParticleStart();
+
+	UFUNCTION()
+	void AnimNotify_ParticleEnd();
 
 public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

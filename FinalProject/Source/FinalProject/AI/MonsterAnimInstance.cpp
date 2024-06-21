@@ -90,10 +90,10 @@ void UMonsterAnimInstance::PlaySkillMontage(uint8 BossState)
 		// 다음 공격 동작을 재생하기 위해 인덱스 변경
 		// 다음 공격이 동일하지 않기 위해 최소값은 1
 		// 최대값은 배열 개수 -1
-		int32 RandNum = FMath::RandRange(1, (BossState - 1));
+		//int32 RandNum = FMath::RandRange(1, (BossState - 1));
 
-		// 배열 개수만큼 나눈 나머지는 인덱스 숫자
-		mSkillIndex = (mSkillIndex + RandNum) % BossState;
+		//// 배열 개수만큼 나눈 나머지는 인덱스 숫자
+		//mSkillIndex = (mSkillIndex + RandNum) % BossState;
 	}
 }
 
@@ -155,6 +155,27 @@ void UMonsterAnimInstance::AnimNotify_HitReactEnd()
 
 	Pawn->SetActorRotation(Pawn->GetCurrentRotation());
 	Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
+}
+
+void UMonsterAnimInstance::AnimNotify_SKillStart()
+{
+	mPlaySkill = true;
+}
+
+void UMonsterAnimInstance::AnimNotify_SkillEnd()
+{
+	mPlaySkill = false;
+}
+
+void UMonsterAnimInstance::AnimNotify_ParticleStart()
+{
+	AAIMonsterPawn* Pawn = Cast<AAIMonsterPawn>(TryGetPawnOwner());
+
+	Pawn->SkillSetting(mSkillIndex);
+}
+
+void UMonsterAnimInstance::AnimNotify_ParticleEnd()
+{
 }
 
 void UMonsterAnimInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

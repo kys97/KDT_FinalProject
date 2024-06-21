@@ -17,6 +17,9 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere)
+	UCapsuleComponent* mCapsule;
+
+	UPROPERTY(EditAnywhere)
 	UParticleSystemComponent* mParticle;
 
 	UPROPERTY(EditAnywhere)
@@ -39,4 +42,8 @@ public:
 
 	UFUNCTION()
 	void OnParticleFinish(UParticleSystemComponent* Particle);
+
+public:
+	virtual UCapsuleComponent* GetCapsule();
+
 };

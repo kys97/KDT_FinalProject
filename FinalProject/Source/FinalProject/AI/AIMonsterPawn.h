@@ -89,6 +89,13 @@ protected:
 	FRotator mCurrentRotaion;
 
 public:
+	UFUNCTION(NetMulticast, Reliable)
+	virtual void PlaySkillMontage(uint8 BossState);
+	virtual void PlaySkillMontage_Implementation(uint8 BossState);
+
+	virtual void SkillSetting(int32 Num);
+
+public:
 	virtual FRotator GetCurrentRotation()
 	{
 		return mCurrentRotaion;
@@ -101,10 +108,6 @@ public:
 	virtual void ChangeAIAnimType_Implementation(uint8 AnimType);
 
 	virtual uint8 GetAnimType();
-
-	UFUNCTION(NetMulticast, Reliable)
-	virtual void PlaySkillMontage(uint8 BossState);
-	virtual void PlaySkillMontage_Implementation(uint8 BossState);
 
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void ChangeAnimLoop(bool Loop);

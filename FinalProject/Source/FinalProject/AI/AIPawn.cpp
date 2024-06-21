@@ -113,6 +113,10 @@ void AAIPawn::PlaySkillMontage(uint8 BossState)
 {
 }
 
+void AAIPawn::SkillSetting(int32 Num)
+{
+}
+
 bool AAIPawn::AIIsOverlap()
 {
 	return false;
