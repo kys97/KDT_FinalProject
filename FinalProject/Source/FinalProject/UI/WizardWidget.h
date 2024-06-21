@@ -4,7 +4,6 @@
 
 #include "../GameInfo.h"
 
-#include "Blueprint/UserWidget.h"
 #include "Components/ProgressBar.h"
 
 #include "Blueprint/UserWidget.h"

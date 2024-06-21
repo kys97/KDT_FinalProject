@@ -35,6 +35,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool Invincibility = false;
 
+private:
+	int32 mFirstSkillRemindTime;
+	float m_fist_temp;
+	int32 mSecondSkillRemindTime;
+	float m_second_temp;
+	int32 mThirdSkillRemindTime;
+	float m_third_temp;
+
 public:
 	bool GetMoveEnabled() { return mAnimInstance->MoveEnable(); }
 	AWizardPlayerState* GetWizardPlayerState();
@@ -52,6 +60,10 @@ public:
 protected:
 	void SetHPUI(const float hp_rate);
 	void SetMPUI(const float mp_rate);
+
+	void UseFirstSkill(const float cooltime);
+	void UseSecondSkill(const float cooltime);
+	void UseThirdSkill(const float cooltime);
 
 public:
 	virtual void NormalAttack();

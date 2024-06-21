@@ -21,6 +21,9 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	class UWizardWidget* WizardWidget;
 
+	UPROPERTY(meta = (BindWidget))
+	class UWizardSkill* WizardSkillWidget;
+
 protected:
 	// 위젯 생성시 한번
 	virtual void NativeOnInitialized();
@@ -38,4 +41,12 @@ protected:
 public:
 	void SetHPBar(const float hp_per);
 	void SetMPBar(const float mp_per);
+
+	void SetFirstSkillCoolTime(const int32 remind_time, const float cooltime);
+	void SetSecondSkillCoolTime(const int32 remind_time, const float cooltime);
+	void SetThirdSkillCoolTime(const int32 remind_time, const float cooltime);
+
+	void EndFirstSkillCoolTime();
+	void EndSecondSkillCoolTime();
+	void EndThirdSkillCoolTime();
 };

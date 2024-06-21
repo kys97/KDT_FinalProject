@@ -24,14 +24,22 @@ void AWizardPlayerState::BeginPlay()
 
 		mNormalAttackPoint = Data->mNormalAttackPoint;
 		mNormalAttackDistance = Data->mNormalAttackDistance;
+
 		mFirstSkillAttackDamage = Data->mFirstSkillAttackDamage;
 		mFirstSkillAttackDistance = Data->mFirstSkillAttackDistance;
+		mFirstSkillCoolTime = Data->mFisrstSkillCoolTime;
+
 		mSecondSkillAttackDamage = Data->mSecondSkillAttackDamage;
 		mSecondSkillAttackDistance = Data->mSecondSkillAttackDistance;
+		mSecondSkillCoolTime = Data->mSecondSkillCoolTime;
+
 		mThirdSkillAttackDamage = Data->mThirdSkillAttackDamage;
 		mThirdSkillAttackDistance = Data->mThirdSkillAttackDistance;
+		mThirdSkillCoolTime = Data->mThirdSkillCoolTime;
+
 		mFourthSkillAttackDamage = Data->mFourthSkillAttackDamage;
 		mFourthSkillAttackDistance = Data->mFourthSkillAttackDistance;
+		mFourthSkillCoolTime = Data->mFourthSkillCoolTime;
 
 		mArmorPoint = Data->mArmorPoint;
 		mHPMax = Data->mHPMax;
@@ -41,6 +49,6 @@ void AWizardPlayerState::BeginPlay()
 		mHP = mHPMax;
 		mMP = mMPMax;
 		mLevel = 1;
-		mExp = 0;
+		mExp = 0.f;
 	}
 }

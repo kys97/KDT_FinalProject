@@ -4,6 +4,7 @@
 #include "GameWidget.h"
 
 #include "WizardWidget.h"
+#include "WizardSkill.h"
 
 
 void UGameWidget::NativeOnInitialized()
@@ -41,4 +42,34 @@ void UGameWidget::SetHPBar(const float hp_per)
 void UGameWidget::SetMPBar(const float mp_per)
 {
 	WizardWidget->SetMPBar(mp_per);
+}
+
+void UGameWidget::SetFirstSkillCoolTime(const int32 remind_time, const float cooltime)
+{
+	WizardSkillWidget->SetFirstSkillCoolTime(remind_time, cooltime);
+}
+
+void UGameWidget::SetSecondSkillCoolTime(const int32 remind_time, const float cooltime)
+{
+	WizardSkillWidget->SetSecondSkillCoolTime(remind_time, cooltime);
+}
+
+void UGameWidget::SetThirdSkillCoolTime(const int32 remind_time, const float cooltime)
+{
+	WizardSkillWidget->SetThirdSkillCoolTime(remind_time, cooltime);
+}
+
+void UGameWidget::EndFirstSkillCoolTime()
+{
+	WizardSkillWidget->EndFirstSkillCoolTime();
+}
+
+void UGameWidget::EndSecondSkillCoolTime()
+{
+	WizardSkillWidget->EndSecondSkillCoolTime();
+}
+
+void UGameWidget::EndThirdSkillCoolTime()
+{
+	WizardSkillWidget->EndThirdSkillCoolTime();
 }
