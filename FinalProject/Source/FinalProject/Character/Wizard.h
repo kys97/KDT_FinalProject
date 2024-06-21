@@ -45,6 +45,7 @@ private:
 
 public:
 	bool GetMoveEnabled() { return mAnimInstance->MoveEnable(); }
+	bool GetWizardDeath() { return mAnimInstance->GetIsDeath(); }
 	AWizardPlayerState* GetWizardPlayerState();
 
 protected:

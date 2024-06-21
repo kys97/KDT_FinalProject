@@ -43,6 +43,8 @@ public:
 
 	int32 GetAttackIndex() { return AttackIndex; }
 
+	bool GetIsDeath() { return IsDeath; }
+
 public:
 	virtual void NativeInitializeAnimation();
 	virtual void NativeUpdateAnimation(float DeltaSeconds);
