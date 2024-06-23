@@ -36,14 +36,35 @@ void AEffect_FireEmit::BeginPlay()
 void AEffect_FireEmit::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (mIsOverlap)
+	{
+		mAttackTime += DeltaTime;
+		if (mAttackTime > mAttackDuration)
+		{
+			FDamageEvent DmgEvent;
+			OverlapActor->TakeDamage(30, DmgEvent, GetInstigatorController(), this);
+		
+			mAttackTime = 0.f;
+		}
+	}
 }
 
 void AEffect_FireEmit::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("AEffect_FireEmit Overlap"));
 
+	mIsOverlap = true;
+	mAttackTime = 0.f;
+	OverlapActor = OtherActor;
+
+	FDamageEvent DmgEvent;
+	OverlapActor->TakeDamage(30, DmgEvent, GetInstigatorController(), this);
 }
 
 void AEffect_FireEmit::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	mIsOverlap = false;
+	mAttackTime = 0.f;
+	OverlapActor = nullptr;
 }

@@ -16,6 +16,12 @@ public:
 	AEffect_FireEmit();
 
 protected:
+	AActor* OverlapActor = nullptr;
+
+	bool mIsOverlap = false;
+	float mAttackTime = 0.f;
+	float mAttackDuration = 1.f;
+protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
