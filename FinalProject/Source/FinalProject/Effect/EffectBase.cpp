@@ -9,8 +9,11 @@ AEffectBase::AEffectBase()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	mMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Root"));
+	SetRootComponent(mMesh);
+
 	mCapsule = CreateDefaultSubobject<UCapsuleComponent>("Capsule");
-	SetRootComponent(mCapsule);
+	mCapsule->SetupAttachment(mMesh);
 
 	mParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Particle"));
 	mParticle->SetupAttachment(mCapsule);

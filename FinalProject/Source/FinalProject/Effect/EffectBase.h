@@ -17,6 +17,9 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* mMesh;
+
+	UPROPERTY(EditAnywhere)
 	UCapsuleComponent* mCapsule;
 
 	UPROPERTY(EditAnywhere)

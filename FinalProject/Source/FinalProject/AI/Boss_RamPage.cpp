@@ -33,10 +33,6 @@ ABoss_RamPage::ABoss_RamPage()
 	mMesh->SetRelativeRotation(FRotator(0.f, -90.f, 0.f)); // Pitch(Y), Yaw(Z), Roll(X)
 	mMesh->SetRelativeScale3D(FVector(1.f, 1.f, 1.f));
 
-	mSkillCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Skill"));
-
-	mEffect = AEffectBase::StaticClass();
-
 	mTableRowName = TEXT("Dragon_SoulEater");
 }
 
@@ -44,7 +40,8 @@ void ABoss_RamPage::BeginPlay()
 {
 	Super::BeginPlay();
 
-	mAnimInst->SetBossCondition(EBossCondition::Nomal);
+	if(IsValid(mAnimInst))
+		mAnimInst->SetBossCondition(EBossCondition::Nomal);
 	//ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
 
 	PlaySkillMontage((uint8)EBossCondition::Nomal);
@@ -62,24 +59,20 @@ void ABoss_RamPage::SkillSetting(int32 Num)
 	switch (SkillIndex)
 	{
 	case 0:
-		FVector SocketLocation = mMesh->GetSocketLocation(TEXT("EmitSkill_Socket"));
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, FString::Printf(TEXT("Location : %f, %f, %f"), SocketLocation.X, SocketLocation.Y, SocketLocation.Z));
-		//FRotator SocketRotation = SkillCapsule->GetRelativeRotation();
-		FRotator SocketRotation = mMesh->GetSocketRotation(TEXT("EmitSkill_Socket"));
-
-		AEffect_FireEmit* FireEmit = Cast<AEffect_FireEmit>(mEffect);
+		//AEffect_FireEmit* FireEmit = Cast<AEffect_FireEmit>(mEffect);
 
 		FActorSpawnParameters	SpawnParam;
 		SpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-		FireEmit = GetWorld()->SpawnActor<AEffect_FireEmit>(FVector::ZeroVector, FRotator::ZeroRotator, SpawnParam);
+		mEmitEffect = GetWorld()->SpawnActor<AEffect_FireEmit>(AEffect_FireEmit::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator, SpawnParam);
 		
-		UCapsuleComponent* SkillCapsule = FireEmit->GetCapsule();
-		FVector SkillLocation = SkillCapsule->GetRelativeLocation();
-		SkillLocation.Y += SkillCapsule->GetScaledCapsuleHalfHeight();
-		SkillCapsule->SetRelativeLocation(SkillLocation);
+		//UCapsuleComponent* SkillCapsule = FireEmit->GetCapsule();
+		//FVector SkillLocation = SkillCapsule->GetRelativeLocation();
+		//SkillLocation.Y += SkillCapsule->GetScaledCapsuleHalfHeight();
+		//SkillCapsule->SetRelativeLocation(SkillLocation);
 
-		SkillCapsule->AttachToComponent(mMesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("EmitSkill_Socket"));
+		if (mMesh->DoesSocketExist(TEXT("EmitSkill_Socket")))
+			mEmitEffect->AttachToComponent(mMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("EmitSkill_Socket"));
 
 		break;
 	//case 1:

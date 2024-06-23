@@ -17,9 +17,8 @@ public:
 	ABoss_RamPage();
 
 protected:
-	UPROPERTY(VisibleAnywhere)
-	UCapsuleComponent* mSkillCapsule;
-	TSubclassOf<class AEffectBase> mEffect;
+	UPROPERTY(EditAnywhere)
+	class AEffect_FireEmit* mEmitEffect;
 
 protected:
 	// Called when the game starts or when spawned
