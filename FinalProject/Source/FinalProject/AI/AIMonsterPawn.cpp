@@ -73,6 +73,10 @@ void AAIMonsterPawn::SkillSetting(int32 Num)
 {
 }
 
+void AAIMonsterPawn::SkillDestroy()
+{
+}
+
 void AAIMonsterPawn::ChangeAnimLoop_Implementation(bool Loop)
 {
 	if (IsValid(mAnimInst))

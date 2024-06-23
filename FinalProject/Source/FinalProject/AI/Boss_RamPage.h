@@ -17,8 +17,10 @@ public:
 	ABoss_RamPage();
 
 protected:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere)
 	class AEffect_FireEmit* mEmitEffect;
+
+	AActor* SkillActor = nullptr;
 
 protected:
 	// Called when the game starts or when spawned
@@ -29,4 +31,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SkillSetting(int32 Num);
+	virtual void SkillDestroy()
+	{
+		SkillActor->Destroy();
+	}
 };

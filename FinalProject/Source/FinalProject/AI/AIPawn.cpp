@@ -117,6 +117,10 @@ void AAIPawn::SkillSetting(int32 Num)
 {
 }
 
+void AAIPawn::SkillDestroy()
+{
+}
+
 bool AAIPawn::AIIsOverlap()
 {
 	return false;

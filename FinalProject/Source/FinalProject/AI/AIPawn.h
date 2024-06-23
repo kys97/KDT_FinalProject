@@ -117,6 +117,7 @@ public:
 	virtual void PlaySkillMontage(uint8 BossState);
 
 	virtual void SkillSetting(int32 Num);
+	virtual void SkillDestroy();
 
 public:
 	virtual void ChangeAIAnimType(uint8 AnimType);

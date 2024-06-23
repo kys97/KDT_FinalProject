@@ -46,7 +46,5 @@ public:
 	UFUNCTION()
 	void OnParticleFinish(UParticleSystemComponent* Particle);
 
-public:
-	virtual UCapsuleComponent* GetCapsule();
 
 };

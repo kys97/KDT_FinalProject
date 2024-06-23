@@ -94,6 +94,7 @@ public:
 	virtual void PlaySkillMontage_Implementation(uint8 BossState);
 
 	virtual void SkillSetting(int32 Num);
+	virtual void SkillDestroy();
 
 public:
 	virtual FRotator GetCurrentRotation()

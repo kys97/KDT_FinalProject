@@ -59,20 +59,15 @@ void ABoss_RamPage::SkillSetting(int32 Num)
 	switch (SkillIndex)
 	{
 	case 0:
-		//AEffect_FireEmit* FireEmit = Cast<AEffect_FireEmit>(mEffect);
-
 		FActorSpawnParameters	SpawnParam;
 		SpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 		mEmitEffect = GetWorld()->SpawnActor<AEffect_FireEmit>(AEffect_FireEmit::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator, SpawnParam);
-		
-		//UCapsuleComponent* SkillCapsule = FireEmit->GetCapsule();
-		//FVector SkillLocation = SkillCapsule->GetRelativeLocation();
-		//SkillLocation.Y += SkillCapsule->GetScaledCapsuleHalfHeight();
-		//SkillCapsule->SetRelativeLocation(SkillLocation);
 
 		if (mMesh->DoesSocketExist(TEXT("EmitSkill_Socket")))
 			mEmitEffect->AttachToComponent(mMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("EmitSkill_Socket"));
+
+		SkillActor = Cast<AActor>(mEmitEffect);
 
 		break;
 	//case 1:

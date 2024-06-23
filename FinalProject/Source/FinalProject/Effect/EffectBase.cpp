@@ -81,9 +81,3 @@ void AEffectBase::OnParticleFinish(UParticleSystemComponent* Particle)
 	// 파티클이 끝났을 경우 액터를 제거한다.
 	Destroy();
 }
-
-UCapsuleComponent* AEffectBase::GetCapsule()
-{
-	return nullptr;
-}
-
