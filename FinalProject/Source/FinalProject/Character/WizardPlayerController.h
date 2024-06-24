@@ -21,8 +21,8 @@ public:
 	AWizardPlayerController();
 
 protected:
-	TSubclassOf<UUserWidget> mGameWidgetClass;
-	class UGameWidget* mGameWidget;
+	TSubclassOf<UUserWidget> mGameWidgetClass = nullptr;
+	class UGameWidget* mGameWidget = nullptr;
 	
 public:
 	UGameWidget* GetGameWidget() { return mGameWidget; }

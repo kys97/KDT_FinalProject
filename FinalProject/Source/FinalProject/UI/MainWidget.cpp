@@ -53,7 +53,6 @@ void UMainWidget::OkButtonClick()
 {
 	if (mInputName->GetText().IsEmpty())
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("텍스트 empty")));
 		return;
 	}
 
