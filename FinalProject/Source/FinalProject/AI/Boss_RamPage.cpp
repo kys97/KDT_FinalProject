@@ -63,9 +63,13 @@ void ABoss_RamPage::SkillSetting(int32 Num)
 		SpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 		mEmitEffect = GetWorld()->SpawnActor<AEffect_FireEmit>(AEffect_FireEmit::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator, SpawnParam);
+	
+		float CapsuleHalfHeight = mEmitEffect->GetCapsuleHalfHeight();
+
+		mEmitEffect->SetActorRelativeLocation(FVector(0.f, CapsuleHalfHeight, 0.f));
 
 		if (mMesh->DoesSocketExist(TEXT("EmitSkill_Socket")))
-			mEmitEffect->AttachToComponent(mMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("EmitSkill_Socket"));
+			mEmitEffect->AttachToComponent(mMesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("EmitSkill_Socket"));
 
 		SkillActor = Cast<AActor>(mEmitEffect);
 
