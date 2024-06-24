@@ -38,20 +38,14 @@ void AAOE::BeginPlay()
 void AAOE::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if (mParticle->IsActive() && SkillOwner)
-	{
-		SkillOwner->HealHP(DeltaTime);
-	}
 }
 
 void AAOE::OnCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	AWizard* Player = Cast<AWizard>(OtherActor);
-	if (Player) 
+	if (Player)
 	{
-		// [Network] TODO : Add Player to Heal List
-		// - Player OnInvincibility
+		Player->HealHP(true);
 	}
 }
 
@@ -60,15 +54,14 @@ void AAOE::OnCapsuleOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* Othe
 	AWizard* Player = Cast<AWizard>(OtherActor);
 	if (Player)
 	{
-		// [Network] TODO : Delete Player to Heal List
-		// - Player OffInvincibility
+		Player->HealHP(false);
 	}
 }
 
 void AAOE::SkillBegin()
 {
 	if(SkillOwner)
-		SkillOwner->OnInvincibility();
+		SkillOwner->HealHP(true);
 
 	// Activate
 	mParticle->Activate();
@@ -84,8 +77,7 @@ void AAOE::SkillOver()
 	mParticle->Deactivate();
 	mOutSideCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-
-	SkillOwner->OffInvincibility();
+	SkillOwner->HealHP(false);
 
 	// Destroy
 	FTimerHandle TimerHandle;

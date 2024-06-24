@@ -2,7 +2,8 @@
 
 
 #include "Wizard.h"
-
+#include "WizardPlayerController.h"
+#include "../UI/GameWidget.h"
 
 
 // Sets default values
@@ -59,6 +60,71 @@ void AWizard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// Heal Skill 
+	if (Invincibility)
+	{
+		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+		float healingPoint = State->mHPMax * 0.8 * DeltaTime;
+		if (State->mHP < State->mHPMax)
+		{
+			if (State->mHP > State->mHPMax)
+				State->mHP = State->mHPMax;
+			else
+			{
+				FDamageEvent DmgEvent;
+				ServerTakeDamge(healingPoint * (-1), DmgEvent, GetController(), this);
+			}
+		}
+	}
+
+	// Skill Cool Time
+	if (mFirstSkillRemindTime > 0)
+	{
+		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+
+		m_fist_temp += DeltaTime;
+		if (m_fist_temp >= 1)
+		{
+			mFirstSkillRemindTime--;
+			GetController<AWizardPlayerController>()->GetGameWidget()->SetFirstSkillCoolTime(mFirstSkillRemindTime, State->mFirstSkillCoolTime);
+			m_fist_temp = 0.f;
+
+			if (mFirstSkillRemindTime == 0)
+				GetController<AWizardPlayerController>()->GetGameWidget()->EndFirstSkillCoolTime();
+		}
+	}
+
+	if (mSecondSkillRemindTime > 0)
+	{
+		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+
+		m_second_temp += DeltaTime;
+		if (m_second_temp >= 1)
+		{
+			mSecondSkillRemindTime--;
+			GetController<AWizardPlayerController>()->GetGameWidget()->SetSecondSkillCoolTime(mSecondSkillRemindTime, State->mSecondSkillCoolTime);
+			m_second_temp = 0.f;
+
+			if (mSecondSkillRemindTime == 0)
+				GetController<AWizardPlayerController>()->GetGameWidget()->EndSecondSkillCoolTime();
+		}
+	}
+
+	if (mThirdSkillRemindTime > 0)
+	{
+		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+
+		m_third_temp += DeltaTime;
+		if (m_third_temp >= 1)
+		{
+			mThirdSkillRemindTime--;
+			GetController<AWizardPlayerController>()->GetGameWidget()->SetThirdSkillCoolTime(mThirdSkillRemindTime, State->mThirdSkillCoolTime);
+			m_third_temp = 0.f;
+
+			if(mThirdSkillRemindTime == 0)
+				GetController<AWizardPlayerController>()->GetGameWidget()->EndThirdSkillCoolTime();
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -70,8 +136,9 @@ void AWizard::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 float AWizard::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	// If Player is Invincible, Player doesnt take damage
-	if (!Invincibility)
+	if (((!Invincibility) && Damage > 0) || (Invincibility && Damage < 0))
 	{
+		// Authority Check
 		if (HasAuthority())
 		{
 			Damage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
@@ -81,11 +148,14 @@ float AWizard::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AContro
 			ServerTakeDamge(Damage, DamageEvent, EventInstigator, DamageCauser);
 		}
 
+		// Hp Set
 		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
 		State->mHP -= Damage;
 
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, FString::Printf(TEXT("Player HP : %f"), State->mHP));
-
+		// Set HP UI
+		SetHPUI(State->mHP / State->mHPMax);
+		
+		// Death Check
 		if (State->mHP <= 0)
 		{
 			if (HasAuthority())
@@ -99,19 +169,34 @@ float AWizard::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AContro
 	return Damage;
 }
 
-void AWizard::HealHP(float deltaTime)
+void AWizard::SetHPUI(const float hp_rate)
 {
-	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
-	float healingPoint = State->mHPMax * 0.8 * deltaTime;
-	if (State->mHP < State->mHPMax)
-	{
-		if (State->mHP > State->mHPMax) State->mHP = State->mHPMax;
-		else
-		{
-			FDamageEvent DmgEvent;
-			ServerTakeDamge(healingPoint * (-1), DmgEvent, GetController(), this);
-		}
-	}
+	// HP UI Set
+	GetController<AWizardPlayerController>()->GetGameWidget()->SetHPBar(hp_rate);
+}
+
+void AWizard::SetMPUI(const float mp_rate)
+{
+	// MP UI Set
+	GetController<AWizardPlayerController>()->GetGameWidget()->SetMPBar(mp_rate);
+}
+
+void AWizard::UseFirstSkill(const float cooltime)
+{
+	mFirstSkillRemindTime = cooltime;
+	GetController<AWizardPlayerController>()->GetGameWidget()->SetFirstSkillCoolTime(mFirstSkillRemindTime, cooltime);
+}
+
+void AWizard::UseSecondSkill(const float cooltime)
+{
+	mSecondSkillRemindTime = cooltime;
+	GetController<AWizardPlayerController>()->GetGameWidget()->SetSecondSkillCoolTime(mSecondSkillRemindTime, cooltime);
+}
+
+void AWizard::UseThirdSkill(const float cooltime)
+{
+	mThirdSkillRemindTime = cooltime;
+	GetController<AWizardPlayerController>()->GetGameWidget()->SetThirdSkillCoolTime(mThirdSkillRemindTime, cooltime);
 }
 
 void AWizard::NormalAttack() {}

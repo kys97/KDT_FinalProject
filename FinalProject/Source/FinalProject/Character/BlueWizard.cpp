@@ -138,6 +138,12 @@ void ABlueWizard::FirstSkill()
 
 			// Use MP
 			State->mMP -= 50; // TODO : MP사용량 나중에 추후 수정
+			
+			// Set MP UI
+			SetMPUI(State->mMP / State->mMPMax);
+
+			// Set Skill Cool Time UI
+			UseFirstSkill(State->mFirstSkillCoolTime);
 		}
 	}
 }
@@ -168,6 +174,12 @@ void ABlueWizard::SecondSkill()
 
 			// Use MP
 			State->mMP -= 50; // TODO : MP사용량 나중에 추후 수정
+
+			// Set HP UI
+			SetMPUI(State->mMP / State->mMPMax);
+
+			// Set Skill Cool Time UI
+			UseSecondSkill(State->mSecondSkillCoolTime);
 		}
 	}
 }
@@ -190,6 +202,12 @@ void ABlueWizard::ThirdSkill()
 
 			// Use MP
 			State->mMP -= 50; // TODO : MP사용량 나중에 추후 수정
+
+			// Set HP UI
+			SetMPUI(State->mMP / State->mMPMax);
+
+			// Set Skill Cool Time UI
+			UseThirdSkill(State->mThirdSkillCoolTime);
 		}
 	}
 }

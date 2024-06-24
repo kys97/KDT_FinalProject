@@ -16,34 +16,41 @@ public:
 	UWizardAnimInstance();
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsMove;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MoveSpeed;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
-	bool IsAttack;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
-	bool IsDeath;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool IsAttack;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<TObjectPtr<UAnimMontage>> mAttackMontageArray;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 AttackIndex;
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool IsDeath;
+
 public:
+	UFUNCTION(BlueprintCallable)
 	bool MoveEnable() { return (!IsAttack && !IsDeath); }
+	UFUNCTION(BlueprintCallable)
 	bool AttackEnable() { return (!IsAttack && !IsDeath); }
 
 	void SetMove(bool move) { IsMove = move; }
 
 	int32 GetAttackIndex() { return AttackIndex; }
 
+	bool GetIsDeath() { return IsDeath; }
+
 public:
 	virtual void NativeInitializeAnimation();
 	virtual void NativeUpdateAnimation(float DeltaSeconds);
+	/*
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
+	*/
 public:
 	UFUNCTION()
 	void AnimNotify_AttackStart();

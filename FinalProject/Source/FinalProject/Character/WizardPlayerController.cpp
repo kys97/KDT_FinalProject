@@ -4,10 +4,16 @@
 #include "WizardPlayerController.h"
 #include "Wizard.h"
 
+#include "../UI/GameWidget.h"
+
 
 AWizardPlayerController::AWizardPlayerController()
 {
-
+	static ConstructorHelpers::FClassFinder<UUserWidget> GameWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprint/UI/BP_GameWidget.BP_GameWidget_C'"));
+	if (GameWidgetClass.Succeeded())
+	{
+		mGameWidgetClass = GameWidgetClass.Class;
+	}
 }
 
 void AWizardPlayerController::BeginPlay()
@@ -25,6 +31,17 @@ void AWizardPlayerController::BeginPlay()
 		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
 		const UInputDataConfig* InputDataConfig = GetDefault<UInputDataConfig>();
 		Subsystem->AddMappingContext(InputDataConfig->WizardInputContext, 0);
+	}
+
+	// UI Widget Setting
+	mGameWidget = CreateWidget<UGameWidget>(GetWorld(), mGameWidgetClass);
+	if (mGameWidget)
+	{
+		mGameWidget->AddToViewport();
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("mGameWidget null")));
 	}
 }
 

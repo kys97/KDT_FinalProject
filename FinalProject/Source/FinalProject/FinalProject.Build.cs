@@ -17,7 +17,8 @@ public class FinalProject : ModuleRules
 			"AIModule",
 			"NavigationSystem",
 			"Networking",
-			"Sockets"
+			"Sockets",
+			"UMG"
 		});
 
         PrivateDependencyModuleNames.AddRange(new string[] {  });
