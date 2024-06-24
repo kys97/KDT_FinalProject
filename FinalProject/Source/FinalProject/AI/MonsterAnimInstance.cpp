@@ -93,6 +93,24 @@ void UMonsterAnimInstance::PlaySkillMontage(uint8 BossState)
 		// 다음 공격이 동일하지 않기 위해 최소값은 1
 		// 최대값은 배열 개수 -1
 		int32 RandNum = FMath::RandRange(1, (BossState - 1));
+		mSkillIndexArray.Add(RandNum);
+
+		// 같은 Idle 모션은 최대 2번만 나올 수 있도록
+		for (int32 Array : mSkillIndexArray)
+		{
+			if (Array == RandNum)
+				++mSkillCount;
+
+			if (mSkillCount > 2)
+			{
+				mSkillIndexArray.Remove(RandNum);
+				++RandNum;
+				mSkillIndexArray.Add(RandNum);
+
+				break;
+			}
+		}
+		mSkillCount = 0;
 
 		//// 배열 개수만큼 나눈 나머지는 인덱스 숫자
 		mSkillIndex = (mSkillIndex + RandNum) % BossState;
@@ -161,16 +179,6 @@ void UMonsterAnimInstance::AnimNotify_HitReactEnd()
 
 	Pawn->SetActorRotation(Pawn->GetCurrentRotation());
 	Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
-}
-
-void UMonsterAnimInstance::AnimNotify_SKillStart()
-{
-	//mPlaySkill = true;
-}
-
-void UMonsterAnimInstance::AnimNotify_SkillEnd()
-{
-	//mPlaySkill = false;
 }
 
 void UMonsterAnimInstance::AnimNotify_ParticleStart()

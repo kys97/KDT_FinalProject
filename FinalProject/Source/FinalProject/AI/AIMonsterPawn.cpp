@@ -4,6 +4,7 @@
 #include "DefaultAIController.h"
 #include "MonsterAnimInstance.h"
 #include "MonsterState.h"
+#include "BossAIController.h"
 
 UDataTable* AAIMonsterPawn::mMonsterDataTable = nullptr;
 
@@ -61,6 +62,11 @@ uint8 AAIMonsterPawn::GetAnimType()
 		return mAnimInst->GetAnimType();
 	else
 		return uint8();
+}
+
+EMonsterType AAIMonsterPawn::GetMonsterType()
+{
+	return EMonsterType();
 }
 
 void AAIMonsterPawn::PlaySkillMontage_Implementation(uint8 BossState)
@@ -216,15 +222,38 @@ float AAIMonsterPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
 {
 	Damage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
-	ADefaultAIController* AIController = Cast<ADefaultAIController>(GetController());
-
-	if (!IsValid(AIController))
-		return 0;
-
 	mMonsterState = GetState<UMonsterState>();
 
 	Damage -= (float)mMonsterState->mArmorPower;
 	Damage = Damage < 1.f ? 1.f : Damage;
+
+	mMonsterType = GetMonsterType();
+
+	if (mMonsterType == EMonsterType::Nomal)
+		NomalMonsterTakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	else if (mMonsterType == EMonsterType::Boss)
+		BossMonsterTakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+
+	return Damage;
+}
+
+void AAIMonsterPawn::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	mOverlap = true;
+}
+
+void AAIMonsterPawn::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	mOverlap = false;
+}
+
+void AAIMonsterPawn::NomalMonsterTakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	ADefaultAIController* AIController = Cast<ADefaultAIController>(GetController());
+
+	if (!IsValid(AIController))
+		return;
 
 	if (mMonsterState->mHP > 0)
 	{
@@ -254,18 +283,37 @@ float AAIMonsterPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
 			AIController->StopAI();
 		}
 	}
-
-	return Damage;
 }
 
-void AAIMonsterPawn::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AAIMonsterPawn::BossMonsterTakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	mOverlap = true;
-}
+	ABossAIController* BossController = Cast<ABossAIController>(GetController());
 
-void AAIMonsterPawn::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	mOverlap = false;
+	if (!IsValid(BossController))
+		return;
+
+	if (mMonsterState->mHP > 0)
+	{
+		mMonsterState->ChangeHP(-Damage);
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Client Log! AAIMonsterPawn/Boss mHP : %d"), mMonsterState->mHP));
+		UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/Monster mHP : %f"), mMonsterState->mHP);
+
+		if (Damage >= 300.f)
+		{
+			ChangeAIAnimType((uint8)EMonsterAnimType::TakeDamage);
+
+			SetReactLocation(DamageCauser);
+		}
+
+		if (mMonsterState->mHP <= 0)
+		{
+			mCapsule->bApplyImpulseOnDamage = false;
+
+			ChangeAIAnimType((uint8)EMonsterAnimType::Death);
+
+			BossController->UnPossess();
+			BossController->StopAI();
+		}
+	}
 }
 

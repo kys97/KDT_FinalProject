@@ -63,6 +63,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<UAnimMontage*> mBossSkillMontageArray;
 	int32 mSkillIndex = 0;
+	TArray<int32> mSkillIndexArray;
+	int32 mSkillCount = 0;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
 	bool mAnimPlay = false;
@@ -144,12 +146,6 @@ public:
 	void AnimNotify_HitReactEnd();
 
 public:
-	UFUNCTION()
-	void AnimNotify_SKillStart();
-
-	UFUNCTION()
-	void AnimNotify_SkillEnd();
-
 	UFUNCTION()
 	void AnimNotify_ParticleStart();
 

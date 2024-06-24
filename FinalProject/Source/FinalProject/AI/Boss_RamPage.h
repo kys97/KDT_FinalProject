@@ -36,12 +36,16 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+public:
+	virtual EMonsterType GetMonsterType()
+	{
+		return EMonsterType::Boss;
+	}
+
 	virtual void SkillSetting(int32 Num);
 	virtual void SkillDestroy()
 	{
-		if (SkillActor == nullptr)
-			return;
-
-		SkillActor->Destroy();
+		if (SkillActor != nullptr)
+			SkillActor->Destroy();
 	}
 };

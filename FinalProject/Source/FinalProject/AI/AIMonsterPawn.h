@@ -5,6 +5,12 @@
 #include "AIPawn.h"
 #include "AIMonsterPawn.generated.h"
 
+UENUM(BlueprintType)
+enum class EMonsterType : uint8
+{
+	Nomal,
+	Boss
+};
 
 // FTableRowBase 구조체를 상속 받아서 만들어야
 // 데이터테이블에서 사용할 수 있는 구조체가 된다. 
@@ -102,7 +108,12 @@ protected:
 
 	FRotator mCurrentRotaion;
 
+protected:
+	EMonsterType mMonsterType;
+
 public:
+	virtual EMonsterType GetMonsterType();
+
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void PlaySkillMontage(uint8 BossState);
 	virtual void PlaySkillMontage_Implementation(uint8 BossState);
@@ -208,5 +219,11 @@ public:
 	UFUNCTION()
 	void EndOverlap(UPrimitiveComponent* OverlappedComponent, 
 		AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+public:
+	void NomalMonsterTakeDamage(float Damage, FDamageEvent const& DamageEvent,
+		AController* EventInstigator, AActor* DamageCauser);
+	void BossMonsterTakeDamage(float Damage, FDamageEvent const& DamageEvent,
+		AController* EventInstigator, AActor* DamageCauser);
 };
 

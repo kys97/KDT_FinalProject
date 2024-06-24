@@ -80,6 +80,7 @@ void ABoss_RamPage::Tick(float DeltaTime)
 			ChangeAnimCnt = 0;
 			ChangeAIAnimType((uint8)EMonsterAnimType::Skill);
 
+			GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Green, FString::Printf(TEXT("mHPPercent : %f"), mMonsterState->mHPPercent));
 			if (mMonsterState->mHPPercent <= 30.f)
 			{
 				PlaySkillMontage((uint8)EBossCondition::Danger);
@@ -92,7 +93,6 @@ void ABoss_RamPage::Tick(float DeltaTime)
 			}
 			else if (mMonsterState->mHPPercent <= 100.f)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Green, TEXT("mHPPercent 100"));
 
 				PlaySkillMontage((uint8)EBossCondition::Nomal);
 				// Idle 최대 2번까지
@@ -110,6 +110,12 @@ void ABoss_RamPage::SkillSetting(int32 Num)
 	{
 	case 0:
 	{
+		break;
+	}
+	case 1:
+		break;
+	case 2:
+	{
 		FActorSpawnParameters	SpawnParam;
 		SpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
@@ -126,10 +132,6 @@ void ABoss_RamPage::SkillSetting(int32 Num)
 
 		break;
 	}
-	case 1:
-		break;
-	case 2:
-		break;
 	case 3:
 		break;
 	case 4:
