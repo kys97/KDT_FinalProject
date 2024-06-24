@@ -18,6 +18,10 @@ protected:
 	FString mWizardName;
 	EWizardJob mWizardJob;
 
+	int32 mWizardLevel = 0;
+	int32 mWizardExp = 0;
+	bool mRespawn = false;
+
 public:
 	void SetWizardName(FString name)
 	{
@@ -36,5 +40,23 @@ public:
 	EWizardJob GetWizardJob()
 	{
 		return mWizardJob;
+	}
+
+	int32 GetLevel() { return mWizardLevel; }
+	int32 GetExp() { return mWizardExp; }
+
+	bool IsRespawn() { return mRespawn; }
+	void RespawnGame()
+	{
+		mWizardLevel *= 0.7f;
+		mWizardExp = 0;
+		mRespawn = true;
+	}
+	void ResetGame()
+	{
+		mWizardName = nullptr;
+		mWizardLevel = 0;
+		mWizardExp = 0;
+		mRespawn = false;
 	}
 };
