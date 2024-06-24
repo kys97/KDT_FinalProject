@@ -4,6 +4,7 @@
 #include "Wizard.h"
 #include "WizardPlayerController.h"
 #include "../UI/GameWidget.h"
+#include "../WizardGameInstance.h"
 
 
 // Sets default values
@@ -52,7 +53,13 @@ AWizardPlayerState* AWizard::GetWizardPlayerState()
 void AWizard::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	// Respawn Setting
+	if (GetGameInstance<UWizardGameInstance>()->IsRespawn())
+	{
+		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+		State->mLevel = GetGameInstance<UWizardGameInstance>()->GetLevel();
+	}
 }
 
 // Called every frame
@@ -162,7 +169,8 @@ float AWizard::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AContro
 				SetDeath(true);
 			else
 				ServerSetDeath(this, true);
-			// TODO : 사망처리 추후 어떻게 할건지?
+			
+			GetController<AWizardPlayerController>()->GetGameWidget()->PlayerDeath();
 		}
 	}
 

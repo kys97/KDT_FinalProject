@@ -5,6 +5,7 @@
 
 #include "WizardWidget.h"
 #include "WizardSkill.h"
+#include "WizardDeathWidget.h"
 
 
 void UGameWidget::NativeOnInitialized()
@@ -20,8 +21,6 @@ void UGameWidget::NativePreConstruct()
 void UGameWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-
-	// mWizardWidget = CreateWidget<UWizardWidget>(GetWidgetFromName(TEXT("WizardWidget")));
 }
 
 void UGameWidget::NativeDestruct()
@@ -72,4 +71,9 @@ void UGameWidget::EndSecondSkillCoolTime()
 void UGameWidget::EndThirdSkillCoolTime()
 {
 	WizardSkillWidget->EndThirdSkillCoolTime();
+}
+
+void UGameWidget::PlayerDeath()
+{
+	WizardDeathWidget->SetDeathWidgetEnable();
 }

@@ -24,6 +24,9 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	class UWizardSkill* WizardSkillWidget;
 
+	UPROPERTY(meta = (BindWidget))
+	class UWizardDeathWidget* WizardDeathWidget;
+
 protected:
 	// 위젯 생성시 한번
 	virtual void NativeOnInitialized();
@@ -49,4 +52,6 @@ public:
 	void EndFirstSkillCoolTime();
 	void EndSecondSkillCoolTime();
 	void EndThirdSkillCoolTime();
+
+	void PlayerDeath();
 };

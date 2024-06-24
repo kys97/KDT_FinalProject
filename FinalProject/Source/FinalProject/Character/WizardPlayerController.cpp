@@ -9,7 +9,7 @@
 
 AWizardPlayerController::AWizardPlayerController()
 {
-	static ConstructorHelpers::FClassFinder<UUserWidget> GameWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprint/UI/BP_GameWidget.BP_GameWidget_C'"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> GameWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprint/UI/3_InGame/BP_GameWidget.BP_GameWidget_C'"));
 	if (GameWidgetClass.Succeeded())
 	{
 		mGameWidgetClass = GameWidgetClass.Class;
@@ -35,14 +35,7 @@ void AWizardPlayerController::BeginPlay()
 
 	// UI Widget Setting
 	mGameWidget = CreateWidget<UGameWidget>(GetWorld(), mGameWidgetClass);
-	if (mGameWidget)
-	{
-		mGameWidget->AddToViewport();
-	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("mGameWidget null")));
-	}
+	mGameWidget->AddToViewport();
 }
 
 void AWizardPlayerController::SetupInputComponent()
