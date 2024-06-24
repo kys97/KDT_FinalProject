@@ -32,6 +32,9 @@ public:
 	int32	mHPMax;
 
 	UPROPERTY(EditAnywhere, Replicated)
+	float	mHPPercent;
+
+	UPROPERTY(EditAnywhere, Replicated)
 	int32	mMP;
 
 	UPROPERTY(EditAnywhere)
@@ -45,6 +48,20 @@ public:
 	UPROPERTY(EditAnywhere)
 	int32	mAttackDistance;
 
+	/*  스킬 공격력 */
+	UPROPERTY(EditAnywhere)
+	int32	mSkill1_Power = 200;
+	UPROPERTY(EditAnywhere)
+	int32	mSkill2_Power = 200;
+	UPROPERTY(EditAnywhere)
+	int32	mSkill3_Power = 200;
+	UPROPERTY(EditAnywhere)
+	int32	mSkill4_Power = 200;
+	UPROPERTY(EditAnywhere)
+	int32	mSkill5_Power = 200;
+	UPROPERTY(EditAnywhere)
+	int32	mSkill6_Power = 200;
+
 public:
 	virtual void ChangeHP(float Event)
 	{
@@ -52,6 +69,8 @@ public:
 
 		if (mHP < 0)
 			mHP = 0;
+
+		mHPPercent = mHP / mHPMax * 100;
 	}
 
 public:

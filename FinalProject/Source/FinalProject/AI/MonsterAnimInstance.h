@@ -16,14 +16,16 @@ enum class EMonsterAnimType : uint8
 	Attack,
 	TakeDamage,
 	Death,
-	Spawn
+	Spawn,
+	Skill,
+	Roar
 };
 
 enum class EBossCondition : uint8
 {
-	Nomal = 3,	// Skill Num
-	Angry = 4,
-	Danger = 5
+	Nomal = 2,	// Skill Num
+	Angry = 3,
+	Danger = 4
 };
 
 
@@ -63,7 +65,7 @@ protected:
 	int32 mSkillIndex = 0;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
-	bool mPlaySkill = false;
+	bool mAnimPlay = false;
 
 	EBossCondition BossCondition;
 
@@ -88,6 +90,11 @@ public:
 	int32 GetSkillMontageIndex()
 	{
 		return mSkillIndex;
+	}
+
+	bool IsMontagePlaying()
+	{
+		return mAnimPlay;
 	}
 
 public:

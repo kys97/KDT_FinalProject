@@ -24,13 +24,13 @@ public:
 	int32	mArmorPower = 50;
 
 	UPROPERTY(EditAnywhere)
-	int32	mHPMax = 50;
+	int32	mHPMax = 1000;
 
 	UPROPERTY(EditAnywhere)
 	int32	mMPMax = 50;
 	// 최대 이동 속도
 	UPROPERTY(EditAnywhere)
-	int32	mMaxMoveSpeed = 700;
+	int32	mMaxMoveSpeed = 600;
 	// 이동 속도
 	UPROPERTY(EditAnywhere)
 	int32	mMoveSpeed = 300;
@@ -40,6 +40,20 @@ public:
 	// 타겟 감지 거리
 	UPROPERTY(EditAnywhere)
 	int32	mDetectDistance = 1000;
+
+	/*  스킬 공격력 */
+	UPROPERTY(EditAnywhere)
+	int32	mSkill1_Power = 200;
+	UPROPERTY(EditAnywhere)
+	int32	mSkill2_Power = 200;
+	UPROPERTY(EditAnywhere)
+	int32	mSkill3_Power = 200;
+	UPROPERTY(EditAnywhere)
+	int32	mSkill4_Power = 200;
+	UPROPERTY(EditAnywhere)
+	int32	mSkill5_Power = 200;
+	UPROPERTY(EditAnywhere)
+	int32	mSkill6_Power = 200;
 };
 
 UCLASS()
@@ -92,6 +106,10 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void PlaySkillMontage(uint8 BossState);
 	virtual void PlaySkillMontage_Implementation(uint8 BossState);
+
+	UFUNCTION(NetMulticast, Reliable)
+	virtual void PlayIdleMontage();
+	virtual void PlayIdleMontage_Implementation();
 
 	virtual void SkillSetting(int32 Num);
 	virtual void SkillDestroy();

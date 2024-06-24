@@ -46,9 +46,9 @@ protected:
 	int32 mPatrolDir;
 
 public:
-	virtual FRotator GetCurrentRotation();
+	virtual FRotator GetCurrentRotation() { return FRotator(); }
 
-	virtual void SetMoveSpeed(float Speed);
+	virtual void SetMoveSpeed(float Speed) {}
 
 	template <typename T>
 	T* GetState()
@@ -104,30 +104,31 @@ public:
 		return mCapsule->GetScaledCapsuleRadius();
 	}
 
-	virtual void SetAttackEnd(bool End);
-	virtual bool IsAttackEnd();
+	virtual void SetAttackEnd(bool End) {}
+	virtual bool IsAttackEnd() { return false; }
 
-	virtual void SetAttackEnable(bool End);
-	virtual bool IsAttackEnable();
+	virtual void SetAttackEnable(bool End) {}
+	virtual bool IsAttackEnable() { return false; }
 
-	virtual void SetStunState(bool Stun);
-	virtual bool IsStun();
-
-public:
-	virtual void PlaySkillMontage(uint8 BossState);
-
-	virtual void SkillSetting(int32 Num);
-	virtual void SkillDestroy();
+	virtual void SetStunState(bool Stun) {}
+	virtual bool IsStun() { return false; }
 
 public:
-	virtual void ChangeAIAnimType(uint8 AnimType);
-	virtual uint8 GetAnimType();
+	virtual void PlaySkillMontage(uint8 BossState) {}
+	virtual void PlayIdleMontage() {}
+
+	virtual void SkillSetting(int32 Num) {}
+	virtual void SkillDestroy() {}
+
+public:
+	virtual void ChangeAIAnimType(uint8 AnimType) {}
+	virtual uint8 GetAnimType() { return uint8(); }
 
 
-	virtual bool AIIsOverlap();
-	virtual void ChangeOverlapVlaue(bool Value);
+	virtual bool AIIsOverlap() { return false; }
+	virtual void ChangeOverlapVlaue(bool Value) {}
 
-	virtual bool IsSetBlackboardValue();
+	virtual bool IsSetBlackboardValue() { return false; }
 
 protected:
 	// Called when the game starts or when spawned

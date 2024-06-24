@@ -33,23 +33,73 @@ ABoss_RamPage::ABoss_RamPage()
 	mMesh->SetRelativeRotation(FRotator(0.f, -90.f, 0.f)); // Pitch(Y), Yaw(Z), Roll(X)
 	mMesh->SetRelativeScale3D(FVector(1.f, 1.f, 1.f));
 
-	mTableRowName = TEXT("Dragon_SoulEater");
+	mTableRowName = TEXT("Boss_Rampage");
 }
 
 void ABoss_RamPage::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if(IsValid(mAnimInst))
-		mAnimInst->SetBossCondition(EBossCondition::Nomal);
-	//ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
+	mMonsterState = GetState<UMonsterState>();
 
-	PlaySkillMontage((uint8)EBossCondition::Nomal);
+	ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
+
+	//PlaySkillMontage((uint8)EBossCondition::Nomal);
 }
 
 void ABoss_RamPage::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (!IsValid(mMonsterState) || !IsValid(mAnimInst))
+		return;
+
+	if (!mAnimInst->IsMontagePlaying())
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Red, FString::Printf(TEXT("IsMontagePlaying")));
+
+		if (!SkillEnable)
+		{
+			ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
+
+			if (ChangeAnimCnt < ChangeAnimMaxCnt)
+			{
+				++ChangeAnimCnt;
+				GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Blue, FString::Printf(TEXT("ChangeAnimCnt : %d"), ChangeAnimCnt));
+				PlayIdleMontage();
+			}
+			else
+			{
+				SkillEnable = true;
+				ChangeAnimCnt = 0;
+			}
+		}
+		else
+		{
+			SkillEnable = false;
+			ChangeAnimCnt = 0;
+			ChangeAIAnimType((uint8)EMonsterAnimType::Skill);
+
+			if (mMonsterState->mHPPercent <= 30.f)
+			{
+				PlaySkillMontage((uint8)EBossCondition::Danger);
+				ChangeAnimMaxCnt = ChangeAnimMaxCnt = FMath::RandRange(0, 1);
+			}
+			else if (mMonsterState->mHPPercent <= 70.f)
+			{
+				PlaySkillMontage((uint8)EBossCondition::Angry);
+				ChangeAnimMaxCnt = 1;
+			}
+			else if (mMonsterState->mHPPercent <= 100.f)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Green, TEXT("mHPPercent 100"));
+
+				PlaySkillMontage((uint8)EBossCondition::Nomal);
+				// Idle 최대 2번까지
+				ChangeAnimMaxCnt = FMath::RandRange(1, 2);
+			}
+		}
+	}
 }
 
 void ABoss_RamPage::SkillSetting(int32 Num)
@@ -59,11 +109,12 @@ void ABoss_RamPage::SkillSetting(int32 Num)
 	switch (SkillIndex)
 	{
 	case 0:
+	{
 		FActorSpawnParameters	SpawnParam;
 		SpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 		mEmitEffect = GetWorld()->SpawnActor<AEffect_FireEmit>(AEffect_FireEmit::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator, SpawnParam);
-	
+
 		float CapsuleHalfHeight = mEmitEffect->GetCapsuleHalfHeight();
 
 		mEmitEffect->SetActorRelativeLocation(FVector(0.f, CapsuleHalfHeight, 0.f));
@@ -74,16 +125,17 @@ void ABoss_RamPage::SkillSetting(int32 Num)
 		SkillActor = Cast<AActor>(mEmitEffect);
 
 		break;
-	//case 1:
-	//	break;
-	//case 2:
-	//	break;
-	//case 3:
-	//	break;
-	//case 4:
-	//	break;
-	//case 5:
-	//	break;
+	}
+	case 1:
+		break;
+	case 2:
+		break;
+	case 3:
+		break;
+	case 4:
+		break;
+	default: 
+		break;
 	}
 
 

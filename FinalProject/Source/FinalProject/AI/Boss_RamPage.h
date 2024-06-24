@@ -17,10 +17,16 @@ public:
 	ABoss_RamPage();
 
 protected:
+	UMonsterState* mMonsterState;
+
 	UPROPERTY(VisibleAnywhere)
 	class AEffect_FireEmit* mEmitEffect;
 
 	AActor* SkillActor = nullptr;
+
+	int32 ChangeAnimCnt = 0.f;
+	int32 ChangeAnimMaxCnt = 2.f;
+	bool SkillEnable = false;
 
 protected:
 	// Called when the game starts or when spawned
@@ -33,6 +39,9 @@ public:
 	virtual void SkillSetting(int32 Num);
 	virtual void SkillDestroy()
 	{
+		if (SkillActor == nullptr)
+			return;
+
 		SkillActor->Destroy();
 	}
 };

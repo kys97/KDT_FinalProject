@@ -33,8 +33,9 @@ void UMonsterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 void UMonsterAnimInstance::PlayIdleMontage()
 {
-	if (mPlaySkill)
+	if (mAnimPlay)
 		return;
+	GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Blue, FString::Printf(TEXT("PlayIdleMontage : %d"), mAnimPlay));
 
 	// 몽타주가 재생되고 있는지 판단
 	if (!Montage_IsPlaying(mIdleMontageArray[mIdleIndex]))
@@ -72,14 +73,15 @@ void UMonsterAnimInstance::PlayIdleMontage()
 
 void UMonsterAnimInstance::PlaySkillMontage(uint8 BossState)
 {
-	// 스킬 사용 중이면 return;
-	if (mPlaySkill)
+	// 애니메이션 동작 중이면 return;
+	if (mAnimPlay)
 		return;
+	GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Green, FString::Printf(TEXT("PlaySkillMontage : %d"), mAnimPlay));
 
 	// 몽타주가 재생되고 있는지 판단
 	if (!Montage_IsPlaying(mBossSkillMontageArray[mSkillIndex]))
 	{
-		mPlaySkill = true;
+		GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Green, FString::Printf(TEXT("mSkillIndex : %d"), mSkillIndex));
 
 		// 재생 시키기 전에 재생 위치를 처음으로 초기화
 		Montage_SetPosition(mBossSkillMontageArray[mSkillIndex], 0.f);
@@ -90,20 +92,24 @@ void UMonsterAnimInstance::PlaySkillMontage(uint8 BossState)
 		// 다음 공격 동작을 재생하기 위해 인덱스 변경
 		// 다음 공격이 동일하지 않기 위해 최소값은 1
 		// 최대값은 배열 개수 -1
-		//int32 RandNum = FMath::RandRange(1, (BossState - 1));
+		int32 RandNum = FMath::RandRange(1, (BossState - 1));
 
 		//// 배열 개수만큼 나눈 나머지는 인덱스 숫자
-		//mSkillIndex = (mSkillIndex + RandNum) % BossState;
+		mSkillIndex = (mSkillIndex + RandNum) % BossState;
 	}
 }
 
 void UMonsterAnimInstance::AnimNotify_AnimStart()
 {
+	mAnimPlay = true;
+
 	StartTime = clock();
 }
 
 void UMonsterAnimInstance::AnimNotify_AnimEnd()
 {
+	mAnimPlay = false;
+
 	EndTime = clock();
 
 	clock_t result = EndTime - StartTime;
@@ -159,12 +165,12 @@ void UMonsterAnimInstance::AnimNotify_HitReactEnd()
 
 void UMonsterAnimInstance::AnimNotify_SKillStart()
 {
-	mPlaySkill = true;
+	//mPlaySkill = true;
 }
 
 void UMonsterAnimInstance::AnimNotify_SkillEnd()
 {
-	mPlaySkill = false;
+	//mPlaySkill = false;
 }
 
 void UMonsterAnimInstance::AnimNotify_ParticleStart()
@@ -188,5 +194,5 @@ void UMonsterAnimInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 	DOREPLIFETIME(UMonsterAnimInstance, mAnimType);
 	DOREPLIFETIME(UMonsterAnimInstance, mLoopAnimation);
 	DOREPLIFETIME(UMonsterAnimInstance, PlayRate);
-	DOREPLIFETIME(UMonsterAnimInstance, mPlaySkill);
+	DOREPLIFETIME(UMonsterAnimInstance, mAnimPlay);
 }
