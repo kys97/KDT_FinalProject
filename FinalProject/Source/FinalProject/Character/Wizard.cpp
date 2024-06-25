@@ -62,12 +62,12 @@ void AWizard::BeginPlay()
 	}
 }
 
-// Called every frame
+
 void AWizard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// Heal Skill 
+#pragma region Heal Skill
 	if (Invincibility)
 	{
 		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
@@ -83,8 +83,9 @@ void AWizard::Tick(float DeltaTime)
 			}
 		}
 	}
+#pragma endregion
 
-	// Skill Cool Time
+#pragma region Skill Cool Time
 	if (mFirstSkillRemindTime > 0)
 	{
 		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
@@ -132,6 +133,8 @@ void AWizard::Tick(float DeltaTime)
 				GetController<AWizardPlayerController>()->GetGameWidget()->EndThirdSkillCoolTime();
 		}
 	}
+#pragma endregion
+
 }
 
 // Called to bind functionality to input

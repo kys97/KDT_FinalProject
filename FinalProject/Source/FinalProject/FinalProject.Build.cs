@@ -18,7 +18,8 @@ public class FinalProject : ModuleRules
 			"NavigationSystem",
 			"Networking",
 			"Sockets",
-			"UMG"
+			"UMG", 
+			"Niagara"
 		});
 
         PrivateDependencyModuleNames.AddRange(new string[] {  });

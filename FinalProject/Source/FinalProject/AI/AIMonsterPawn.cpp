@@ -6,6 +6,9 @@
 #include "MonsterState.h"
 #include "BossAIController.h"
 
+
+// #include "../FXV/AttackDamageUpgradeItem.h"
+
 UDataTable* AAIMonsterPawn::mMonsterDataTable = nullptr;
 
 const FMonsterData* AAIMonsterPawn::FindMonsterData(
@@ -281,6 +284,24 @@ void AAIMonsterPawn::NomalMonsterTakeDamage(float Damage, FDamageEvent const& Da
 
 			AIController->UnPossess();
 			AIController->StopAI();
+
+			// Item Spawn
+			UWorld* World = GetWorld();
+			if (World)
+			{
+				// Spawn Parameter
+				FActorSpawnParameters ActorSpawnParam;
+				ActorSpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+				// Item Spawn
+				/*
+				AAttackDamageUpgradeItem* Item = World->SpawnActor<AAttackDamageUpgradeItem>(
+					AAttackDamageUpgradeItem::StaticClass(),
+					GetActorLocation(),
+					GetActorRotation(),
+					ActorSpawnParam);
+					*/
+			}
 		}
 	}
 }
