@@ -15,7 +15,7 @@ APatrolPointActor::APatrolPointActor()
 	mTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger"));
 	mTrigger->SetupAttachment(mRoot);
 
-	mTrigger->SetBoxExtent(FVector(30.0, 30.0, 100.0));
+	mTrigger->SetBoxExtent(FVector(30.0, 30.0, 50.0));
 	mTrigger->SetRelativeLocation(FVector(0.0, 0.0, 100.0));
 
 	mTrigger->SetCollisionProfileName(TEXT("MonsterTrigger"));
