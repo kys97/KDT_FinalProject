@@ -72,7 +72,10 @@ void AAIMonsterPawn::BeginPlay()
 	mAnimInst = Cast<UMonsterAnimInstance>(mMesh->GetAnimInstance());
 
 	mHPBar = Cast<UAIHUDWidget>(mHPWidget->GetWidget());
-	mHPBar->AddConstructDelegate<AAIMonsterPawn>(this, &AAIMonsterPawn::SetHPBar);
+	if (mHPBar)
+	{
+		mHPBar->AddConstructDelegate<AAIMonsterPawn>(this, &AAIMonsterPawn::SetHPBar);
+	}
 
 	mCapsule->OnComponentBeginOverlap.AddDynamic(this, &AAIMonsterPawn::BeginOverlap);
 }

@@ -21,11 +21,20 @@ protected:
 	UTextBlock* mNameText;
 	UProgressBar* mHPBar;
 
+	float mHPPercent = 1.f;	// 100%
+	float mOldHPPercent = 1.f;
+
+	bool mChangeHP = false;
+	float mChangeTime = 0.f;
+	float mChangeDuration = 0.5f;
+
 	FConstructDelegate mConstructDelegate;
 
 protected:
 	// AddToViewport 시 호출
 	virtual void NativeConstruct();
+	virtual void NativeTick(const FGeometry& MyGeometry,float InDeltaTime);
+
 
 public:
 	void SetAIName(const FString& Name);

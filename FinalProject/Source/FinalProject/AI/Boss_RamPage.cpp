@@ -79,17 +79,17 @@ void ABoss_RamPage::Tick(float DeltaTime)
 			ChangeAIAnimType((uint8)EMonsterAnimType::Skill);
 
 			GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Green, FString::Printf(TEXT("mHPPercent : %f"), mMonsterState->GetAIHPPercent()));
-			if (mMonsterState->GetAIHPPercent() <= 30.f)
+			if (mMonsterState->GetAIHPPercent() <= 0.3f)
 			{
 				PlaySkillMontage((uint8)EBossCondition::Danger);
 				ChangeAnimMaxCnt = ChangeAnimMaxCnt = FMath::RandRange(0, 1);
 			}
-			else if (mMonsterState->GetAIHPPercent() <= 70.f)
+			else if (mMonsterState->GetAIHPPercent() <= 0.7f)
 			{
 				PlaySkillMontage((uint8)EBossCondition::Angry);
 				ChangeAnimMaxCnt = 1;
 			}
-			else if (mMonsterState->GetAIHPPercent() <= 100.f)
+			else if (mMonsterState->GetAIHPPercent() <= 1.f)
 			{
 
 				PlaySkillMontage((uint8)EBossCondition::Nomal);
