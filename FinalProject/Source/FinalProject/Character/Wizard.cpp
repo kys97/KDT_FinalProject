@@ -165,11 +165,17 @@ float AWizard::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AContro
 		// Death Check
 		if (State->mHP <= 0)
 		{
+			// Collision Set
+			GetCapsuleComponent()->SetCollisionProfileName(TEXT("NoCollision"));
+			GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
+
+			// Data Set
 			if (HasAuthority())
 				SetDeath(true);
 			else
 				ServerSetDeath(this, true);
 			
+			// UI Set
 			GetController<AWizardPlayerController>()->GetGameWidget()->PlayerDeath();
 		}
 	}
