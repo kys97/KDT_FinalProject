@@ -44,15 +44,6 @@ AAIPawn::AAIPawn()
 	mPatrolDir = 1;
 }
 
-FRotator AAIPawn::GetCurrentRotation()
-{
-	return FRotator();
-}
-
-void AAIPawn::SetMoveSpeed(float Speed)
-{
-}
-
 void AAIPawn::SetPointActorArray(const TArray<class APatrolPointActor*>& PointActorArray)
 {
 	if (PointActorArray.IsEmpty())
@@ -71,56 +62,6 @@ void AAIPawn::SetPointActorArray(const TArray<class APatrolPointActor*>& PointAc
 	{
 		mPatrolPointArray.Add(Point->GetActorLocation());
 	}
-}
-
-void AAIPawn::SetAttackEnd(bool End)
-{
-}
-
-bool AAIPawn::IsAttackEnd()
-{
-	return false;
-}
-
-void AAIPawn::SetAttackEnable(bool End)
-{
-}
-
-bool AAIPawn::IsAttackEnable()
-{
-	return false;
-}
-
-void AAIPawn::SetStunState(bool Stun)
-{
-}
-
-bool AAIPawn::IsStun()
-{
-	return false;
-}
-
-void AAIPawn::ChangeAIAnimType(uint8 AnimType)
-{
-}
-
-uint8 AAIPawn::GetAnimType()
-{
-	return uint8();
-}
-
-bool AAIPawn::AIIsOverlap()
-{
-	return false;
-}
-
-void AAIPawn::ChangeOverlapVlaue(bool Value)
-{
-}
-
-bool AAIPawn::IsSetBlackboardValue()
-{
-	return false;
 }
 
 // Called when the game starts or when spawned
@@ -153,14 +94,12 @@ void AAIPawn::OnConstruction(const FTransform& Transform)
 void AAIPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
 void AAIPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
 float AAIPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent,

@@ -6,13 +6,13 @@
 ADefaultAIController::ADefaultAIController()
 {
 	static ConstructorHelpers::FObjectFinder<UBehaviorTree> AITree(TEXT(
-		"/Script/AIModule.BehaviorTree'/Game/AI/BT_Default.BT_Default'"));
+		"/Script/AIModule.BehaviorTree'/Game/AI/Monster/BT_Default.BT_Default'"));
 	
 	if (AITree.Succeeded())
 		mBehaviorTree = AITree.Object;
 
 	static ConstructorHelpers::FObjectFinder<UBlackboardData> AIData(TEXT(
-		"/Script/AIModule.BlackboardData'/Game/AI/BB_Default.BB_Default'"));
+		"/Script/AIModule.BlackboardData'/Game/AI/Monster/BB_Default.BB_Default'"));
 	
 	if (AIData.Succeeded())
 		mBlackboard = AIData.Object;

@@ -9,11 +9,18 @@ AEffectBase::AEffectBase()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	mMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Root"));
+	SetRootComponent(mMesh);
+
+	mCapsule = CreateDefaultSubobject<UCapsuleComponent>("Capsule");
+	mCapsule->SetupAttachment(mMesh);
+
 	mParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Particle"));
-	SetRootComponent(mParticle);
+	mParticle->SetupAttachment(mCapsule);
+	mParticle->SetCollisionProfileName(TEXT("BossSkill"));
 
 	mAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio"));
-	mAudio->SetupAttachment(mParticle);
+	mAudio->SetupAttachment(mCapsule);
 
 #if WITH_EDITORONLY_DATA
 
@@ -26,7 +33,6 @@ AEffectBase::AEffectBase()
 void AEffectBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -75,4 +81,3 @@ void AEffectBase::OnParticleFinish(UParticleSystemComponent* Particle)
 	// 파티클이 끝났을 경우 액터를 제거한다.
 	Destroy();
 }
-

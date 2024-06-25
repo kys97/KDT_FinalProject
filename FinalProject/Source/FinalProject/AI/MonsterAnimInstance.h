@@ -15,8 +15,19 @@ enum class EMonsterAnimType : uint8
 	Sleep,
 	Attack,
 	TakeDamage,
-	Death
+	Death,
+	Spawn,
+	Skill,
+	Roar
 };
+
+enum class EBossCondition : uint8
+{
+	Nomal = 2,	// Skill Num
+	Angry = 3,
+	Danger = 4
+};
+
 
 UCLASS()
 class FINALPROJECT_API UMonsterAnimInstance : public UAnimInstance
@@ -41,6 +52,52 @@ protected:
 	float PlayTime = 0.f;
 	// 프레임 수
 	float FrameFPS = 30.f;
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<UAnimMontage*> mIdleMontageArray;
+	int32 mIdleIndex = 0;
+	TArray<int32> mIdleIndexArray;
+	int32 mIdleCount = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<UAnimMontage*> mBossSkillMontageArray;
+	int32 mSkillIndex = 0;
+	TArray<int32> mSkillIndexArray;
+	int32 mSkillCount = 0;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
+	bool mAnimPlay = false;
+
+	EBossCondition BossCondition;
+
+public:
+	virtual void NativeInitializeAnimation();
+	virtual void NativeUpdateAnimation(float DeltaSeconds);
+
+public:
+	void PlayIdleMontage();
+	void PlaySkillMontage(uint8 BossState);
+
+	void SetBossCondition(EBossCondition Condition)
+	{
+		BossCondition = Condition;
+	}
+
+	EBossCondition GetBossCondition()
+	{
+		return BossCondition;
+	}
+
+	int32 GetSkillMontageIndex()
+	{
+		return mSkillIndex;
+	}
+
+	bool IsMontagePlaying()
+	{
+		return mAnimPlay;
+	}
 
 public:
 	void SetAnimSpeed(int32 Speed)
@@ -67,10 +124,6 @@ public:
 	}
 
 public:
-	virtual void NativeInitializeAnimation();
-	virtual void NativeUpdateAnimation(float DeltaSeconds);
-
-public:
 	UFUNCTION()
 	void AnimNotify_AnimStart();
 
@@ -91,6 +144,13 @@ public:
 
 	UFUNCTION()
 	void AnimNotify_HitReactEnd();
+
+public:
+	UFUNCTION()
+	void AnimNotify_ParticleStart();
+
+	UFUNCTION()
+	void AnimNotify_ParticleEnd();
 
 public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

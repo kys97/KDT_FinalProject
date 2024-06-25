@@ -25,4 +25,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void NormalAttack();
+	virtual EMonsterType GetMonsterType()
+	{
+		return EMonsterType::Nomal;
+	}
 };

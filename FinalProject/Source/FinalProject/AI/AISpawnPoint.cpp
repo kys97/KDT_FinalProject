@@ -93,8 +93,10 @@ void AAISpawnPoint::Spawn()
 
 	// 생성 되는 Pawn의 위치는 SpawnPoint의 현재 위치로부터 캡슐의 절반 크기만큼
 	// 위로 이동시킨 위치에 스폰된다.
+	float RandYaw = FMath::FRandRange(-180.f, 180.f);
+
 	mSpawnAI = GetWorld()->SpawnActor<AAIPawn>(mSpawnClass,
-		GetActorLocation() + FVector(0.0, 0.0, (double)HalfHeight), GetActorRotation(), SpawnParam);
+		GetActorLocation() + FVector(0.0, 0.0, (double)HalfHeight), FRotator(0.f, RandYaw, 0.f), SpawnParam);
 
 	// 생성된 스폰 포인트를 지정해준다.
 	mSpawnAI->SetSpawnPoint(this);

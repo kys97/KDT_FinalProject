@@ -13,7 +13,7 @@ AAIDragonTheSoulEater::AAIDragonTheSoulEater()
 	if (MeshAsset.Succeeded())
 		mMesh->SetSkeletalMesh(MeshAsset.Object);
 
-	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/AI/Monster/Animation/AB_DragonTheSoulEater.AB_DragonTheSoulEater_C'"));
+	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/AI/Monster/Animation/DragonSoulEater/AB_DragonTheSoulEater.AB_DragonTheSoulEater_C'"));
 
 	if (AnimAsset.Succeeded())
 		mMesh->SetAnimInstanceClass(AnimAsset.Class);
