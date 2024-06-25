@@ -98,7 +98,7 @@ void UBTTask_Patrol::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 	if (!IsValid(MonsterState))
 		return;
 
-	Pawn->SetMoveSpeed((float)MonsterState->mMoveSpeed);
+	Pawn->SetMoveSpeed((float)MonsterState->GetAIMoveSpeed());
 	
 	// 속도 벡터를 가져와서 방향을 구한다.
 	// 방향은 x, y의 값을 이용해서 방향을 구한다.

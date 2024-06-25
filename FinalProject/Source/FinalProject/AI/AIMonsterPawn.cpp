@@ -5,6 +5,7 @@
 #include "MonsterAnimInstance.h"
 #include "MonsterState.h"
 #include "BossAIController.h"
+#include "../UI/AIHUDWidget.h"
 
 UDataTable* AAIMonsterPawn::mMonsterDataTable = nullptr;
 
@@ -20,20 +21,31 @@ AAIMonsterPawn::AAIMonsterPawn()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	mState = CreateDefaultSubobject<UMonsterState>(TEXT("MonsterState"));
-	//mAnimInst = CreateDefaultSubobject<UMonsterAnimInstance>(TEXT("MonsterAnimInstance"));
-
 	AIControllerClass = ADefaultAIController::StaticClass();
 
 	mCapsule->SetCollisionProfileName(TEXT("Monster"));
 	mCapsule->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
 
+	mState = CreateDefaultSubobject<UMonsterState>(TEXT("MonsterState"));
 	static ConstructorHelpers::FObjectFinder<UDataTable> 
 		MonsterTable(TEXT("/Script/Engine.DataTable'/Game/AI/Monster/DT_MonsterData.DT_MonsterData'"));
 
 	// static 포인터 변수에 지정된 값이 없고, 데이터 테이블이 정상적으로 불러와졌다면
 	if (!IsValid(mMonsterDataTable) && MonsterTable.Succeeded())
 		mMonsterDataTable = MonsterTable.Object;
+
+	mHPWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPWidget"));
+	mHPWidget->SetupAttachment(mMesh);
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> HPWidgetClass(
+		TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprint/UI/Monster/UI_Mst_HPBar.UI_Mst_HPBar_C'"));
+
+	if (HPWidgetClass.Succeeded())
+		mHPWidget->SetWidgetClass(HPWidgetClass.Class);
+
+	mHPWidget->SetRelativeLocation(FVector(0.f, 0.f, 700.f));
+	mHPWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	mHPWidget->SetDrawSize(FVector2D(150.f, 50.f));
 
 	mOverlap = false;
 
@@ -50,111 +62,17 @@ AAIMonsterPawn::AAIMonsterPawn()
 	mStun = false;
 }
 
-void AAIMonsterPawn::ChangeAIAnimType_Implementation(uint8 AnimType)
-{
-	if(IsValid(mAnimInst))
-		mAnimInst->ChangeAnimType((EMonsterAnimType)AnimType);
-}
-
-uint8 AAIMonsterPawn::GetAnimType()
-{
-	if (IsValid(mAnimInst))
-		return mAnimInst->GetAnimType();
-	else
-		return uint8();
-}
-
-EMonsterType AAIMonsterPawn::GetMonsterType()
-{
-	return EMonsterType();
-}
-
-void AAIMonsterPawn::PlaySkillMontage_Implementation(uint8 BossState)
-{
-	if (IsValid(mAnimInst))
-		mAnimInst->PlaySkillMontage(BossState);
-}
-
-void AAIMonsterPawn::PlayIdleMontage_Implementation()
-{
-	if (IsValid(mAnimInst))
-		mAnimInst->PlayIdleMontage();
-}
-
-void AAIMonsterPawn::SkillSetting(int32 Num)
-{
-}
-
-void AAIMonsterPawn::SkillDestroy()
-{
-}
-
-void AAIMonsterPawn::ChangeAnimLoop_Implementation(bool Loop)
-{
-	if (IsValid(mAnimInst))
-		mAnimInst->ChangeAnimLoop(Loop);
-}
-
-void AAIMonsterPawn::DeathEnd()
-{
-	mDeathEnd = true;
-	mAccTime = 0.f;
-}
-
-void AAIMonsterPawn::NormalAttack()
-{
-}
-
-void AAIMonsterPawn::SetBlackboardValue(const AController* EventInstigator, AController* AIController)
-{
-	ADefaultAIController* DefaultAIController = Cast<ADefaultAIController>(AIController);
-
-	APawn* EnemyPawn;
-	if (EventInstigator != nullptr)
-		EnemyPawn = EventInstigator->GetPawn();
-	else
-		EnemyPawn = nullptr;
-
-	DefaultAIController->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), EnemyPawn);
-	
-	mSetBlackboardValue = true;
-	mAccTime = 0.f;
-}
-
-void AAIMonsterPawn::SetMoveSpeed(float Speed)
-{
-	mMovement->MaxSpeed = Speed;
-
-	if (IsValid(mAnimInst))
-	{
-		mAnimInst->SetAnimSpeed(Speed);
-	}
-}
-
-void AAIMonsterPawn::SetReactLocation(AActor* DamageCauser)
-{
-	AILocation = GetActorLocation();
-	FVector TargetLocation = DamageCauser->GetActorLocation();
-
-	// 공격 방향을 구한다.
-	FVector	Dir = AILocation - TargetLocation;
-	Dir.Z = 0.0;
-
-	Dir.Normalize();
-
-	HitReactLocation = AILocation + Dir * (mMonsterState->mAttackDistance * 2.f);
-
-	mTakeDamage = true;
-	mTakeDamageTime = 0.f;
-}
-
 void AAIMonsterPawn::BeginPlay()
 {
 	Super::BeginPlay();
+	AIControllerClass = ADefaultAIController::StaticClass();
 
 	mCapsule->bApplyImpulseOnDamage = true;
 
 	mAnimInst = Cast<UMonsterAnimInstance>(mMesh->GetAnimInstance());
+
+	mHPBar = Cast<UAIHUDWidget>(mHPWidget->GetWidget());
+	mHPBar->AddConstructDelegate<AAIMonsterPawn>(this, &AAIMonsterPawn::SetHPBar);
 
 	mCapsule->OnComponentBeginOverlap.AddDynamic(this, &AAIMonsterPawn::BeginOverlap);
 }
@@ -224,7 +142,7 @@ float AAIMonsterPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
 
 	mMonsterState = GetState<UMonsterState>();
 
-	Damage -= (float)mMonsterState->mArmorPower;
+	Damage -= (float)mMonsterState->GetArmorPower();
 	Damage = Damage < 1.f ? 1.f : Damage;
 
 	mMonsterType = GetMonsterType();
@@ -255,11 +173,13 @@ void AAIMonsterPawn::NomalMonsterTakeDamage(float Damage, FDamageEvent const& Da
 	if (!IsValid(AIController))
 		return;
 
-	if (mMonsterState->mHP > 0)
+	if (mMonsterState->GetAIHP() > 0)
 	{
 		mMonsterState->ChangeHP(-Damage);
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Client Log! AAIMonsterPawn/Monster mHP : %d"), mMonsterState->mHP));
-		UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/Monster mHP : %f"), mMonsterState->mHP);
+
+		mHPBar->SetAIHP(mMonsterState->GetAIHPPercent());
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Client Log! AAIMonsterPawn/Monster mHPPercent : %f"), mMonsterState->GetAIHPPercent()));
+		UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/Monster mHP : %f"), mMonsterState->GetAIHPPercent());
 
 		if (Damage >= 10.f)
 		{
@@ -272,7 +192,7 @@ void AAIMonsterPawn::NomalMonsterTakeDamage(float Damage, FDamageEvent const& Da
 			SetReactLocation(DamageCauser);
 		}
 
-		if (mMonsterState->mHP <= 0)
+		if (mMonsterState->GetAIHP() <= 0)
 		{
 			SetBlackboardValue(nullptr, AIController);
 			mCapsule->bApplyImpulseOnDamage = false;
@@ -292,11 +212,11 @@ void AAIMonsterPawn::BossMonsterTakeDamage(float Damage, FDamageEvent const& Dam
 	if (!IsValid(BossController))
 		return;
 
-	if (mMonsterState->mHP > 0)
+	if (mMonsterState->GetAIHP() > 0)
 	{
 		mMonsterState->ChangeHP(-Damage);
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Client Log! AAIMonsterPawn/Boss mHP : %d"), mMonsterState->mHP));
-		UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/Monster mHP : %f"), mMonsterState->mHP);
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Client Log! AAIMonsterPawn/Boss mHP : %d"), mMonsterState->GetAIHP()));
+		UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/Monster mHP : %f"), mMonsterState->GetAIHP());
 
 		if (Damage >= 300.f)
 		{
@@ -305,7 +225,7 @@ void AAIMonsterPawn::BossMonsterTakeDamage(float Damage, FDamageEvent const& Dam
 			SetReactLocation(DamageCauser);
 		}
 
-		if (mMonsterState->mHP <= 0)
+		if (mMonsterState->GetAIHP() <= 0)
 		{
 			mCapsule->bApplyImpulseOnDamage = false;
 
@@ -315,5 +235,99 @@ void AAIMonsterPawn::BossMonsterTakeDamage(float Damage, FDamageEvent const& Dam
 			BossController->StopAI();
 		}
 	}
+}
+
+void AAIMonsterPawn::SetHPBar()
+{
+	mState = Cast<UMonsterState>(mState);
+
+	mHPBar->SetAIName(mState->GetAIName());
+	mHPBar->SetAIHP(mState->GetAIHPPercent());
+}
+
+void AAIMonsterPawn::ChangeAIAnimType_Implementation(uint8 AnimType)
+{
+	if(IsValid(mAnimInst))
+		mAnimInst->ChangeAnimType((EMonsterAnimType)AnimType);
+}
+
+uint8 AAIMonsterPawn::GetAnimType()
+{
+	if (IsValid(mAnimInst))
+		return mAnimInst->GetAnimType();
+	else
+		return uint8();
+}
+
+EMonsterType AAIMonsterPawn::GetMonsterType()
+{
+	return EMonsterType();
+}
+
+void AAIMonsterPawn::PlaySkillMontage_Implementation(uint8 BossState)
+{
+	if (IsValid(mAnimInst))
+		mAnimInst->PlaySkillMontage(BossState);
+}
+
+void AAIMonsterPawn::PlayIdleMontage_Implementation()
+{
+	if (IsValid(mAnimInst))
+		mAnimInst->PlayIdleMontage();
+}
+
+void AAIMonsterPawn::ChangeAnimLoop_Implementation(bool Loop)
+{
+	if (IsValid(mAnimInst))
+		mAnimInst->ChangeAnimLoop(Loop);
+}
+
+void AAIMonsterPawn::DeathEnd()
+{
+	mDeathEnd = true;
+	mAccTime = 0.f;
+}
+
+void AAIMonsterPawn::SetBlackboardValue(const AController* EventInstigator, AController* AIController)
+{
+	ADefaultAIController* DefaultAIController = Cast<ADefaultAIController>(AIController);
+
+	APawn* EnemyPawn;
+	if (EventInstigator != nullptr)
+		EnemyPawn = EventInstigator->GetPawn();
+	else
+		EnemyPawn = nullptr;
+
+	DefaultAIController->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), EnemyPawn);
+	
+	mSetBlackboardValue = true;
+	mAccTime = 0.f;
+}
+
+void AAIMonsterPawn::SetMoveSpeed(float Speed)
+{
+	mMovement->MaxSpeed = Speed;
+
+	if (IsValid(mAnimInst))
+	{
+		mAnimInst->SetAnimSpeed(Speed);
+	}
+}
+
+void AAIMonsterPawn::SetReactLocation(AActor* DamageCauser)
+{
+	AILocation = GetActorLocation();
+	FVector TargetLocation = DamageCauser->GetActorLocation();
+
+	// 공격 방향을 구한다.
+	FVector	Dir = AILocation - TargetLocation;
+	Dir.Z = 0.0;
+
+	Dir.Normalize();
+
+	HitReactLocation = AILocation + Dir * (mMonsterState->GetAIAttackDistance() * 2.f);
+
+	mTakeDamage = true;
+	mTakeDamageTime = 0.f;
 }
 

@@ -3,6 +3,9 @@
 #pragma once
 
 #include "AIPawn.h"
+
+#include "Components/WidgetComponent.h"
+
 #include "AIMonsterPawn.generated.h"
 
 UENUM(BlueprintType)
@@ -77,6 +80,11 @@ public:
 	AAIMonsterPawn();
 
 protected:
+	UPROPERTY(EditAnywhere)
+	UWidgetComponent* mHPWidget;
+
+	class UAIHUDWidget* mHPBar;
+
 	FVector AILocation;
 	FVector HitReactLocation;
 
@@ -111,6 +119,38 @@ protected:
 protected:
 	EMonsterType mMonsterType;
 
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+public:
+	virtual void OnConstruction(const FTransform& Transform);
+
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
+		AController* EventInstigator, AActor* DamageCauser) override;
+	
+	UFUNCTION()
+	void BeginOverlap(UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor, UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void EndOverlap(UPrimitiveComponent* OverlappedComponent, 
+		AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+public:
+	void NomalMonsterTakeDamage(float Damage, FDamageEvent const& DamageEvent,
+		AController* EventInstigator, AActor* DamageCauser);
+	void BossMonsterTakeDamage(float Damage, FDamageEvent const& DamageEvent,
+		AController* EventInstigator, AActor* DamageCauser);
+
+private:
+	UFUNCTION()
+	void SetHPBar();
+
 public:
 	virtual EMonsterType GetMonsterType();
 
@@ -122,8 +162,8 @@ public:
 	virtual void PlayIdleMontage();
 	virtual void PlayIdleMontage_Implementation();
 
-	virtual void SkillSetting(int32 Num);
-	virtual void SkillDestroy();
+	virtual void SkillSetting(int32 Num) {}
+	virtual void SkillDestroy() {}
 
 public:
 	virtual FRotator GetCurrentRotation()
@@ -153,7 +193,7 @@ public:
 		mOverlap = Value;
 	}
 
-	virtual void NormalAttack();
+	virtual void NormalAttack() {}
 
 	virtual void SetAttackEnd(bool End)
 	{
@@ -197,33 +237,5 @@ public:
 
 protected:
 	void SetReactLocation(AActor* DamageCauser);
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:
-	virtual void OnConstruction(const FTransform& Transform);
-
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
-		AController* EventInstigator, AActor* DamageCauser) override;
-	
-	UFUNCTION()
-	void BeginOverlap(UPrimitiveComponent* OverlappedComponent,
-		AActor* OtherActor, UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION()
-	void EndOverlap(UPrimitiveComponent* OverlappedComponent, 
-		AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-public:
-	void NomalMonsterTakeDamage(float Damage, FDamageEvent const& DamageEvent,
-		AController* EventInstigator, AActor* DamageCauser);
-	void BossMonsterTakeDamage(float Damage, FDamageEvent const& DamageEvent,
-		AController* EventInstigator, AActor* DamageCauser);
 };
 

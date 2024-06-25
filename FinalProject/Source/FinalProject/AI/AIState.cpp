@@ -13,11 +13,6 @@ UAIState::UAIState()
 	// ...
 }
 
-
-void UAIState::ChangeHP(float Event)
-{
-}
-
 // Called when the game starts
 void UAIState::BeginPlay()
 {

@@ -15,7 +15,7 @@ public:
 	// Sets default values for this component's properties
 	UAIState();
 
-public:
+protected:
 	UPROPERTY(EditAnywhere)
 	FString		mName;
 	// 이동 속도
@@ -26,10 +26,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	int32	mInteractionDistance;
 
-	FString	mDataTableRowName;
-
 public:
-	virtual void ChangeHP(float Event);
+	FString	mDataTableRowName;
 
 protected:
 	// Called when the game starts
@@ -39,5 +37,11 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+public:
+	virtual void ChangeHP(float Event) {}
+	virtual FString GetAIName() { return mName; }
+	virtual int32 GetAIMoveSpeed() { return mMoveSpeed; }
+	virtual int32 GetInteractionDistance() { return mInteractionDistance; }		
+
+	virtual	float GetAIHPPercent() { return 0.0f; }
 };

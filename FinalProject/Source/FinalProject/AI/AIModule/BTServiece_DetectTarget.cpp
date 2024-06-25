@@ -46,7 +46,7 @@ void UBTServiece_DetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp,
 	TArray<FHitResult> DetectedArray;	// 충돌 결과
 	bool IsDetected = GetWorld()->SweepMultiByChannel(DetectedArray, AILocation, AILocation,
 		FQuat::Identity, ECC_GameTraceChannel1,
-		FCollisionShape::MakeSphere(AIState->mInteractionDistance), Param);
+		FCollisionShape::MakeSphere(AIState->GetInteractionDistance()), Param);
 
 	FHitResult DetectedResult;
 	if (IsDetected)

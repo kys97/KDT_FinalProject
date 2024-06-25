@@ -132,7 +132,7 @@ void UBTTask_NormalAttack::TickTask(UBehaviorTreeComponent& OwnerComp,
 		// GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("Distance : %f"), Distance));
 
 		// 공격 거리를 빠져나갔을 경우
-		if (Distance > MonsterState->mAttackDistance)
+		if (Distance > MonsterState->GetAIAttackDistance())
 		{
 			// Task를 종료한다.
 			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);

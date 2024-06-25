@@ -52,10 +52,10 @@ EBTNodeResult::Type UBTTask_TraceTarget::ExecuteTask(UBehaviorTreeComponent& Own
 	{
 		if (Pawn->IsStun())
 		{
-			Pawn->SetMoveSpeed((float)MonsterState->mMoveSpeed);
+			Pawn->SetMoveSpeed((float)MonsterState->GetAIMoveSpeed());
 		}
 		else {
-			Pawn->SetMoveSpeed((float)MonsterState->mMaxMoveSpeed);
+			Pawn->SetMoveSpeed((float)MonsterState->GetAIMaxMoveSpeed());
 		}
 		Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Run);
 
@@ -146,12 +146,12 @@ void UBTTask_TraceTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 			mAccTime += DeltaSeconds;
 
 			Pawn->ChangeAIAnimType((uint8)EMonsterAnimType::Run);;
-			Pawn->SetMoveSpeed((float)MonsterState->mMoveSpeed);
+			Pawn->SetMoveSpeed((float)MonsterState->GetAIMoveSpeed());
 			UAIBlueprintHelperLibrary::SimpleMoveToActor(Controller, Target);
 
 			if (mAccTime >= mStunDuration)
 			{
-				Pawn->SetMoveSpeed((float)MonsterState->mMaxMoveSpeed);
+				Pawn->SetMoveSpeed((float)MonsterState->GetAIMaxMoveSpeed());
 
 				Pawn->SetStunState(false);
 
@@ -161,7 +161,7 @@ void UBTTask_TraceTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 
 		float Distance = GetDistance(Pawn, Target, AILocation, TargetLocation);
 
-		if (Distance <= MonsterState->mAttackDistance)
+		if (Distance <= MonsterState->GetAIAttackDistance())
 		{
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 

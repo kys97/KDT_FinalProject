@@ -51,7 +51,7 @@ void AAIDragonTheSoulEater::NormalAttack()
 	// 시작위치에서 앞으로 (캡슐반경+공격거리) 만큼 이동한 위치가 끝 위치
 	float Radius = GetCapsuleRadius();
 
-	FVector EndLocation = StartLocation + (GetActorForwardVector() * (Radius + mMonsterState->mAttackDistance));
+	FVector EndLocation = StartLocation + (GetActorForwardVector() * (Radius + mMonsterState->GetAIAttackDistance()));
 
 	TArray<FHitResult> resultArray;
 	// 시작위치에서 끝 위치 사이에 감지되는 결과
@@ -66,7 +66,7 @@ void AAIDragonTheSoulEater::NormalAttack()
 	Center = StartLocation + (GetActorForwardVector() * FVector::Dist(StartLocation, EndLocation));
 
 	DrawDebugCapsule(GetWorld(), Center,
-		(Radius + mMonsterState->mAttackDistance), (Radius),
+		(Radius + mMonsterState->GetAIAttackDistance()), (Radius),
 		FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(),
 		DrawColor, false, 0.2f);
 
@@ -82,7 +82,7 @@ void AAIDragonTheSoulEater::NormalAttack()
 			if (HasAuthority())
 			{
 				// TakeDamage() : 데미지 정도, 데미지 이벤트, 가해자 컨트롤러, 가해자 액터
-				resultArray[i].GetActor()->TakeDamage(mMonsterState->mAttackPower, DmgEvent, GetController(), this);
+				resultArray[i].GetActor()->TakeDamage(mMonsterState->GetAttackPower(), DmgEvent, GetController(), this);
 			}
 			else
 			{

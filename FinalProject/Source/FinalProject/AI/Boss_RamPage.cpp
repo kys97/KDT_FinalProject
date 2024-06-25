@@ -56,8 +56,6 @@ void ABoss_RamPage::Tick(float DeltaTime)
 
 	if (!mAnimInst->IsMontagePlaying())
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Red, FString::Printf(TEXT("IsMontagePlaying")));
-
 		if (!SkillEnable)
 		{
 			ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
@@ -80,18 +78,18 @@ void ABoss_RamPage::Tick(float DeltaTime)
 			ChangeAnimCnt = 0;
 			ChangeAIAnimType((uint8)EMonsterAnimType::Skill);
 
-			GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Green, FString::Printf(TEXT("mHPPercent : %f"), mMonsterState->mHPPercent));
-			if (mMonsterState->mHPPercent <= 30.f)
+			GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Green, FString::Printf(TEXT("mHPPercent : %f"), mMonsterState->GetAIHPPercent()));
+			if (mMonsterState->GetAIHPPercent() <= 30.f)
 			{
 				PlaySkillMontage((uint8)EBossCondition::Danger);
 				ChangeAnimMaxCnt = ChangeAnimMaxCnt = FMath::RandRange(0, 1);
 			}
-			else if (mMonsterState->mHPPercent <= 70.f)
+			else if (mMonsterState->GetAIHPPercent() <= 70.f)
 			{
 				PlaySkillMontage((uint8)EBossCondition::Angry);
 				ChangeAnimMaxCnt = 1;
 			}
-			else if (mMonsterState->mHPPercent <= 100.f)
+			else if (mMonsterState->GetAIHPPercent() <= 100.f)
 			{
 
 				PlaySkillMontage((uint8)EBossCondition::Nomal);
