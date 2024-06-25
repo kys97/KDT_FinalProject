@@ -242,8 +242,6 @@ void AAIMonsterPawn::BossMonsterTakeDamage(float Damage, FDamageEvent const& Dam
 
 void AAIMonsterPawn::SetHPBar()
 {
-	mState = Cast<UMonsterState>(mState);
-
 	mHPBar->SetAIName(mState->GetAIName());
 	mHPBar->SetAIHP(mState->GetAIHPPercent());
 }

@@ -63,6 +63,8 @@ protected:
 	int32	mSkill6_Power = 200;
 
 public:
+	FString GetAIName() { return mName; }
+
 	virtual void ChangeHP(float Event)
 	{
 		mHP += Event;
