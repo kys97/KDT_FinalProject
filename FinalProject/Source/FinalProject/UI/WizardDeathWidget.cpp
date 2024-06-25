@@ -6,7 +6,8 @@
 
 void UWizardDeathWidget::PreConstruct()
 {
-	SetVisibility(ESlateVisibility::Hidden);
+	SetIsEnabled(false);
+	SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void UWizardDeathWidget::NativeConstruct()
@@ -35,7 +36,8 @@ void UWizardDeathWidget::NativeConstruct()
 
 void UWizardDeathWidget::SetDeathWidgetEnable()
 {
-	SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+	SetIsEnabled(true);
+	SetVisibility(ESlateVisibility::Visible);
 }
 
 void UWizardDeathWidget::RespawnButtonHovered()
