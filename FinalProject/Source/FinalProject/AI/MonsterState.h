@@ -17,7 +17,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-public:
+protected:
 	// 공격력
 	UPROPERTY(EditAnywhere)
 	int32	mAttackPower;
@@ -63,6 +63,8 @@ public:
 	int32	mSkill6_Power = 200;
 
 public:
+	FString GetAIName() { return mName; }
+
 	virtual void ChangeHP(float Event)
 	{
 		mHP += Event;
@@ -70,7 +72,67 @@ public:
 		if (mHP < 0)
 			mHP = 0;
 
-		mHPPercent = mHP / mHPMax * 100;
+		mHPPercent = (mHP / (float)mHPMax);
+	}
+
+	int32 GetAttackPower()
+	{
+		return mAttackPower;
+	}
+
+	int32 GetArmorPower()
+	{
+		return mArmorPower;
+	}
+
+	int32 GetAIHP()
+	{
+		return mHP;
+	}
+
+	int32 GetAIHPMax()
+	{
+		return mHPMax;
+	}
+
+	float GetAIHPPercent()
+	{
+		return mHPPercent;
+	}
+
+	int32 GetAIMaxMoveSpeed()
+	{
+		return mMaxMoveSpeed;
+	}
+
+	int32 GetAIAttackDistance()
+	{
+		return mAttackDistance;
+	}
+
+	int32 GetSkill1_Power()
+	{
+		return mSkill1_Power;
+	}
+
+	int32 GetSkill2_Power()
+	{
+		return mSkill2_Power;
+	}
+
+	int32 GetSkill3_Power()
+	{
+		return mSkill3_Power;
+	}
+
+	int32 GetSkill4_Power()
+	{
+		return mSkill4_Power;
+	}
+
+	int32 GetSkill5_Power()
+	{
+		return mSkill5_Power;
 	}
 
 public:

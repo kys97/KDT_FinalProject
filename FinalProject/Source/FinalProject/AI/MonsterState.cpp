@@ -24,7 +24,7 @@ void UMonsterState::BeginPlay()
 		mArmorPower = Data->mArmorPower;
 		mHP = Data->mHPMax;
 		mHPMax = Data->mHPMax;
-		mHPPercent = Data->mHPMax / Data->mHPMax * 100;
+		mHPPercent = Data->mHPMax / (float)Data->mHPMax;
 		mMP = Data->mMPMax;
 		mMPMax = Data->mMPMax;
 		mMaxMoveSpeed = Data->mMaxMoveSpeed;
