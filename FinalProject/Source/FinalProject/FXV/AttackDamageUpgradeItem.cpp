@@ -28,6 +28,10 @@ void AAttackDamageUpgradeItem::OnItemCapsuleOverlapBegin(UPrimitiveComponent* Ov
     AWizard* GetItemOwner = Cast<AWizard>(OtherActor);
     if (ItemOwner == nullptr && GetItemOwner != nullptr)
     {
+        // Item Visible Set
+        // TODO : 자연스럽게 안되나
+        GetRootComponent()->SetVisibility(false, true);
+
         // Set Item Owner
         ItemOwner = GetItemOwner;
 
@@ -46,10 +50,6 @@ void AAttackDamageUpgradeItem::OnItemCapsuleOverlapBegin(UPrimitiveComponent* Ov
         // Time Set
         FTimerHandle TimerHandle;
         GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AAttackDamageUpgradeItem::ItemFinished, /* ItemTime */60.f, false);
-
-        // Item Visible Set
-        // TODO : 자연스럽게 안되나
-        GetRootComponent()->SetVisibility(false, true);
     }
 }
 

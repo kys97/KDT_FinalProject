@@ -7,7 +7,8 @@
 #include "BossAIController.h"
 
 
-// #include "../FXV/AttackDamageUpgradeItem.h"
+#include "../FXV/AttackDamageUpgradeItem.h"
+
 
 UDataTable* AAIMonsterPawn::mMonsterDataTable = nullptr;
 
@@ -294,13 +295,12 @@ void AAIMonsterPawn::NomalMonsterTakeDamage(float Damage, FDamageEvent const& Da
 				ActorSpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 				// Item Spawn
-				/*
+				// TODO : 어떤 아이템 스폰할건지 지정
 				AAttackDamageUpgradeItem* Item = World->SpawnActor<AAttackDamageUpgradeItem>(
 					AAttackDamageUpgradeItem::StaticClass(),
 					GetActorLocation(),
 					GetActorRotation(),
 					ActorSpawnParam);
-					*/
 			}
 		}
 	}
