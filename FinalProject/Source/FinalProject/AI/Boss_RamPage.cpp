@@ -28,12 +28,14 @@ ABoss_RamPage::ABoss_RamPage()
 	AIControllerClass = ABossAIController::StaticClass();
 
 	mCapsule->SetRelativeScale3D(FVector(2.f, 2.f, 2.f));
+	mCapsule->SetRelativeRotation(FRotator(0.f, 180.f, 0.f)); // Pitch(Y), Yaw(Z), Roll(X)
 	mCapsule->SetCapsuleHalfHeight(100.f);
 	mCapsule->SetCapsuleRadius(100.f);
 
 	mMesh->SetRelativeLocation(FVector(0.f, 0.f, -100.f));
 	mMesh->SetRelativeRotation(FRotator(0.f, -90.f, 0.f)); // Pitch(Y), Yaw(Z), Roll(X)
-	mMesh->SetRelativeScale3D(FVector(1.f, 1.f, 1.f));
+	mMesh->SetRelativeScale3D(FVector(2.f, 2.f, 2.f));
+	mMesh->SetCollisionProfileName(TEXT("Monster"));
 
 	mMonsterType = EMonsterType::Boss;
 
