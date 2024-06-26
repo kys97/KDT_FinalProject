@@ -80,9 +80,9 @@ public:
 	AAIMonsterPawn();
 
 protected:
+	TSubclassOf<UUserWidget> mHPWidgetClass;
 	UPROPERTY(EditAnywhere)
 	UWidgetComponent* mHPWidget;
-
 	class UAIHUDWidget* mHPBar;
 
 	FVector AILocation;
@@ -93,21 +93,23 @@ protected:
 
 	class UMonsterState* mMonsterState;
 
-	bool mTakeDamage;
-	float mTakeDamageTime;
+	bool mTakeDamage = false;
+	float mTakeDamageTime = 0.f;
 
-	bool mOverlap;
-	bool mAttackEnd;
-	bool mAttackEnable;
+	bool mOverlap = false;
+	bool mAttackEnd = false;
+	bool mAttackEnable = true;
 
-	bool mStun;
+	float mAccTime = 0.f;
+	bool mStun = false;
 
-	bool mDeathEnd;
-	//float mDeadTime;
-	float mAccTime;
+	bool mDeathEnd = false;
+
+	bool mHPWidgetVisible = false;
+	float mHPWidgetTime = 0.f;
 
 	UPROPERTY(EditAnywhere)
-	float mDeadDuration;
+	float mDeadDuration = 5.f;
 
 	bool mSetBlackboardValue = false;
 
@@ -150,6 +152,7 @@ public:
 private:
 	UFUNCTION()
 	void SetHPBar();
+	void SetHPWidgetVisible(bool Visible);
 
 public:
 	virtual EMonsterType GetMonsterType();
@@ -183,55 +186,21 @@ public:
 	virtual void ChangeAnimLoop(bool Loop);
 	virtual void ChangeAnimLoop_Implementation(bool Loop);
 
-	virtual bool AIIsOverlap()
-	{
-		return mOverlap;
-	}
-
-	virtual void ChangeOverlapVlaue(bool Value)
-	{
-		mOverlap = Value;
-	}
+	virtual bool AIIsOverlap()	{ return mOverlap; }
+	virtual void ChangeOverlapVlaue(bool Value) { mOverlap = Value; }
 
 	virtual void NormalAttack() {}
 
-	virtual void SetAttackEnd(bool End)
-	{
-		mAttackEnd = End;
-	}
-
-	virtual bool IsAttackEnd()
-	{
-		return mAttackEnd;
-	}
-
-	virtual void SetAttackEnable(bool End)
-	{
-		mAttackEnable = End;
-	}
-
-	virtual bool IsAttackEnable()
-	{
-
-		return mAttackEnable;
-	}
+	virtual void SetAttackEnd(bool End) { mAttackEnd = End; }
+	virtual bool IsAttackEnd() { return mAttackEnd; }
+	virtual void SetAttackEnable(bool End) { mAttackEnable = End; }
+	virtual bool IsAttackEnable() { return mAttackEnable; }
 
 	void SetBlackboardValue(const AController* EventInstigator, AController* AIController);
+	virtual bool IsSetBlackboardValue() { return mSetBlackboardValue; }
 
-	virtual bool IsSetBlackboardValue()
-	{
-		return mSetBlackboardValue;
-	}
-
-	virtual void SetStunState(bool Stun)
-	{
-		mStun = Stun;
-	}
-
-	virtual bool IsStun()
-	{
-		return mStun;
-	}
+	virtual void SetStunState(bool Stun) { mStun = Stun; }
+	virtual bool IsStun() { return mStun; }
 
 	virtual void SetMoveSpeed(float Speed);
 

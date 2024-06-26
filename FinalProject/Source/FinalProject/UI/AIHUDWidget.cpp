@@ -39,8 +39,7 @@ void UAIHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 
 void UAIHUDWidget::SetAIName(const FString& Name)
 {
-	if(IsValid(mNameText))
-		mNameText->SetText(FText::FromString(Name));
+	mNameText->SetText(FText::FromString(Name));
 }
 
 void UAIHUDWidget::SetAIHP(float HPPercent)

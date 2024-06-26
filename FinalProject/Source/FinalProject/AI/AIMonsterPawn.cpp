@@ -27,9 +27,7 @@ AAIMonsterPawn::AAIMonsterPawn()
 	mCapsule->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
 
 	mState = CreateDefaultSubobject<UMonsterState>(TEXT("MonsterState"));
-	static ConstructorHelpers::FObjectFinder<UDataTable> 
-		MonsterTable(TEXT("/Script/Engine.DataTable'/Game/AI/Monster/DT_MonsterData.DT_MonsterData'"));
-
+	static ConstructorHelpers::FObjectFinder<UDataTable>	MonsterTable(TEXT("/Script/Engine.DataTable'/Game/AI/Monster/DT_MonsterData.DT_MonsterData'"));
 	// static 포인터 변수에 지정된 값이 없고, 데이터 테이블이 정상적으로 불러와졌다면
 	if (!IsValid(mMonsterDataTable) && MonsterTable.Succeeded())
 		mMonsterDataTable = MonsterTable.Object;
@@ -37,29 +35,16 @@ AAIMonsterPawn::AAIMonsterPawn()
 	mHPWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPWidget"));
 	mHPWidget->SetupAttachment(mMesh);
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> HPWidgetClass(
-		TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprint/UI/Monster/UI_Mst_HPBar.UI_Mst_HPBar_C'"));
-
+	static ConstructorHelpers::FClassFinder<UUserWidget>	HPWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprint/UI/Monster/UI_Mst_HPBar.UI_Mst_HPBar_C'"));
 	if (HPWidgetClass.Succeeded())
-		mHPWidget->SetWidgetClass(HPWidgetClass.Class);
+		mHPWidgetClass = HPWidgetClass.Class;
 
-	mHPWidget->SetRelativeLocation(FVector(0.f, 0.f, 700.f));
+	mHPWidget->SetWidgetClass(mHPWidgetClass);
+
+	mHPWidget->SetRelativeLocation(FVector(0.f, 0.f, 800.f));
 	mHPWidget->SetWidgetSpace(EWidgetSpace::Screen);
-	mHPWidget->SetDrawSize(FVector2D(150.f, 50.f));
-
-	mOverlap = false;
-
-	mAttackEnd = false;
-	mAttackEnable = true;
-
-	mDeathEnd = false;
-	mAccTime = 0.f;
-	mDeadDuration = 5.f;
-
-	mTakeDamage = false;
-	mTakeDamageTime = 0.f;
-
-	mStun = false;
+	mHPWidget->SetVisibility(false);
+	mHPWidget->SetDrawSize(FVector2D(150.f, 40.f));
 }
 
 void AAIMonsterPawn::BeginPlay()
@@ -105,6 +90,25 @@ void AAIMonsterPawn::Tick(float DeltaTime)
 			mAccTime = 0.f;
 		}
 	}
+
+	// HPBar가 띄워져 있는데 타겟이 사라지면 10초 뒤에 안보이도록
+	if (mHPWidgetVisible)
+	{
+		ADefaultAIController* AIController = Cast<ADefaultAIController>(GetController());
+		
+		if (IsValid(AIController))
+		{
+			UObject* Object = AIController->GetBlackboardComponent()->GetValueAsObject(TEXT("Target"));
+
+			if (Object == nullptr)
+			{
+				mHPWidgetTime += DeltaTime;
+				if (mHPWidgetTime >= 10.f)
+					SetHPWidgetVisible(false);
+			}
+		}
+	}
+
 
 	if (mDeathEnd)
 	{
@@ -172,6 +176,8 @@ void AAIMonsterPawn::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 void AAIMonsterPawn::NomalMonsterTakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	ADefaultAIController* AIController = Cast<ADefaultAIController>(GetController());
+	
+	SetHPWidgetVisible(true);
 
 	if (!IsValid(AIController))
 		return;
@@ -181,8 +187,8 @@ void AAIMonsterPawn::NomalMonsterTakeDamage(float Damage, FDamageEvent const& Da
 		mMonsterState->ChangeHP(-Damage);
 
 		mHPBar->SetAIHP(mMonsterState->GetAIHPPercent());
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Client Log! AAIMonsterPawn/Monster mHPPercent : %f"), mMonsterState->GetAIHPPercent()));
-		UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/Monster mHP : %f"), mMonsterState->GetAIHPPercent());
+		//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Client Log! AAIMonsterPawn/Monster mHPPercent : %f"), mMonsterState->GetAIHPPercent()));
+		//UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/Monster mHP : %f"), mMonsterState->GetAIHPPercent());
 
 		if (Damage >= 10.f)
 		{
@@ -242,6 +248,9 @@ void AAIMonsterPawn::BossMonsterTakeDamage(float Damage, FDamageEvent const& Dam
 
 void AAIMonsterPawn::SetHPBar()
 {
+	FString AIName = mState->GetAIName();
+	mHPWidget->SetDrawSize(FVector2D(AIName.Len() * 10.f, 40.f));
+
 	mHPBar->SetAIName(mState->GetAIName());
 	mHPBar->SetAIHP(mState->GetAIHPPercent());
 }
@@ -250,6 +259,12 @@ void AAIMonsterPawn::ChangeAIAnimType_Implementation(uint8 AnimType)
 {
 	if(IsValid(mAnimInst))
 		mAnimInst->ChangeAnimType((EMonsterAnimType)AnimType);
+}
+
+void AAIMonsterPawn::SetHPWidgetVisible(bool Visible)
+{
+	mHPWidgetVisible = Visible;
+	mHPWidget->SetVisibility(Visible);
 }
 
 uint8 AAIMonsterPawn::GetAnimType()
