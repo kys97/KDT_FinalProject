@@ -3,9 +3,6 @@
 #pragma once
 
 #include "AIPawn.h"
-
-#include "Components/WidgetComponent.h"
-
 #include "AIMonsterPawn.generated.h"
 
 UENUM(BlueprintType)
@@ -82,7 +79,7 @@ public:
 protected:
 	TSubclassOf<UUserWidget> mHPWidgetClass;
 	UPROPERTY(EditAnywhere)
-	UWidgetComponent* mHPWidget;
+	UWidgetComponent* mHPWidgetComp;
 	class UAIHUDWidget* mHPBar;
 
 	FVector AILocation;
@@ -122,6 +119,8 @@ protected:
 	EMonsterType mMonsterType;
 
 protected:
+	virtual void SetHPWidget() {}
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -149,9 +148,8 @@ public:
 	void BossMonsterTakeDamage(float Damage, FDamageEvent const& DamageEvent,
 		AController* EventInstigator, AActor* DamageCauser);
 
-private:
-	UFUNCTION()
-	void SetHPBar();
+protected:
+	virtual void SetHPBar() {}
 	void SetHPWidgetVisible(bool Visible);
 
 public:

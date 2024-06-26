@@ -2,6 +2,7 @@
 
 #include "AIDragonTheSoulEater.h"
 #include "../Effect/EffectBase.h"
+#include "../UI/AIHUDWidget.h"
 #include "MonsterState.h"
 
 AAIDragonTheSoulEater::AAIDragonTheSoulEater()
@@ -18,6 +19,9 @@ AAIDragonTheSoulEater::AAIDragonTheSoulEater()
 	if (AnimAsset.Succeeded())
 		mMesh->SetAnimInstanceClass(AnimAsset.Class);
 
+	mHPWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPWidget"));
+	mHPWidgetComp->SetupAttachment(mMesh);
+
 	mMesh->SetRelativeLocation(FVector(0.f, 0.f, -100.f));
 	mMesh->SetRelativeRotation(FRotator(0.f, -90.f, 0.f)); // Pitch(Y), Yaw(Z), Roll(X)
 	mMesh->SetRelativeScale3D(FVector(0.3f, 0.3f, 0.3f));
@@ -25,12 +29,38 @@ AAIDragonTheSoulEater::AAIDragonTheSoulEater()
 	mCapsule->SetCapsuleHalfHeight(100.f);
 	mCapsule->SetCapsuleRadius(100.f);
 
+	mMonsterType = EMonsterType::Nomal;
+
+	SetHPWidget();
+
 	//mTableRowName = TEXT("Dragon_SoulEater");
+}
+
+void AAIDragonTheSoulEater::SetHPWidget()
+{
+	static ConstructorHelpers::FClassFinder<UUserWidget>
+		HPWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprint/UI/Monster/UI_Mst_HPBar.UI_Mst_HPBar_C'"));
+	if (HPWidgetClass.Succeeded())
+		mHPWidgetClass = HPWidgetClass.Class;
+
+	mHPWidgetComp->SetWidgetClass(mHPWidgetClass);
+
+	mHPWidgetComp->SetRelativeLocation(FVector(0.f, 0.f, 800.f));
+	mHPWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
+	mHPWidgetComp->SetVisibility(false);
+	mHPWidgetComp->SetDrawSize(FVector2D(150.f, 40.f));
 }
 
 void AAIDragonTheSoulEater::BeginPlay()
 {
 	Super::BeginPlay();
+
+	mHPBar = Cast<UAIHUDWidget>(mHPWidgetComp->GetWidget());
+	mHPBar->SetMonsterType(mMonsterType);
+	if (mHPBar)
+	{
+		mHPBar->AddConstructDelegate<AAIDragonTheSoulEater>(this, &AAIDragonTheSoulEater::SetHPBar);
+	}
 }
 
 void AAIDragonTheSoulEater::Tick(float DeltaTime)
@@ -101,4 +131,13 @@ void AAIDragonTheSoulEater::NormalAttack()
 			}
 		}
 	}
+}
+
+void AAIDragonTheSoulEater::SetHPBar()
+{
+	FString AIName = mState->GetAIName();
+	mHPWidgetComp->SetDrawSize(FVector2D(AIName.Len() * 10.f, 40.f));
+
+	mHPBar->SetAIName(mState->GetAIName());
+	mHPBar->SetAIHP(mState->GetAIHPPercent());
 }

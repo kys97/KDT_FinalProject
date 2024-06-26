@@ -8,7 +8,10 @@ void UAIHUDWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	mNameText = Cast<UTextBlock>(GetWidgetFromName(TEXT("AINameText")));
-	mHPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("AIHPBar")));
+	mMonsterHPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("AIHPBar")));
+	mBossHPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("BossHPBar")));
+
+	mHPPercent = 1.f;
 
 	// 함수가 등록되어 있는지 판단해서 등록된 모든 함수 호출
 	if (mConstructDelegate.IsBound())
@@ -25,8 +28,14 @@ void UAIHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 		float Alpha = mChangeTime / mChangeDuration;
 
 		float NewPercent = FMath::Lerp(mOldHPPercent, mHPPercent, Alpha);
-		mHPBar->SetPercent(NewPercent);
-		
+
+		if (mMonsterType == EMonsterType::Nomal) {
+			mMonsterHPBar->SetPercent(NewPercent);
+		}
+		else if (mMonsterType == EMonsterType::Boss){
+			mBossHPBar->SetPercent(NewPercent);
+		}
+
 		if (mChangeTime >= mChangeDuration)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 50.f, FColor::Red, FString::Printf(TEXT("Client Log! UAIHUDWidget/mHPPercent : %f"), NewPercent));

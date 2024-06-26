@@ -2,6 +2,9 @@
 
 
 #include "BossAIController.h"
+#include "../UI/AIHUDWidget.h"
+#include "Boss_RamPage.h"
+
 
 ABossAIController::ABossAIController()
 {
@@ -16,6 +19,12 @@ ABossAIController::ABossAIController()
 
 	if (AIData.Succeeded())
 		mBlackboard = AIData.Object;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget>
+		HPWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprint/UI/Monster/UI_Boss_HPBar.UI_Boss_HPBar_C'"));
+
+	if (HPWidgetClass.Succeeded())
+		mHPWidgetClass = HPWidgetClass.Class;
 
 	mAIPerception = CreateDefaultSubobject<UAIPerceptionComponent>("AIPerception");
 
@@ -32,6 +41,11 @@ ABossAIController::ABossAIController()
 void ABossAIController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	ABoss_RamPage* BossObject = Cast<ABoss_RamPage>(GetPawn());
+
+	mHPBar = CreateWidget<UAIHUDWidget>(GetWorld(), mHPWidgetClass);
+	mHPBar->AddToViewport();
 
 	mAIPerception->OnTargetPerceptionUpdated.AddDynamic(
 		this, &ABossAIController::OnTargetDetect);

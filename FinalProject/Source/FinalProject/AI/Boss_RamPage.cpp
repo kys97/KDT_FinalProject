@@ -5,6 +5,8 @@
 #include "MonsterAnimInstance.h"
 #include "MonsterState.h"
 
+#include "../UI/AIHUDWidget.h"
+
 #include "../Effect/EffectBase.h"
 #include "../Effect/Effect_FireEmit.h"
 
@@ -33,6 +35,8 @@ ABoss_RamPage::ABoss_RamPage()
 	mMesh->SetRelativeRotation(FRotator(0.f, -90.f, 0.f)); // Pitch(Y), Yaw(Z), Roll(X)
 	mMesh->SetRelativeScale3D(FVector(1.f, 1.f, 1.f));
 
+	mMonsterType = EMonsterType::Boss;
+
 	mTableRowName = TEXT("Boss_Rampage");
 }
 
@@ -41,6 +45,15 @@ void ABoss_RamPage::BeginPlay()
 	Super::BeginPlay();
 
 	mMonsterState = GetState<UMonsterState>();
+
+	ABossAIController* BossController = Cast<ABossAIController>(GetController());
+	mHPBar = BossController->GetHPBarWidget();
+
+	mHPBar->SetMonsterType(mMonsterType);
+	if (mHPBar)
+	{
+		mHPBar->AddConstructDelegate<ABoss_RamPage>(this, &ABoss_RamPage::SetHPBar);
+	}
 
 	ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
 
@@ -139,5 +152,10 @@ void ABoss_RamPage::SkillSetting(int32 Num)
 	}
 
 
+}
+
+void ABoss_RamPage::SetHPBar()
+{
+	mHPBar->SetAIHP(mState->GetAIHPPercent());
 }
 

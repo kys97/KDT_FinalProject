@@ -39,7 +39,7 @@ public:
 public:
 	virtual EMonsterType GetMonsterType()
 	{
-		return EMonsterType::Boss;
+		return mMonsterType;
 	}
 
 	virtual void SkillSetting(int32 Num);
@@ -48,4 +48,7 @@ public:
 		if (SkillActor != nullptr)
 			SkillActor->Destroy();
 	}
+
+public:
+	void SetHPBar();
 };

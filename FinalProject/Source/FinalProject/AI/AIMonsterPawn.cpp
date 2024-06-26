@@ -31,20 +31,6 @@ AAIMonsterPawn::AAIMonsterPawn()
 	// static 포인터 변수에 지정된 값이 없고, 데이터 테이블이 정상적으로 불러와졌다면
 	if (!IsValid(mMonsterDataTable) && MonsterTable.Succeeded())
 		mMonsterDataTable = MonsterTable.Object;
-
-	mHPWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPWidget"));
-	mHPWidget->SetupAttachment(mMesh);
-
-	static ConstructorHelpers::FClassFinder<UUserWidget>	HPWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprint/UI/Monster/UI_Mst_HPBar.UI_Mst_HPBar_C'"));
-	if (HPWidgetClass.Succeeded())
-		mHPWidgetClass = HPWidgetClass.Class;
-
-	mHPWidget->SetWidgetClass(mHPWidgetClass);
-
-	mHPWidget->SetRelativeLocation(FVector(0.f, 0.f, 800.f));
-	mHPWidget->SetWidgetSpace(EWidgetSpace::Screen);
-	mHPWidget->SetVisibility(false);
-	mHPWidget->SetDrawSize(FVector2D(150.f, 40.f));
 }
 
 void AAIMonsterPawn::BeginPlay()
@@ -55,12 +41,6 @@ void AAIMonsterPawn::BeginPlay()
 	mCapsule->bApplyImpulseOnDamage = true;
 
 	mAnimInst = Cast<UMonsterAnimInstance>(mMesh->GetAnimInstance());
-
-	mHPBar = Cast<UAIHUDWidget>(mHPWidget->GetWidget());
-	if (mHPBar)
-	{
-		mHPBar->AddConstructDelegate<AAIMonsterPawn>(this, &AAIMonsterPawn::SetHPBar);
-	}
 
 	mCapsule->OnComponentBeginOverlap.AddDynamic(this, &AAIMonsterPawn::BeginOverlap);
 }
@@ -224,12 +204,15 @@ void AAIMonsterPawn::BossMonsterTakeDamage(float Damage, FDamageEvent const& Dam
 	if (mMonsterState->GetAIHP() > 0)
 	{
 		mMonsterState->ChangeHP(-Damage);
+		mHPBar->SetAIHP(mMonsterState->GetAIHPPercent());
+
 		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Client Log! AAIMonsterPawn/Boss mHP : %d"), mMonsterState->GetAIHP()));
-		UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/Monster mHP : %f"), mMonsterState->GetAIHP());
+		UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/Boss mHP : %f"), mMonsterState->GetAIHP());
 
 		if (Damage >= 300.f)
 		{
 			ChangeAIAnimType((uint8)EMonsterAnimType::TakeDamage);
+
 
 			SetReactLocation(DamageCauser);
 		}
@@ -246,15 +229,6 @@ void AAIMonsterPawn::BossMonsterTakeDamage(float Damage, FDamageEvent const& Dam
 	}
 }
 
-void AAIMonsterPawn::SetHPBar()
-{
-	FString AIName = mState->GetAIName();
-	mHPWidget->SetDrawSize(FVector2D(AIName.Len() * 10.f, 40.f));
-
-	mHPBar->SetAIName(mState->GetAIName());
-	mHPBar->SetAIHP(mState->GetAIHPPercent());
-}
-
 void AAIMonsterPawn::ChangeAIAnimType_Implementation(uint8 AnimType)
 {
 	if(IsValid(mAnimInst))
@@ -264,7 +238,7 @@ void AAIMonsterPawn::ChangeAIAnimType_Implementation(uint8 AnimType)
 void AAIMonsterPawn::SetHPWidgetVisible(bool Visible)
 {
 	mHPWidgetVisible = Visible;
-	mHPWidget->SetVisibility(Visible);
+	mHPWidgetComp->SetVisibility(Visible);
 }
 
 uint8 AAIMonsterPawn::GetAnimType()

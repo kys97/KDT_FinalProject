@@ -6,6 +6,7 @@
 
 #include "Components/TextBlock.h"
 #include "Components/ProgressBar.h"
+#include "../AI/AIMonsterPawn.h"
 
 #include "Blueprint/UserWidget.h"
 #include "AIHUDWidget.generated.h"
@@ -19,7 +20,10 @@ class FINALPROJECT_API UAIHUDWidget : public UUserWidget
 
 protected:
 	UTextBlock* mNameText;
-	UProgressBar* mHPBar;
+	UProgressBar* mMonsterHPBar;
+	UProgressBar* mBossHPBar;
+
+	EMonsterType mMonsterType;
 
 	float mHPPercent = 1.f;	// 100%
 	float mOldHPPercent = 1.f;
@@ -35,7 +39,6 @@ protected:
 	virtual void NativeConstruct();
 	virtual void NativeTick(const FGeometry& MyGeometry,float InDeltaTime);
 
-
 public:
 	void SetAIName(const FString& Name);
 	void SetAIHP(float HPPercent);
@@ -45,5 +48,10 @@ public:
 	void AddConstructDelegate(T* Obj, void(T::* Func)())
 	{
 		mConstructDelegate.AddUObject(Obj, Func);
+	}
+
+	void SetMonsterType(EMonsterType Type)
+	{
+		mMonsterType = Type;
 	}
 };

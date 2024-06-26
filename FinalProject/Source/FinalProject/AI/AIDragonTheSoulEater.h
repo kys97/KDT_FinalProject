@@ -17,6 +17,7 @@ public:
 	AAIDragonTheSoulEater();
 
 protected:
+	void SetHPWidget();
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -27,6 +28,10 @@ public:
 	virtual void NormalAttack();
 	virtual EMonsterType GetMonsterType()
 	{
-		return EMonsterType::Nomal;
+		return mMonsterType;
 	}
+
+protected:
+	UFUNCTION()
+	void SetHPBar();
 };

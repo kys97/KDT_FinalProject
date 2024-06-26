@@ -21,6 +21,9 @@ protected:
 	UBehaviorTree* mBehaviorTree;
 	UBlackboardData* mBlackboard;
 
+	TSubclassOf<UUserWidget> mHPWidgetClass;
+	class UAIHUDWidget* mHPBar;
+
 	UPROPERTY(VisibleAnywhere)
 	UAIPerceptionComponent* mAIPerception;
 
@@ -43,5 +46,10 @@ public:
 public:
 	void SetSightConfig();
 	void StopAI();
-	
+
+public:
+	UAIHUDWidget* GetHPBarWidget()
+	{
+		return mHPBar;
+	}
 };
