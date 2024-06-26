@@ -97,7 +97,7 @@ void ABoss_RamPage::Tick(float DeltaTime)
 			if (mMonsterState->GetAIHPPercent() <= 0.3f)
 			{
 				PlaySkillMontage((uint8)EBossCondition::Danger);
-				ChangeAnimMaxCnt = ChangeAnimMaxCnt = FMath::RandRange(0, 1);
+				ChangeAnimMaxCnt = 0;
 			}
 			else if (mMonsterState->GetAIHPPercent() <= 0.7f)
 			{

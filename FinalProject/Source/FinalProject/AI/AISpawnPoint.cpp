@@ -100,10 +100,11 @@ void AAISpawnPoint::Spawn()
 		mSpawnAI = GetWorld()->SpawnActor<AAIPawn>(mSpawnClass,
 			GetActorLocation() + FVector(0.0, 0.0, (double)HalfHeight), FRotator(0.f, RandYaw, 0.f), SpawnParam);
 	}
-
-	mSpawnAI = GetWorld()->SpawnActor<AAIPawn>(mSpawnClass,
-		GetActorLocation() + FVector(0.0, 0.0, (double)HalfHeight), FRotator::ZeroRotator, SpawnParam);
-
+	else
+	{
+		mSpawnAI = GetWorld()->SpawnActor<AAIPawn>(mSpawnClass,
+			GetActorLocation() + FVector(0.0, 0.0, (double)HalfHeight), FRotator::ZeroRotator, SpawnParam);
+	}
 	// 생성된 스폰 포인트를 지정해준다.
 	mSpawnAI->SetSpawnPoint(this);
 

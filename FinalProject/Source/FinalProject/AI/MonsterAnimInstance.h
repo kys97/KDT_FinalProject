@@ -57,12 +57,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<UAnimMontage*> mIdleMontageArray;
 	int32 mIdleIndex = 0;
+	int32 mNextIdleIndex = 0;
 	TArray<int32> mIdleIndexArray;
 	int32 mIdleCount = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<UAnimMontage*> mBossSkillMontageArray;
 	int32 mSkillIndex = 0;
+	int32 mNextSkillIndex = 0;
 	TArray<int32> mSkillIndexArray;
 	int32 mSkillCount = 0;
 
