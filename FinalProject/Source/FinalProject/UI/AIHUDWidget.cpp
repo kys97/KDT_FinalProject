@@ -11,8 +11,6 @@ void UAIHUDWidget::NativeConstruct()
 	mMonsterHPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("AIHPBar")));
 	mBossHPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("BossHPBar")));
 
-	mHPPercent = 1.f;
-
 	// 함수가 등록되어 있는지 판단해서 등록된 모든 함수 호출
 	if (mConstructDelegate.IsBound())
 		mConstructDelegate.Broadcast();
