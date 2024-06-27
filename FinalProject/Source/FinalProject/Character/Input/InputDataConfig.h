@@ -21,9 +21,16 @@ public:
 
 public:
 	UInputAction* Move = nullptr;
+
 	UInputAction* NormalAttack = nullptr;
+
 	UInputAction* FirstSkill = nullptr;
 	UInputAction* SecondSkill = nullptr;
 	UInputAction* ThirdSkill = nullptr;
 	UInputAction* FourthSkill = nullptr;
+
+	UInputAction* FirstItem = nullptr;
+	UInputAction* SecondItem = nullptr;
+	UInputAction* ThirdItem = nullptr;
+	UInputAction* FourthItem = nullptr;
 };

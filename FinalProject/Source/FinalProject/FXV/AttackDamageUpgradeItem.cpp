@@ -26,41 +26,12 @@ AAttackDamageUpgradeItem::AAttackDamageUpgradeItem()
 void AAttackDamageUpgradeItem::OnItemCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
     AWizard* GetItemOwner = Cast<AWizard>(OtherActor);
-    if (ItemOwner == nullptr && GetItemOwner != nullptr)
+    if (GetItemOwner)
     {
         // Item Visible Set
         // TODO : 자연스럽게 안되나
         GetRootComponent()->SetVisibility(false, true);
-
-        // Set Item Owner
-        ItemOwner = GetItemOwner;
-
-        // Origin Attack Point Set
-        mOriginalNormalAttackPoint = ItemOwner->GetWizardPlayerState()->mNormalAttackPoint;
-        mOriginalFirstSkillAttackPoint = ItemOwner->GetWizardPlayerState()->mFirstSkillAttackDamage;
-        mOriginalSecondSkillAttackPoint = ItemOwner->GetWizardPlayerState()->mSecondSkillAttackDamage;
-        mOriginalThirdSkillAttackPoint = ItemOwner->GetWizardPlayerState()->mThirdSkillAttackDamage;
-
-        // Attack Damage Upgrade
-        ItemOwner->GetWizardPlayerState()->mNormalAttackPoint *= 1.2f;
-        ItemOwner->GetWizardPlayerState()->mFirstSkillAttackDamage *= 1.2f;
-        ItemOwner->GetWizardPlayerState()->mSecondSkillAttackDamage *= 1.2f;
-        ItemOwner->GetWizardPlayerState()->mThirdSkillAttackDamage *= 1.2f;
-
-        // Time Set
-        FTimerHandle TimerHandle;
-        GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AAttackDamageUpgradeItem::ItemFinished, /* ItemTime */60.f, false);
+        GetItemOwner->GetAttackItem();
+        Destroy();
     }
-}
-
-void AAttackDamageUpgradeItem::ItemFinished()
-{
-    // Attack Damage Downgrade
-    ItemOwner->GetWizardPlayerState()->mNormalAttackPoint = mOriginalNormalAttackPoint;
-    ItemOwner->GetWizardPlayerState()->mFirstSkillAttackDamage = mOriginalFirstSkillAttackPoint;
-    ItemOwner->GetWizardPlayerState()->mSecondSkillAttackDamage = mOriginalSecondSkillAttackPoint;
-    ItemOwner->GetWizardPlayerState()->mThirdSkillAttackDamage = mOriginalThirdSkillAttackPoint;
-
-    // Item Destroyed
-    Destroy();
 }

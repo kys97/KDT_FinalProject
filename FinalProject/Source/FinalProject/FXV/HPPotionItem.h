@@ -4,20 +4,21 @@
 
 #include "../GameInfo.h"
 #include "ItemActor.h"
-#include "ArmorPointUpgradeItem.generated.h"
+#include "HPPotionItem.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FINALPROJECT_API AArmorPointUpgradeItem : public AItemActor
+class FINALPROJECT_API AHPPotionItem : public AItemActor
 {
 	GENERATED_BODY()
 	
 public:
-	AArmorPointUpgradeItem();
+	AHPPotionItem();
 
 public:
 	UFUNCTION()
 	void OnItemCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 };

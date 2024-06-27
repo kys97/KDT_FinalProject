@@ -18,6 +18,9 @@ class FINALPROJECT_API UGameWidget : public UUserWidget
 	GENERATED_BODY()
 
 protected:
+	UPROPERTY(meta = (BindWidget))
+	class UWizardItem* WizardItemWidget;
+
 	UPROPERTY(meta=(BindWidget))
 	class UWizardWidget* WizardWidget;
 
@@ -42,6 +45,16 @@ protected:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime);
 
 public:
+	void SetAttackItemCount(const int32 last_cnt);
+	void SetArmorItemCount(const int32 last_cnt);
+
+	void UseHPpotionItem(const int32 last_cnt);
+	void UseMPpotionItem(const int32 last_cnt);
+	void UseAttackPointItem(const int32 last_cnt);
+	void UseArmorPointItem(const int32 last_cnt);
+	void EndAttackPointItem();
+	void EndArmorPointItem();
+
 	void SetHPBar(const float hp_per);
 	void SetMPBar(const float mp_per);
 
