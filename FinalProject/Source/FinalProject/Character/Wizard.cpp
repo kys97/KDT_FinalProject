@@ -60,6 +60,13 @@ void AWizard::BeginPlay()
 		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
 		State->mLevel = GetGameInstance<UWizardGameInstance>()->GetLevel();
 	}
+
+	// Set Item Cnt
+	AWizardPlayerController* WizardController = GetController<AWizardPlayerController>();
+	WizardController->GetGameWidget()->UseHPpotionItem(mHPPotionCount);
+	WizardController->GetGameWidget()->UseMPpotionItem(mMPPotionCount);
+	WizardController->GetGameWidget()->SetAttackItemCount(mAttackItemCount);
+	WizardController->GetGameWidget()->SetArmorItemCount(mArmorItemCount);
 }
 
 
@@ -161,6 +168,7 @@ float AWizard::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AContro
 		// Hp Set
 		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
 		State->mHP -= Damage;
+		if (State->mHP > State->mHPMax) State->mHP = State->mHPMax;
 
 		// Set HP UI
 		SetHPUI(State->mHP / State->mHPMax);
@@ -243,6 +251,10 @@ void AWizard::UseHpItem()
 		mHPPotionCount--;
 		GetController<AWizardPlayerController>()->GetGameWidget()->UseHPpotionItem(mHPPotionCount);
 		// How to make move Hp bar ???
+
+		FDamageEvent DmgEvent;
+		ServerTakeDamge(-50.f, DmgEvent, GetController(), this);
+		
 	}
 }
 void AWizard::UseMpItem()

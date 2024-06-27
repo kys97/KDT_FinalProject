@@ -45,12 +45,12 @@ private:
 	float m_third_temp;
 
 	// Item Var
-	int32 mHPPotionCount;
-	int32 mMPPotionCount;
-	int32 mAttackItemCount;
-	float mAttck_time_temp;
-	int32 mArmorItemCount;
-	float mArmor_time_temp;
+	int32 mHPPotionCount = 0;
+	int32 mMPPotionCount = 0;
+	int32 mAttackItemCount = 0;
+	int32 mArmorItemCount = 0;
+	float mHP_time_temp;
+	float mMP_time_temp;
 
 public:
 	bool GetMoveEnabled() { return mAnimInstance->MoveEnable(); }

@@ -8,6 +8,7 @@
 
 
 #include "../FXV/AttackDamageUpgradeItem.h"
+#include "../FXV/MPPotionItem.h"
 
 
 UDataTable* AAIMonsterPawn::mMonsterDataTable = nullptr;
@@ -296,8 +297,8 @@ void AAIMonsterPawn::NomalMonsterTakeDamage(float Damage, FDamageEvent const& Da
 
 				// Item Spawn
 				// TODO : 어떤 아이템 스폰할건지 지정
-				AAttackDamageUpgradeItem* Item = World->SpawnActor<AAttackDamageUpgradeItem>(
-					AAttackDamageUpgradeItem::StaticClass(),
+				AMPPotionItem* Item = World->SpawnActor<AMPPotionItem>(
+					AMPPotionItem::StaticClass(),
 					GetActorLocation(),
 					GetActorRotation(),
 					ActorSpawnParam);

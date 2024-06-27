@@ -24,7 +24,6 @@ AItemActor::AItemActor()
 void AItemActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 void AItemActor::Tick(float DeltaTime)

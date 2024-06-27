@@ -25,8 +25,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UCapsuleComponent* mItemCollision;
 
-	AWizard* ItemOwner = nullptr;
-
 protected:
 	virtual void BeginPlay() override;
 
