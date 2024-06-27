@@ -6,9 +6,11 @@
 #include "MonsterState.h"
 #include "BossAIController.h"
 
-
-#include "../FXV/AttackDamageUpgradeItem.h"
+#include "../FXV/HPPotionItem.h"
 #include "../FXV/MPPotionItem.h"
+#include "../FXV/AttackDamageUpgradeItem.h"
+#include "../FXV/ArmorPointUpgradeItem.h"
+
 
 
 UDataTable* AAIMonsterPawn::mMonsterDataTable = nullptr;
@@ -291,17 +293,40 @@ void AAIMonsterPawn::NomalMonsterTakeDamage(float Damage, FDamageEvent const& Da
 			UWorld* World = GetWorld();
 			if (World)
 			{
-				// Spawn Parameter
 				FActorSpawnParameters ActorSpawnParam;
-				ActorSpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-				// Item Spawn
-				// TODO : 어떤 아이템 스폰할건지 지정
-				AMPPotionItem* Item = World->SpawnActor<AMPPotionItem>(
-					AMPPotionItem::StaticClass(),
-					GetActorLocation(),
-					GetActorRotation(),
-					ActorSpawnParam);
+				ActorSpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;	
+				switch (FMath::RandRange(1, 4))
+				{
+				case 1:
+					World->SpawnActor<AHPPotionItem>(
+						AHPPotionItem::StaticClass(),
+						GetActorLocation(),
+						GetActorRotation(),
+						ActorSpawnParam);
+					break;
+				case 2:
+					World->SpawnActor<AMPPotionItem>(
+						AMPPotionItem::StaticClass(),
+						GetActorLocation(),
+						GetActorRotation(),
+						ActorSpawnParam);
+					break;
+				case 3:
+					World->SpawnActor<AAttackDamageUpgradeItem>(
+						AAttackDamageUpgradeItem::StaticClass(),
+						GetActorLocation(),
+						GetActorRotation(),
+						ActorSpawnParam);
+					break;
+				case 4:
+					World->SpawnActor<AArmorPointUpgradeItem>(
+						AArmorPointUpgradeItem::StaticClass(),
+						GetActorLocation(),
+						GetActorRotation(),
+						ActorSpawnParam);
+					break;
+				}
+				
 			}
 		}
 	}

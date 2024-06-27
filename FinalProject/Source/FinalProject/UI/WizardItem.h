@@ -31,8 +31,8 @@ protected:
 	UTextBlock* mArmorCountTB;
 
 	
-	FLinearColor mNoItemImageColor = FLinearColor(0.291667f, 0.291667f, 0.5f, 0.5f);
-	FLinearColor mItemImageColor = FLinearColor(0.291667f, 0.291667f, 0.5f, 0.f);
+	FLinearColor mNoItemImageColor = FLinearColor(0.3f, 0.3f, 0.3f, 0.5f);
+	FLinearColor mItemImageColor = FLinearColor(0.3f, 0.3f, 0.3f, 0.f);
 	FLinearColor mNoItemTextColor = FLinearColor(1.f, 0.114435f, 0.147027f, 1.f);
 	FLinearColor mItemTextColor = FLinearColor(0.130136f, 0.552011f, 0.775822f, 1.f);
 

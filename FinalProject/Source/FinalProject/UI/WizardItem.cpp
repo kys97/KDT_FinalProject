@@ -42,7 +42,6 @@ void UWizardItem::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 
 void UWizardItem::SetHPItemCount(int32 hp_cnt)
 {
-	FLinearColor CurrentColor = mHPItemImg->ColorAndOpacity;
 	if (hp_cnt > 0)
 	{
 		mHPCountTB->SetText(FText::FromString(FString::Printf(TEXT("%d"), hp_cnt)));
@@ -68,7 +67,7 @@ void UWizardItem::SetMPItemCount(int32 mp_cnt)
 	{
 		mMPCountTB->SetText(FText::FromString("0"));
 		mMPCountTB->SetColorAndOpacity(FSlateColor(mNoItemTextColor));
-		mHPItemImg->SetColorAndOpacity(mNoItemImageColor);
+		mMPItemImg->SetColorAndOpacity(mNoItemImageColor);
 	}
 }
 void UWizardItem::SetAttackItemCount(int32 attackitem_cnt)
