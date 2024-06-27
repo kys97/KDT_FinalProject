@@ -36,12 +36,22 @@ protected:
 	bool Invincibility = false;
 
 private:
+	// MP Var
+	float m_mp_time_cnt = 0.f;
+
+	// Skill Var
 	int32 mFirstSkillRemindTime;
 	float m_fist_temp;
 	int32 mSecondSkillRemindTime;
 	float m_second_temp;
 	int32 mThirdSkillRemindTime;
 	float m_third_temp;
+
+	// Item Var
+	int32 mHPPotionCount = 0;
+	int32 mMPPotionCount = 0;
+	int32 mAttackItemCount = 0;
+	int32 mArmorItemCount = 0;
 
 public:
 	bool GetMoveEnabled() { return mAnimInstance->MoveEnable(); }
@@ -51,17 +61,30 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	
-	void HealHP(bool IsHealing) { Invincibility = IsHealing; }
-
-protected:
+	void HealHP(bool IsHealing);
 	void SetHPUI(const float hp_rate);
 	void SetMPUI(const float mp_rate);
 
+	void GetHpItem();
+	void GetMpItem();
+	void GetAttackItem();
+	void GetArmorItem();
+
+	void UseHpItem();
+	void UseMpItem();
+	void UseAttackItem();
+	void UseArmorItem();
+	UFUNCTION()
+	void EndAttackItem(float normal, float first, float second, float third);
+	UFUNCTION()
+	void EndArmorItem(float armor);
+
+protected:
 	void UseFirstSkill(const float cooltime);
 	void UseSecondSkill(const float cooltime);
 	void UseThirdSkill(const float cooltime);

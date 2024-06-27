@@ -34,4 +34,9 @@ protected:
 protected:
 	void OnMove(const FInputActionValue& InputActionValue);
 	void EndMove(const FInputActionValue& InputActionValue);
+
+	void FirstItem();
+	void SecondItem();
+	void ThirdItem();
+	void FourthItem();
 };

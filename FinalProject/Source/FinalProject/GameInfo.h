@@ -27,6 +27,8 @@
 #include "Perception/AISenseConfig_Hearing.h"
 #include "Perception/AISenseConfig_Damage.h"
 
+#include "NiagaraFunctionLibrary.h"
+
 // Server
 #include "Networking.h"
 #include "Sockets.h"

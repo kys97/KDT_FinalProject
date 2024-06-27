@@ -61,4 +61,36 @@ UInputDataConfig::UInputDataConfig()
 			FourthSkill = Asset.Object;
 		}
 	}
+	{
+		static ConstructorHelpers::FObjectFinder<UInputAction> Asset
+		{ TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprint/Character/Input/IA_Item1.IA_Item1'") };
+		if (Asset.Succeeded())
+		{
+			FirstItem = Asset.Object;
+		}
+	}
+	{
+		static ConstructorHelpers::FObjectFinder<UInputAction> Asset
+		{ TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprint/Character/Input/IA_Item2.IA_Item2'") };
+		if (Asset.Succeeded())
+		{
+			SecondItem = Asset.Object;
+		}
+	}
+	{
+		static ConstructorHelpers::FObjectFinder<UInputAction> Asset
+		{ TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprint/Character/Input/IA_Item3.IA_Item3'") };
+		if (Asset.Succeeded())
+		{
+			ThirdItem = Asset.Object;
+		}
+	}
+	{
+		static ConstructorHelpers::FObjectFinder<UInputAction> Asset
+		{ TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprint/Character/Input/IA_Item4.IA_Item4'") };
+		if (Asset.Succeeded())
+		{
+			FourthItem = Asset.Object;
+		}
+	}
 }

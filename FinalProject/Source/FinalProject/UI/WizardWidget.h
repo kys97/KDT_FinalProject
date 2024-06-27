@@ -22,15 +22,16 @@ protected:
 	UProgressBar* mMPBar;
 
 private:
-	float mSpeed = 20.f;
-
-	bool mIsAttack = false;
-	float mNewHp;
+	bool mChangeHP = false;
+	int mGainOrLooseHP = 0;
+	float mTargetHP;
+	float mChangeHPAmount;
 	float tempHp;
 
 	bool mChangeMP = false;
-	int mGainOrLoose = 0;
-	float mNewMp;
+	int mGainOrLooseMP = 0;
+	float mTargetMP;
+	float mChangeMPAmount;
 	float tempMp;
 
 protected:
