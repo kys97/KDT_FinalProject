@@ -9,6 +9,7 @@
 
 #include "../Effect/EffectBase.h"
 #include "../Effect/Effect_FireEmit.h"
+#include "../Effect/FallingSton.h"
 
 
 ABoss_RamPage::ABoss_RamPage()
@@ -30,7 +31,7 @@ ABoss_RamPage::ABoss_RamPage()
 	mCapsule->SetRelativeScale3D(FVector(2.f, 2.f, 2.f));
 	mCapsule->SetRelativeRotation(FRotator(0.f, 180.f, 0.f)); // Pitch(Y), Yaw(Z), Roll(X)
 	mCapsule->SetCapsuleHalfHeight(200.f);
-	mCapsule->SetCapsuleRadius(200.f);
+	mCapsule->SetCapsuleRadius(100.f);
 
 	mMesh->SetRelativeLocation(FVector(0.f, 0.f, -200.f));
 	mMesh->SetRelativeRotation(FRotator(0.f, -90.f, 0.f)); // Pitch(Y), Yaw(Z), Roll(X)
@@ -89,6 +90,7 @@ void ABoss_RamPage::BeginPlay()
 
 	ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
 
+	mBodyCapsule->OnComponentBeginOverlap.AddDynamic(this, &ABoss_RamPage::AttackOverlap);
 	mRightArm->OnComponentBeginOverlap.AddDynamic(this, &ABoss_RamPage::AttackOverlap);
 	mLeftArm->OnComponentBeginOverlap.AddDynamic(this, &ABoss_RamPage::AttackOverlap);
 
@@ -160,34 +162,26 @@ void ABoss_RamPage::SkillSetting(int32 Num)
 
 	switch (SkillIndex)
 	{
-	case 0:
-	{
+	case 0:	{
+		SpawnSkill_GroundSmash();
 		break;
 	}
-	case 1:
-		break;
-	case 2:
-	{
-		FActorSpawnParameters	SpawnParam;
-		SpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-		mEmitEffect = GetWorld()->SpawnActor<AEffect_FireEmit>(AEffect_FireEmit::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator, SpawnParam);
-
-		float CapsuleHalfHeight = mEmitEffect->GetCapsuleHalfHeight();
-
-		mEmitEffect->SetActorRelativeLocation(FVector(0.f, CapsuleHalfHeight, 0.f));
-
-		if (mMesh->DoesSocketExist(TEXT("EmitSkill_Socket")))
-			mEmitEffect->AttachToComponent(mMesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("EmitSkill_Socket"));
-
-		SkillActor = Cast<AActor>(mEmitEffect);
-
+	case 1:	{
+		SpawnSkill_1();
 		break;
 	}
-	case 3:
+	case 2:	{
+		SpawnSkill_FireEmit();
 		break;
-	case 4:
+	}
+	case 3:	{
+		SpawnSkill_3();
 		break;
+	}
+	case 4:	{
+		SpawnSkill_4();
+		break;
+	}
 	default: 
 		break;
 	}
@@ -198,5 +192,66 @@ void ABoss_RamPage::SkillSetting(int32 Num)
 void ABoss_RamPage::SetHPBar()
 {
 	mHPBar->SetAIHP(mState->GetAIHPPercent());
+}
+
+void ABoss_RamPage::SpawnSkill_GroundSmash()
+{
+	FActorSpawnParameters SpawnParam;
+	SpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	// Smash Effect
+	FVector SpawnLocation = mMesh->GetSocketLocation(TEXT("L_GroundSmash_Socket"));
+	float RandRocation = FMath::FRandRange(-180.f, 180.f);
+
+	AEffectBase* Effect = GetWorld()->SpawnActor<AEffectBase>(
+		SpawnLocation,
+		FRotator(0.f, 0.f, RandRocation),
+		SpawnParam);
+
+	float ScaleX = FMath::FRandRange(1.f, 2.f);
+	float ScaleY = FMath::FRandRange(1.f, 2.f);
+	Effect->SetActorScale3D(FVector(ScaleX, ScaleY, 1.f));
+	Effect->SetParticleAsset(TEXT("/Script/Engine.ParticleSystem'/Game/AI/Asset/Particle/P_Mace_Impact_Damage.P_Mace_Impact_Damage'"));
+
+	// Ston Effect
+
+	FVector SpawnCenter = GetActorLocation();
+	SpawnCenter.Z += mCapsule->GetScaledCapsuleHalfHeight();
+
+	float RandSpawnPoint = FMath::RandRange(-500.f, 500.f);
+
+	mFallingStonEffect = GetWorld()->SpawnActor<AFallingSton>(AFallingSton::StaticClass(),
+		FVector((SpawnCenter.X + RandSpawnPoint), (SpawnCenter.Y + RandSpawnPoint), (SpawnCenter.Z + 500.f)), FRotator::ZeroRotator, SpawnParam);
+
+	SkillActor = Cast<AActor>(mFallingStonEffect);
+}
+
+void ABoss_RamPage::SpawnSkill_1()
+{
+}
+
+void ABoss_RamPage::SpawnSkill_FireEmit()
+{
+	FActorSpawnParameters	SpawnParam;
+	SpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	mEmitEffect = GetWorld()->SpawnActor<AEffect_FireEmit>(AEffect_FireEmit::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator, SpawnParam);
+
+	float CapsuleHalfHeight = mEmitEffect->GetCapsuleHalfHeight();
+
+	mEmitEffect->SetActorRelativeLocation(FVector(0.f, CapsuleHalfHeight, 0.f));
+
+	if (mMesh->DoesSocketExist(TEXT("EmitSkill_Socket")))
+		mEmitEffect->AttachToComponent(mMesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("EmitSkill_Socket"));
+
+	SkillActor = Cast<AActor>(mEmitEffect);
+}
+
+void ABoss_RamPage::SpawnSkill_3()
+{
+}
+
+void ABoss_RamPage::SpawnSkill_4()
+{
 }
 
