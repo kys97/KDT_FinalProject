@@ -196,7 +196,7 @@ void AWizard::HealHP(bool IsHealing)
 {
 	Invincibility = IsHealing;
 	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
-	float healingPoint = State->mHPMax * 0.8;
+	float healingPoint = State->mHPMax * 0.5;
 	FDamageEvent DmgEvent;
 	TakeDamage(healingPoint * (-1), DmgEvent, GetController(), this);
 }

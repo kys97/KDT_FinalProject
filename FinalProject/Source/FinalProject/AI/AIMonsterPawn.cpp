@@ -295,7 +295,7 @@ void AAIMonsterPawn::NomalMonsterTakeDamage(float Damage, FDamageEvent const& Da
 			{
 				FActorSpawnParameters ActorSpawnParam;
 				ActorSpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;	
-				/*switch (FMath::RandRange(1, 4))
+				switch (FMath::RandRange(1, 4))
 				{
 				case 1:
 					World->SpawnActor<AHPPotionItem>(
@@ -325,12 +325,7 @@ void AAIMonsterPawn::NomalMonsterTakeDamage(float Damage, FDamageEvent const& Da
 						GetActorRotation(),
 						ActorSpawnParam);
 					break;
-				}*/
-				World->SpawnActor<AMPPotionItem>(
-					AMPPotionItem::StaticClass(),
-					GetActorLocation(),
-					GetActorRotation(),
-					ActorSpawnParam);
+				}
 			}
 		}
 	}

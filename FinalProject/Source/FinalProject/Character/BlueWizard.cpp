@@ -114,7 +114,9 @@ void ABlueWizard::NormalAttack()
 
 void ABlueWizard::FirstSkill()
 {
-	if (mAnimInstance->AttackEnable())
+	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+
+	if (mAnimInstance->AttackEnable() && State->mMP > 50.f)
 	{
 		// Set Animation
 		PlayAttackAnimation(this, EWizardAttackAnimTypes::FirstSkill);
@@ -123,9 +125,6 @@ void ABlueWizard::FirstSkill()
 		UWorld* const World = GetWorld();
 		if (World != nullptr)
 		{
-			// Get Wizard State
-			AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
-
 			// Spawn Rotation
 			FRotator SpawnRotation = FRotator::ZeroRotator;
 
@@ -150,7 +149,9 @@ void ABlueWizard::FirstSkill()
 
 void ABlueWizard::SecondSkill()
 {
-	if (mAnimInstance->AttackEnable())
+	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+
+	if (mAnimInstance->AttackEnable() && State->mMP > 50.f)
 	{
 		// Set Animation
 		PlayAttackAnimation(this, EWizardAttackAnimTypes::SecondSkill);
@@ -159,9 +160,6 @@ void ABlueWizard::SecondSkill()
 		UWorld* const World = GetWorld();
 		if (World != nullptr)
 		{
-			// Get Wizard State
-			AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
-
 			// Spawn Rotation
 			FRotator SpawnRotation = GetActorRotation();
 
@@ -186,7 +184,9 @@ void ABlueWizard::SecondSkill()
 
 void ABlueWizard::ThirdSkill()
 {
-	if (mAnimInstance->AttackEnable())
+	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+
+	if (mAnimInstance->AttackEnable() && State->mMP > 50)
 	{
 		// Set Animation
 		PlayAttackAnimation(this, EWizardAttackAnimTypes::ThirdSkill);
@@ -195,9 +195,6 @@ void ABlueWizard::ThirdSkill()
 		UWorld* const World = GetWorld();
 		if (World != nullptr)
 		{
-			// Get Wizard State
-			AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
-
 			ServerThirdSkillSpawn(this, GetActorLocation(), GetActorRotation(), State->mThirdSkillAttackDamage);
 
 			// Use MP
