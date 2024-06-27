@@ -77,8 +77,10 @@ public:
 	void UseHpItem();
 	void UseMpItem();
 	void UseAttackItem();
-	void EndAttackItem(float normal, float first, float second, float third);
 	void UseArmorItem();
+	UFUNCTION()
+	void EndAttackItem(float normal, float first, float second, float third);
+	UFUNCTION()
 	void EndArmorItem(float armor);
 
 protected:
