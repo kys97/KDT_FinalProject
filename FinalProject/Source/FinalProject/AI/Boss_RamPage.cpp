@@ -29,17 +29,47 @@ ABoss_RamPage::ABoss_RamPage()
 
 	mCapsule->SetRelativeScale3D(FVector(2.f, 2.f, 2.f));
 	mCapsule->SetRelativeRotation(FRotator(0.f, 180.f, 0.f)); // Pitch(Y), Yaw(Z), Roll(X)
-	mCapsule->SetCapsuleHalfHeight(100.f);
-	mCapsule->SetCapsuleRadius(100.f);
+	mCapsule->SetCapsuleHalfHeight(200.f);
+	mCapsule->SetCapsuleRadius(200.f);
 
-	mMesh->SetRelativeLocation(FVector(0.f, 0.f, -100.f));
+	mMesh->SetRelativeLocation(FVector(0.f, 0.f, -200.f));
 	mMesh->SetRelativeRotation(FRotator(0.f, -90.f, 0.f)); // Pitch(Y), Yaw(Z), Roll(X)
 	mMesh->SetRelativeScale3D(FVector(2.f, 2.f, 2.f));
 	mMesh->SetCollisionProfileName(TEXT("Monster"));
 
+	SetCapsuleCollision();
+
 	mMonsterType = EMonsterType::Boss;
 
 	mTableRowName = TEXT("Boss_Rampage");
+}
+
+void ABoss_RamPage::SetCapsuleCollision()
+{
+	mBodyCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("BodyAttack"));
+	mBodyCapsule->SetupAttachment(mMesh);
+	mBodyCapsule->SetCapsuleHalfHeight(100.f);
+	mBodyCapsule->SetCapsuleRadius(100.f);
+	mBodyCapsule->SetRelativeLocation(FVector(0.f, 0.f, 100.f));
+	mBodyCapsule->SetCollisionProfileName(TEXT("MonsterAttack"));
+
+	mRightArm = CreateDefaultSubobject<UCapsuleComponent>(TEXT("RightArm"));
+	mRightArm->SetupAttachment(mMesh, TEXT("RigthArm_Socket"));
+	mRightArm->SetRelativeLocation(FVector(-5.f, 0.f, 0.f));
+	mRightArm->SetRelativeRotation(FRotator(76.f, 0.f, 169.f)); // Pitch(Y), Yaw(Z), Roll(X)
+	mRightArm->SetCapsuleHalfHeight(45.f);
+	mRightArm->SetCapsuleRadius(25.f);
+	mRightArm->SetRelativeScale3D(FVector(1.5f, 1.5f, 1.5f));
+	mRightArm->SetCollisionProfileName(TEXT("MonsterAttack"));
+
+	mLeftArm = CreateDefaultSubobject<UCapsuleComponent>(TEXT("LeftArm"));
+	mLeftArm->SetupAttachment(mMesh, TEXT("LeftArm_Socket"));
+	mLeftArm->SetRelativeLocation(FVector(2.f, 0.f, 0.f));
+	mLeftArm->SetRelativeRotation(FRotator(81.f, 0.f, 174.f)); // Pitch(Y), Yaw(Z), Roll(X)
+	mLeftArm->SetCapsuleHalfHeight(46.f);
+	mLeftArm->SetCapsuleRadius(25.f);
+	mLeftArm->SetRelativeScale3D(FVector(1.5f, 1.5f, 1.5f));
+	mLeftArm->SetCollisionProfileName(TEXT("MonsterAttack"));
 }
 
 void ABoss_RamPage::BeginPlay()
@@ -58,6 +88,9 @@ void ABoss_RamPage::BeginPlay()
 	}
 
 	ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
+
+	mRightArm->OnComponentBeginOverlap.AddDynamic(this, &ABoss_RamPage::AttackOverlap);
+	mLeftArm->OnComponentBeginOverlap.AddDynamic(this, &ABoss_RamPage::AttackOverlap);
 
 	//PlaySkillMontage((uint8)EBossCondition::Nomal);
 }
@@ -113,6 +146,12 @@ void ABoss_RamPage::Tick(float DeltaTime)
 			}
 		}
 	}
+}
+
+void ABoss_RamPage::AttackOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("Hit")));
 }
 
 void ABoss_RamPage::SkillSetting(int32 Num)
