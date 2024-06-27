@@ -74,22 +74,17 @@ void AWizard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-#pragma region Heal Skill
-	if (Invincibility)
+#pragma region MP Up
+
+	m_mp_time_cnt += DeltaTime;
+	if (m_mp_time_cnt > 1.f)
 	{
 		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
-		float healingPoint = State->mHPMax * 0.8 * DeltaTime;
-		if (State->mHP < State->mHPMax)
-		{
-			if (State->mHP > State->mHPMax)
-				State->mHP = State->mHPMax;
-			else
-			{
-				FDamageEvent DmgEvent;
-				ServerTakeDamge(healingPoint * (-1), DmgEvent, GetController(), this);
-			}
-		}
+		State->mMP++;
+		SetMPUI((float)State->mMP / (float)State->mMPMax);
+		m_mp_time_cnt = 0.f;
 	}
+
 #pragma endregion
 
 #pragma region Skill Cool Time
@@ -153,7 +148,7 @@ void AWizard::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 float AWizard::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	// If Player is Invincible, Player doesnt take damage
-	if (((!Invincibility) && Damage > 0) || (Invincibility && Damage < 0))
+	if (!((Invincibility) && Damage > 0))
 	{
 		// Authority Check
 		if (HasAuthority())
@@ -171,8 +166,8 @@ float AWizard::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AContro
 		if (State->mHP > State->mHPMax) State->mHP = State->mHPMax;
 
 		// Set HP UI
-		SetHPUI(State->mHP / State->mHPMax);
-		
+		SetHPUI((float)State->mHP / (float)State->mHPMax);
+
 		// Death Check
 		if (State->mHP <= 0)
 		{
@@ -197,6 +192,14 @@ float AWizard::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AContro
 
 #pragma region Set User Widget
 // Set HP/MP
+void AWizard::HealHP(bool IsHealing)
+{
+	Invincibility = IsHealing;
+	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+	float healingPoint = State->mHPMax * 0.8;
+	FDamageEvent DmgEvent;
+	TakeDamage(healingPoint * (-1), DmgEvent, GetController(), this);
+}
 void AWizard::SetHPUI(const float hp_rate)
 {
 	// HP UI Set
@@ -253,8 +256,7 @@ void AWizard::UseHpItem()
 		// How to make move Hp bar ???
 
 		FDamageEvent DmgEvent;
-		ServerTakeDamge(-50.f, DmgEvent, GetController(), this);
-		
+		TakeDamage(-50.f, DmgEvent, GetController(), this);
 	}
 }
 void AWizard::UseMpItem()
@@ -264,6 +266,10 @@ void AWizard::UseMpItem()
 		mMPPotionCount--;
 		GetController<AWizardPlayerController>()->GetGameWidget()->UseMPpotionItem(mMPPotionCount);
 		// How to make move Mp bar ???
+
+		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+		State->mMP += 50;
+		SetMPUI(State->mMP / State->mMPMax);
 	}
 }
 void AWizard::UseAttackItem()

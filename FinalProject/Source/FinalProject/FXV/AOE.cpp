@@ -20,7 +20,6 @@ AAOE::AAOE()
 	mOutSideCollision->SetRelativeLocation(FVector(0.f, 0.f, 70.f));
 	mOutSideCollision->OnComponentBeginOverlap.AddDynamic(this, &AAOE::OnCapsuleOverlapBegin);
 	mOutSideCollision->OnComponentEndOverlap.AddDynamic(this, &AAOE::OnCapsuleOverlapEnd);
-	// mOutSideCollision->SetCollisionProfileName(TEXT("Defense"));
 
 	// Enable Set
 	mOutSideCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);

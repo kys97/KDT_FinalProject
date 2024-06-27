@@ -30,65 +30,66 @@ void UWizardWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
-	// Take Damage
-	if (mIsAttack)
+	// HP Bar Set
+	if (mChangeHP)
 	{
-		tempHp = mNewHp * InDeltaTime * mSpeed;
-		mHPBar->SetPercent(mHPBar->GetPercent() - tempHp);
-		mNewHp -= tempHp;
-		
-		if (mNewHp < 0.0001f)
+		tempHp = mChangeHPAmount * InDeltaTime * mGainOrLooseHP * 2;
+		mHPBar->SetPercent(mHPBar->GetPercent() + tempHp);
+	
+		if ((mGainOrLooseHP > 0 && mHPBar->GetPercent() > mTargetHP) || (mGainOrLooseHP < 0 && mHPBar->GetPercent() < mTargetHP))
 		{
-			mHPBar->SetPercent(mHPBar->GetPercent() - mNewHp);
-			mNewHp = 0.f;
-			mIsAttack = false;
+			mHPBar->SetPercent(mTargetHP);
+			mChangeHP = false;
 		}
 	}
 
-	// Use Skill
+	// MP Bar Set
 	if (mChangeMP)
 	{
-		tempMp = mNewMp * InDeltaTime * mSpeed * mGainOrLoose;
+		tempMp = mChangeMPAmount * InDeltaTime * mGainOrLooseMP * 2;
 		mMPBar->SetPercent(mMPBar->GetPercent() + tempMp);
-		mNewMp += tempMp;
 
-		if (mNewMp < 0.0001f)
+		if ((mGainOrLooseMP > 0 && mMPBar->GetPercent() > mTargetMP) || (mGainOrLooseMP < 0 && mMPBar->GetPercent() < mTargetMP))
 		{
-			mMPBar->SetPercent(mMPBar->GetPercent() + mNewMp);
-			mNewMp = 0.f;
+			mMPBar->SetPercent(mTargetMP);
 			mChangeMP = false;
 		}
-	}
-	else if(mMPBar->GetPercent() < 1) // Add MP
-	{
-		mMPBar->SetPercent(mMPBar->GetPercent() + InDeltaTime * 0.01f);
 	}
 }
 
 void UWizardWidget::SetHPBar(const float hp_per)
 {
-	if (mHPBar->GetPercent() > hp_per) // loose hp
+	mChangeHP = false;
+	mTargetHP = hp_per;
+
+	if (mHPBar->GetPercent() > hp_per) // loose hp : --
 	{
-		mNewHp = mHPBar->GetPercent() - hp_per;
-		mIsAttack = true;
+		mGainOrLooseHP = -1;
+		mChangeHPAmount = mHPBar->GetPercent() - hp_per;
 	}
-	else //  heal hp : healing tick is calling in Wizard
+	else //  gain hp : ++
 	{
-		mHPBar->SetPercent(hp_per);
+		mGainOrLooseHP = 1;
+		mChangeHPAmount = hp_per - mHPBar->GetPercent();
 	}
+
+	mChangeHP = true;
 }
 
 void UWizardWidget::SetMPBar(const float mp_per)
 {
-	if (mMPBar->GetPercent() > mp_per) // loose mp
+	mChangeMP = false;
+	mTargetMP = mp_per;
+
+	if (mMPBar->GetPercent() > mp_per) // loose hp : --
 	{
-		mGainOrLoose = -1;
-		mNewMp = mMPBar->GetPercent() - mp_per;
+		mGainOrLooseMP = -1;
+		mChangeMPAmount = mMPBar->GetPercent() - mp_per;
 	}
-	else // gain mp
+	else //  gain hp : ++
 	{
-		mGainOrLoose = 1;
-		mNewMp = mp_per - mMPBar->GetPercent();
+		mGainOrLooseMP = 1;
+		mChangeMPAmount = mp_per - mMPBar->GetPercent();
 	}
 
 	mChangeMP = true;

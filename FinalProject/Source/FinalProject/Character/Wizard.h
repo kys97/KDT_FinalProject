@@ -36,6 +36,9 @@ protected:
 	bool Invincibility = false;
 
 private:
+	// MP Var
+	float m_mp_time_cnt = 0.f;
+
 	// Skill Var
 	int32 mFirstSkillRemindTime;
 	float m_fist_temp;
@@ -49,8 +52,6 @@ private:
 	int32 mMPPotionCount = 0;
 	int32 mAttackItemCount = 0;
 	int32 mArmorItemCount = 0;
-	float mHP_time_temp;
-	float mMP_time_temp;
 
 public:
 	bool GetMoveEnabled() { return mAnimInstance->MoveEnable(); }
@@ -65,7 +66,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	
-	void HealHP(bool IsHealing) { Invincibility = IsHealing; }
+	void HealHP(bool IsHealing);
 	void SetHPUI(const float hp_rate);
 	void SetMPUI(const float mp_rate);
 
