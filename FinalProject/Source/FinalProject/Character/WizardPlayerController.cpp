@@ -46,9 +46,17 @@ void AWizardPlayerController::SetupInputComponent()
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
 	ensure(EnhancedInputComponent);
 	const UInputDataConfig* MainInputDataConfig = GetDefault<UInputDataConfig>();
+	
 	EnhancedInputComponent->BindAction(MainInputDataConfig->Move, ETriggerEvent::Triggered, this, &ThisClass::OnMove);
 	EnhancedInputComponent->BindAction(MainInputDataConfig->Move, ETriggerEvent::Completed, this, &ThisClass::EndMove);
+
+	EnhancedInputComponent->BindAction(MainInputDataConfig->FirstItem, ETriggerEvent::Triggered, this, &ThisClass::FirstItem);
+	EnhancedInputComponent->BindAction(MainInputDataConfig->SecondItem, ETriggerEvent::Triggered, this, &ThisClass::SecondItem);
+	EnhancedInputComponent->BindAction(MainInputDataConfig->ThirdItem, ETriggerEvent::Triggered, this, &ThisClass::ThirdItem);
+	EnhancedInputComponent->BindAction(MainInputDataConfig->FourthItem, ETriggerEvent::Triggered, this, &ThisClass::FourthItem);
+
 }
+
 
 void AWizardPlayerController::OnMove(const FInputActionValue& InputActionValue)
 {
@@ -80,7 +88,6 @@ void AWizardPlayerController::OnMove(const FInputActionValue& InputActionValue)
 		}
 	}
 }
-
 void AWizardPlayerController::EndMove(const FInputActionValue& InputActionValue)
 {
 	AWizard* Wizard = Cast<AWizard>(GetPawn());
@@ -94,3 +101,36 @@ void AWizardPlayerController::EndMove(const FInputActionValue& InputActionValue)
 	}
 }
 
+
+void AWizardPlayerController::FirstItem()
+{
+	AWizard* Wizard = Cast<AWizard>(GetPawn());
+	if (Wizard)
+	{
+		Wizard->UseHpItem();
+	}
+}
+void AWizardPlayerController::SecondItem()
+{
+	AWizard* Wizard = Cast<AWizard>(GetPawn());
+	if (Wizard)
+	{
+		Wizard->UseMpItem();
+	}
+}
+void AWizardPlayerController::ThirdItem()
+{
+	AWizard* Wizard = Cast<AWizard>(GetPawn());
+	if (Wizard)
+	{
+		Wizard->UseAttackItem();
+	}
+}
+void AWizardPlayerController::FourthItem()
+{
+	AWizard* Wizard = Cast<AWizard>(GetPawn());
+	if (Wizard)
+	{
+		Wizard->UseArmorItem();
+	}
+}

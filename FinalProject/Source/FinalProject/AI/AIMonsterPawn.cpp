@@ -7,6 +7,13 @@
 #include "BossAIController.h"
 #include "../UI/AIHUDWidget.h"
 
+#include "../FXV/HPPotionItem.h"
+#include "../FXV/MPPotionItem.h"
+#include "../FXV/AttackDamageUpgradeItem.h"
+#include "../FXV/ArmorPointUpgradeItem.h"
+
+
+
 UDataTable* AAIMonsterPawn::mMonsterDataTable = nullptr;
 
 const FMonsterData* AAIMonsterPawn::FindMonsterData(
@@ -190,6 +197,45 @@ void AAIMonsterPawn::NomalMonsterTakeDamage(float Damage, FDamageEvent const& Da
 
 			AIController->UnPossess();
 			AIController->StopAI();
+
+			// Item Spawn
+			UWorld* World = GetWorld();
+			if (World)
+			{
+				FActorSpawnParameters ActorSpawnParam;
+				ActorSpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;	
+				switch (FMath::RandRange(1, 4))
+				{
+				case 1:
+					World->SpawnActor<AHPPotionItem>(
+						AHPPotionItem::StaticClass(),
+						GetActorLocation(),
+						GetActorRotation(),
+						ActorSpawnParam);
+					break;
+				case 2:
+					World->SpawnActor<AMPPotionItem>(
+						AMPPotionItem::StaticClass(),
+						GetActorLocation(),
+						GetActorRotation(),
+						ActorSpawnParam);
+					break;
+				case 3:
+					World->SpawnActor<AAttackDamageUpgradeItem>(
+						AAttackDamageUpgradeItem::StaticClass(),
+						GetActorLocation(),
+						GetActorRotation(),
+						ActorSpawnParam);
+					break;
+				case 4:
+					World->SpawnActor<AArmorPointUpgradeItem>(
+						AArmorPointUpgradeItem::StaticClass(),
+						GetActorLocation(),
+						GetActorRotation(),
+						ActorSpawnParam);
+					break;
+				}
+			}
 		}
 	}
 }
