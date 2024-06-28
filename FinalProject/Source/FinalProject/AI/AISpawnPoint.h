@@ -6,6 +6,13 @@
 #include "GameFramework/Actor.h"
 #include "AISpawnPoint.generated.h"
 
+UENUM(BlueprintType)
+enum class EAIMonsterType : uint8
+{
+	Nomal,
+	Boss
+};
+
 UCLASS()
 class FINALPROJECT_API AAISpawnPoint : public AActor
 {
@@ -28,6 +35,9 @@ protected:
 	// 이 포인트에서 생성할 클래스 타입을 가지고 있게 한다.
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class AAIPawn> mSpawnClass;
+
+	UPROPERTY(EditAnywhere)
+	EAIMonsterType mMonsterType;
 
 	// mSpawnClass를 이용해서 실제로 생성된 객체의 메모리 주소를 저장
 	class AAIPawn* mSpawnAI;

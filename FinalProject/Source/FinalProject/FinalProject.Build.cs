@@ -19,8 +19,12 @@ public class FinalProject : ModuleRules
 			"Networking",
 			"Sockets",
 			"UMG", 
-			"Niagara"
-		});
+			"Niagara",
+
+			"GeometryCollectionEngine",
+            "Chaos",
+            "ChaosSolverEngine",
+        });
 
         PrivateDependencyModuleNames.AddRange(new string[] {  });
 

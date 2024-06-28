@@ -322,12 +322,6 @@ void AAIMonsterPawn::PlaySkillMontage_Implementation(uint8 BossState)
 		mAnimInst->PlaySkillMontage(BossState);
 }
 
-void AAIMonsterPawn::PlayIdleMontage_Implementation()
-{
-	if (IsValid(mAnimInst))
-		mAnimInst->PlayIdleMontage();
-}
-
 void AAIMonsterPawn::ChangeAnimLoop_Implementation(bool Loop)
 {
 	if (IsValid(mAnimInst))

@@ -57,17 +57,21 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<UAnimMontage*> mIdleMontageArray;
 	int32 mIdleIndex = 0;
+	int32 mNextIdleIndex = 0;
 	TArray<int32> mIdleIndexArray;
 	int32 mIdleCount = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<UAnimMontage*> mBossSkillMontageArray;
 	int32 mSkillIndex = 0;
+	int32 mNextSkillIndex = 0;
 	TArray<int32> mSkillIndexArray;
 	int32 mSkillCount = 0;
 
+	bool mSkillAnimPlay = false;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
-	bool mAnimPlay = false;
+	bool mChangeIdle = false;
 
 	EBossCondition BossCondition;
 
@@ -76,7 +80,6 @@ public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds);
 
 public:
-	void PlayIdleMontage();
 	void PlaySkillMontage(uint8 BossState);
 
 	void SetBossCondition(EBossCondition Condition)
@@ -92,11 +95,6 @@ public:
 	int32 GetSkillMontageIndex()
 	{
 		return mSkillIndex;
-	}
-
-	bool IsMontagePlaying()
-	{
-		return mAnimPlay;
 	}
 
 public:
@@ -151,6 +149,9 @@ public:
 
 	UFUNCTION()
 	void AnimNotify_ParticleEnd();
+
+	UFUNCTION()
+	void AnimNotify_ChangeIdle();
 
 public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

@@ -17,16 +17,35 @@ public:
 	ABoss_RamPage();
 
 protected:
+	UPROPERTY(EditAnywhere)
+	UCapsuleComponent* mBodyCapsule;
+	UPROPERTY(EditAnywhere)
+	UCapsuleComponent* mLeftArm;
+	UPROPERTY(EditAnywhere)
+	UCapsuleComponent* mRightArm;
+
 	UMonsterState* mMonsterState;
 
 	UPROPERTY(VisibleAnywhere)
 	class AEffect_FireEmit* mEmitEffect;
+	UPROPERTY(VisibleAnywhere)
+	class AFallingSton* mFallingStonEffect;
 
-	AActor* SkillActor = nullptr;
+	TArray<AActor*> SkillActorArray = {};
+	TArray<FVector> mRandXYArray = {};
 
-	int32 ChangeAnimCnt = 0.f;
-	int32 ChangeAnimMaxCnt = 2.f;
-	bool SkillEnable = false;
+	float mChangeSkillTime = 0.f;
+	float mChangeSkillDuration = 10.f;
+	bool mSkillEnable = false;
+
+	bool mDestroy = false;
+	float mDestroyTime = 0.f;
+	float mDestroyDuration = 5.f;
+
+	float Seed = 0.f;
+
+protected:
+	void SetCapsuleCollision();
 
 protected:
 	// Called when the game starts or when spawned
@@ -36,6 +55,15 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION()
+	void AttackOverlap(UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor, UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	//UFUNCTION()
+	//void SkillOverlap(UPrimitiveComponent* OverlappedComponent,
+	//	AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	//	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 public:
 	virtual EMonsterType GetMonsterType()
 	{
@@ -43,12 +71,22 @@ public:
 	}
 
 	virtual void SkillSetting(int32 Num);
-	virtual void SkillDestroy()
+	virtual void SkillDestroy(int32 Num);
+
+	void SetHPBar();
+
+protected:
+	void SpawnSkill_GroundSmash();
+	float RandRangeNumber(float Min, float Max);
+
+	void SpawnSkill_1();
+	void SpawnSkill_FireEmit();
+	void SpawnSkill_3();
+	void SpawnSkill_4();
+
+	void SetDestroyDuration(float Time)
 	{
-		if (SkillActor != nullptr)
-			SkillActor->Destroy();
+		mDestroyDuration = Time;
 	}
 
-public:
-	void SetHPBar();
 };
