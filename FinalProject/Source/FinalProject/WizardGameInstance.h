@@ -3,6 +3,9 @@
 #pragma once
 
 #include "GameInfo.h"
+
+#include "Character/WizardPlayerState.h"
+
 #include "Engine/GameInstance.h"
 #include "WizardGameInstance.generated.h"
 
@@ -21,6 +24,8 @@ protected:
 	int32 mWizardLevel = 0;
 	int32 mWizardExp = 0;
 	bool mRespawn = false;
+
+	AWizardPlayerState* mWizardPlayerState;
 
 public:
 	void SetWizardName(FString name)
@@ -44,15 +49,16 @@ public:
 
 	void SetLevel(int32 level) { mWizardLevel = level; }
 	int32 GetLevel() { return mWizardLevel; }
-	
 	UFUNCTION(BlueprintCallable)
 	FString GetLevelString()
 	{
 		return FString::Printf(TEXT("Lv.%d "), mWizardLevel);
 	}
 
-	// int32 GetExp() { return mWizardExp; }
+	AWizardPlayerState* GetState() { return mWizardPlayerState; }
+	void SetState(AWizardPlayerState* state) { mWizardPlayerState = state; }
 
+	
 	bool IsRespawn() { return mRespawn; }
 	void RespawnGame()
 	{

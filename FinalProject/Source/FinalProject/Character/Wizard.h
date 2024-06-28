@@ -21,6 +21,9 @@ public:
 	AWizard();
 
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UWidgetComponent* mWizardInfoWidget;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UCameraComponent* mCamera;
 
@@ -69,6 +72,7 @@ public:
 	void GetExp(float exp);
 private:
 	void CheckLevelUp();
+	void SetInfoUI();
 public:
 	void SetExpUI(float rate);
 

@@ -3,6 +3,8 @@
 
 #include "Wizard.h"
 #include "WizardPlayerController.h"
+
+#include "../UI/WizardInfoWidget.h"
 #include "../UI/GameWidget.h"
 #include "../WizardGameInstance.h"
 
@@ -16,6 +18,15 @@ AWizard::AWizard()
 	// Capsule Component Set
 	GetCapsuleComponent()->InitCapsuleSize(40.f, 100.f);
 	GetMesh()->SetRelativeLocation(FVector(0, 0, -97));
+
+	mWizardInfoWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("InfoWidget"));
+	mWizardInfoWidget->SetupAttachment(RootComponent);
+	static ConstructorHelpers::FClassFinder<UWizardInfoWidget> BP_WizardInfoWidgetClass{ TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprint/Character/BP_WizardNameWidget.BP_WizardNameWidget_C'") };
+	if (BP_WizardInfoWidgetClass.Succeeded())
+	{
+		mWizardInfoWidget->SetWidgetClass(BP_WizardInfoWidgetClass.Class);
+	}
+	mWizardInfoWidget->SetWidgetSpace(EWidgetSpace::Screen);
 
 	// Character Mesh Set
 	// TODO : z 축 -90도 회전
@@ -58,7 +69,7 @@ void AWizard::BeginPlay()
 	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
 	if (GetGameInstance<UWizardGameInstance>()->IsRespawn())
 	{
-		State->mLevel = GetGameInstance<UWizardGameInstance>()->GetLevel();
+		State = GetGameInstance<UWizardGameInstance>()->GetState();
 	}
 	else
 	{
@@ -210,12 +221,14 @@ void AWizard::GetExp(float exp)
 void AWizard::CheckLevelUp()
 {
 	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+	UWizardGameInstance* Instance = GetGameInstance<UWizardGameInstance>();
 	while (State->mLevel * 500 < State->mExp) // level up
 	{
 		State->mExp -= State->mLevel * 500;
 		State->mLevel++;
 
-		GetGameInstance<UWizardGameInstance>()->SetLevel(State->mLevel);
+		Instance->SetLevel(State->mLevel);
+		SetInfoUI();
 
 		// 능력치 강화
 		State->mNormalAttackPoint += 50.f;
@@ -225,14 +238,24 @@ void AWizard::CheckLevelUp()
 		State->mArmorPoint += 50.f;
 		State->mHPMax += 50;
 		State->mMPMax += 50;
+
+		Instance->SetState(State);
 	}
 	SetExpUI(State->mExp / (State->mLevel * 500));
+}
+
+void AWizard::SetInfoUI()
+{
+	UWizardGameInstance* Instance = GetGameInstance<UWizardGameInstance>();
+	UWizardInfoWidget* WizardInfoWidget = Cast<UWizardInfoWidget>(mWizardInfoWidget->GetWidget());
+	WizardInfoWidget->SetWizardInfoText(Instance->GetLevelString().Append(Instance->GetWizardName()));
 }
 
 void AWizard::SetExpUI(float rate)
 {
 	GetController<AWizardPlayerController>()->GetGameWidget()->SetExpBar(rate);
 }
+
 
 
 #pragma region Set User Widget
