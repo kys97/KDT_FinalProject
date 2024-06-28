@@ -22,16 +22,14 @@ protected:
 	UGeometryCollectionComponent* mStonDestroyComp;
 
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UGeometryCollection> mStonDestroyAsset;
-	//UGeometryCollection* mStonDestroyAsset;
-
-	UPROPERTY(EditAnywhere)
 	UProjectileMovementComponent* TileMoveComp;
 
 	UPROPERTY(EditAnywhere)
 	UParticleSystem* mStonFallEndEffect;
 
 	AActor* OverlapActor = nullptr;
+
+	int32 mSkillPower = 0.f;
 
 	bool mIsOverlap = false;
 	float mAttackTime = 0.f;
@@ -69,5 +67,10 @@ public:
 	float GetCapsuleRadius()
 	{
 		return mCapsule->GetScaledCapsuleRadius();
+	}
+
+	void SetSkillPower(int32 Power)
+	{
+		mSkillPower = Power;
 	}
 };

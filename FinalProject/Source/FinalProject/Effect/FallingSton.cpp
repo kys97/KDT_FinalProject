@@ -2,6 +2,7 @@
 
 
 #include "FallingSton.h"
+#include "../AI/MonsterState.h"
 
 AFallingSton::AFallingSton()
 {
@@ -20,29 +21,18 @@ AFallingSton::AFallingSton()
 		mStonFallEndEffect = FallEndParticle.Object;
 	}
 
-
 	mStonDestroyComp = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("StonDestroyComp"));
 	SetRootComponent(mStonDestroyComp);
 
 	mCapsule->SetupAttachment(mStonDestroyComp);
 
-	// 지오메트리 컬렉션 애셋 로드
+	// 지오메트리 컬렉션 에셋 로드
 	static ConstructorHelpers::FObjectFinder<UGeometryCollection> GeometryCollectionAssetFinder(
 		TEXT("/Script/GeometryCollectionEngine.GeometryCollection'/Game/AI/Asset/Particle/SM_Rock_To_Hold_SM_Rock_To_Hold/FallingSton_GeometryCollection.FallingSton_GeometryCollection'"));
 	if (GeometryCollectionAssetFinder.Succeeded())
 	{
-		mStonDestroyAsset = GeometryCollectionAssetFinder.Object;
-		mStonDestroyComp->SetRestCollection(mStonDestroyAsset.Get());
+		mStonDestroyComp->SetRestCollection(GeometryCollectionAssetFinder.Object.Get());
 	}
-
-	//static ConstructorHelpers::FObjectFinder<UStaticMesh> Mesh{ TEXT("/Script/Engine.StaticMesh'/Game/AI/Asset/Particle/SM_Rock_To_Hold.SM_Rock_To_Hold'") };
-	//if (!Mesh.Succeeded())
-	//{
-	//	check(false);
-	//}
-	//mMesh->SetStaticMesh(Mesh.Object);
-	//
-	//mMesh->SetRelativeScale3D(FVector(1.2f, 1.2f, 0.8f));
 
 	mCapsule->SetCollisionProfileName(TEXT("BossSkill"));
 	mCapsule->SetRelativeLocation(FVector(0.f, 0.f, 50.f));
@@ -57,7 +47,7 @@ AFallingSton::AFallingSton()
 	TileMoveComp->MaxSpeed = 1500.f;
 	TileMoveComp->bRotationFollowsVelocity = true;
 	TileMoveComp->ProjectileGravityScale = 10.f;
-	TileMoveComp->SetUpdatedComponent(mMesh);
+	TileMoveComp->SetUpdatedComponent(mStonDestroyComp);
 }
 
 void AFallingSton::BeginPlay()
@@ -66,7 +56,7 @@ void AFallingSton::BeginPlay()
 
 	mCapsule->OnComponentBeginOverlap.AddDynamic(this, &AFallingSton::BeginOverlap);
 	mCapsule->OnComponentEndOverlap.AddDynamic(this, &AFallingSton::EndOverlap);
-	mMesh->OnComponentHit.AddDynamic(this, &AFallingSton::OnComponentHit);
+	mStonDestroyComp->OnComponentHit.AddDynamic(this, &AFallingSton::OnComponentHit);
 }
 
 void AFallingSton::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -84,7 +74,7 @@ void AFallingSton::Tick(float DeltaTime)
 		if (mAttackTime > mAttackDuration)
 		{
 			FDamageEvent DmgEvent;
-			OverlapActor->TakeDamage(30, DmgEvent, GetInstigatorController(), this);
+			OverlapActor->TakeDamage(mSkillPower, DmgEvent, GetInstigatorController(), this);
 
 			mAttackTime = 0.f;
 		}
@@ -102,7 +92,7 @@ void AFallingSton::BeginOverlap(UPrimitiveComponent* OverlappedComponent,
 	OverlapActor = OtherActor;
 
 	FDamageEvent DmgEvent;
-	OverlapActor->TakeDamage(30, DmgEvent, GetInstigatorController(), this);
+	OverlapActor->TakeDamage(mSkillPower, DmgEvent, GetInstigatorController(), this);
 }
 
 void AFallingSton::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -116,8 +106,6 @@ void AFallingSton::OnComponentHit(UPrimitiveComponent* HitComponent,
 	AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
 	const FHitResult& Hit)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("AFallingSton::OnComponentHit")));
-
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), mStonFallEndEffect,
 		FVector((Hit.ImpactPoint.X), (Hit.ImpactPoint.Y), 0.f), FRotator::ZeroRotator, FVector(2.f, 2.f, 1.f));
 }
