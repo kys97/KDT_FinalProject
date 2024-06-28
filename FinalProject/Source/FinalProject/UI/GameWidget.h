@@ -4,7 +4,7 @@
 
 #include "../GameInfo.h"
 
-
+#include "Components/ProgressBar.h"
 
 #include "Blueprint/UserWidget.h"
 #include "GameWidget.generated.h"
@@ -30,6 +30,15 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	class UWizardDeathWidget* WizardDeathWidget;
 
+	UProgressBar* WizardExpPB;
+
+private:
+	bool IsChangeExp = false;
+	int32 mUpOrDownExp;
+	float mTargetExp;
+	float mChangeExpAmount;
+	float tempExp;
+
 protected:
 	// 위젯 생성시 한번
 	virtual void NativeOnInitialized();
@@ -45,6 +54,8 @@ protected:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime);
 
 public:
+	void SetExpBar(const float rate);
+
 	void SetAttackItemCount(const int32 last_cnt);
 	void SetArmorItemCount(const int32 last_cnt);
 

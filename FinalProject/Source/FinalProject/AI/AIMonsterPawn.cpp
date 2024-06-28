@@ -171,6 +171,16 @@ void AAIMonsterPawn::NomalMonsterTakeDamage(float Damage, FDamageEvent const& Da
 
 	if (mMonsterState->GetAIHP() > 0)
 	{
+		// Wizard Exp Set
+		AWizard* Attacker = Cast<AWizard>(DamageCauser);
+		FAttackerInfo NewAttacker;
+		if (mMonsterState->GetAIHP() - Damage > 0)
+			NewAttacker = FAttackerInfo(Attacker, Damage);
+		else
+			NewAttacker = FAttackerInfo(Attacker, mMonsterState->GetAIHP());
+		Attackers.Add(NewAttacker);
+
+
 		mMonsterState->ChangeHP(-Damage);
 
 		mHPBar->SetAIHP(mMonsterState->GetAIHPPercent());
@@ -235,6 +245,12 @@ void AAIMonsterPawn::NomalMonsterTakeDamage(float Damage, FDamageEvent const& Da
 						ActorSpawnParam);
 					break;
 				}
+			}
+
+			// Exp
+			for (int i = 0; i < Attackers.Num(); i++)
+			{
+				Attackers[i].Attacker->GetExp(Attackers[i].AttackDamage);
 			}
 		}
 	}

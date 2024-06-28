@@ -42,8 +42,10 @@ public:
 		return mWizardJob;
 	}
 
+	void SetLevel(int32 level) { mWizardLevel = level; }
 	int32 GetLevel() { return mWizardLevel; }
-	int32 GetExp() { return mWizardExp; }
+
+	// int32 GetExp() { return mWizardExp; }
 
 	bool IsRespawn() { return mRespawn; }
 	void RespawnGame()

@@ -3,6 +3,9 @@
 #pragma once
 
 #include "AIPawn.h"
+
+#include "../Character/Wizard.h"
+
 #include "AIMonsterPawn.generated.h"
 
 UENUM(BlueprintType)
@@ -10,6 +13,16 @@ enum class EMonsterType : uint8
 {
 	Nomal,
 	Boss
+};
+
+USTRUCT()
+struct FAttackerInfo
+{
+	GENERATED_USTRUCT_BODY()
+
+public:
+	AWizard* Attacker;
+	float AttackDamage;
 };
 
 // FTableRowBase 구조체를 상속 받아서 만들어야
@@ -96,6 +109,7 @@ protected:
 	bool mOverlap = false;
 	bool mAttackEnd = false;
 	bool mAttackEnable = true;
+	TArray<FAttackerInfo> Attackers;
 
 	float mAccTime = 0.f;
 	bool mStun = false;

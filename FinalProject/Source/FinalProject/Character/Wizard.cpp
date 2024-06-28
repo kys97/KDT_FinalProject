@@ -61,6 +61,9 @@ void AWizard::BeginPlay()
 		State->mLevel = GetGameInstance<UWizardGameInstance>()->GetLevel();
 	}
 
+	// Set Exp UI
+	GetExp(0);
+
 	// Set Item Cnt
 	AWizardPlayerController* WizardController = GetController<AWizardPlayerController>();
 	WizardController->GetGameWidget()->UseHPpotionItem(mHPPotionCount);
@@ -187,6 +190,34 @@ float AWizard::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AContro
 	}
 
 	return Damage;
+}
+
+void AWizard::GetExp(float exp)
+{
+	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+	State->mExp += exp;
+	CheckLevelUp();
+}
+
+void AWizard::CheckLevelUp()
+{
+	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+	while (State->mLevel * 500 < State->mExp) // level up
+	{
+		State->mExp -= State->mLevel * 500;
+		State->mLevel++;
+
+		GetGameInstance<UWizardGameInstance>()->SetLevel(State->mLevel);
+
+		// 능력치 강화
+
+	}
+	SetExpUI(State->mExp / (State->mLevel * 500));
+}
+
+void AWizard::SetExpUI(float rate)
+{
+	GetController<AWizardPlayerController>()->GetGameWidget()->SetExpBar(rate);
 }
 
 

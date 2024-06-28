@@ -22,6 +22,8 @@ void UGameWidget::NativePreConstruct()
 void UGameWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	WizardExpPB = Cast<UProgressBar>(GetWidgetFromName(TEXT("Exp_PB")));
 }
 
 void UGameWidget::NativeDestruct()
@@ -32,6 +34,38 @@ void UGameWidget::NativeDestruct()
 void UGameWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
+
+	if (IsChangeExp)
+	{
+		tempExp = mChangeExpAmount * InDeltaTime * mUpOrDownExp * 2;
+		WizardExpPB->SetPercent(WizardExpPB->GetPercent() + tempExp);
+
+		if ((mUpOrDownExp > 0 && WizardExpPB->GetPercent() > mTargetExp) || (mUpOrDownExp < 0 && WizardExpPB->GetPercent() < mTargetExp))
+		{
+			WizardExpPB->SetPercent(mTargetExp);
+			IsChangeExp = false;
+		}
+	}
+}
+
+void UGameWidget::SetExpBar(const float rate)
+{
+	IsChangeExp = false;
+
+	mTargetExp = rate;
+
+	if (WizardExpPB->GetPercent() > rate) // loose hp : --
+	{
+		mUpOrDownExp = -1;
+		mChangeExpAmount = WizardExpPB->GetPercent() - rate;
+	}
+	else //  gain hp : ++
+	{
+		mUpOrDownExp = 1;
+		mChangeExpAmount = rate - WizardExpPB->GetPercent();
+	}
+
+	IsChangeExp = true;
 }
 
 void UGameWidget::SetAttackItemCount(const int32 last_cnt)

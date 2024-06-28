@@ -66,6 +66,12 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	
+	void GetExp(float exp);
+private:
+	void CheckLevelUp();
+public:
+	void SetExpUI(float rate);
+
 	void HealHP(bool IsHealing);
 	void SetHPUI(const float hp_rate);
 	void SetMPUI(const float mp_rate);
