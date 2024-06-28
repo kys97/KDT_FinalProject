@@ -9,6 +9,23 @@ AFallingSton::AFallingSton()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	mStonDestroyComp = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("StonDestroyComp"));
+	SetRootComponent(mStonDestroyComp);
+
+	// 지오메트리 컬렉션 에셋 로드
+	static ConstructorHelpers::FObjectFinder<UGeometryCollection> GeometryCollectionAssetFinder(
+		TEXT("/Script/GeometryCollectionEngine.GeometryCollection'/Game/AI/Asset/Particle/SM_Rock_To_Hold_SM_Rock_To_Hold/FallingSton_GeometryCollection.FallingSton_GeometryCollection'"));
+	if (GeometryCollectionAssetFinder.Succeeded())
+	{
+		mStonDestroyComp->SetRestCollection(GeometryCollectionAssetFinder.Object.Get());
+	}
+
+	mCapsule = CreateDefaultSubobject<UCapsuleComponent>("Capsule");
+	mCapsule->SetupAttachment(mStonDestroyComp);
+
+	mParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Particle"));
+	mParticle->SetupAttachment(mCapsule);
+
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> StonParticle{ TEXT("/Script/Engine.ParticleSystem'/Game/AI/Asset/Particle/P_Beam_Laser_Fire_Hit.P_Beam_Laser_Fire_Hit'") };
 	if (StonParticle.Succeeded())
 	{
@@ -21,24 +38,12 @@ AFallingSton::AFallingSton()
 		mStonFallEndEffect = FallEndParticle.Object;
 	}
 
-	mStonDestroyComp = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("StonDestroyComp"));
-	SetRootComponent(mStonDestroyComp);
-
-	mCapsule->SetupAttachment(mStonDestroyComp);
-
-	// 지오메트리 컬렉션 에셋 로드
-	static ConstructorHelpers::FObjectFinder<UGeometryCollection> GeometryCollectionAssetFinder(
-		TEXT("/Script/GeometryCollectionEngine.GeometryCollection'/Game/AI/Asset/Particle/SM_Rock_To_Hold_SM_Rock_To_Hold/FallingSton_GeometryCollection.FallingSton_GeometryCollection'"));
-	if (GeometryCollectionAssetFinder.Succeeded())
-	{
-		mStonDestroyComp->SetRestCollection(GeometryCollectionAssetFinder.Object.Get());
-	}
-
 	mCapsule->SetCollisionProfileName(TEXT("BossSkill"));
 	mCapsule->SetRelativeLocation(FVector(0.f, 0.f, 50.f));
 	mCapsule->SetCapsuleHalfHeight(300);
 	mCapsule->SetCapsuleRadius(150);
 
+	mParticle->SetCollisionProfileName(TEXT("BossSkill"));
 	mParticle->SetRelativeLocation(FVector(0.f, 0.f, -30.f));
 	mParticle->SetRelativeScale3D(FVector(5.0f, 0.5f, 5.0f));
 

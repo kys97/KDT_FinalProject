@@ -9,7 +9,7 @@
  * 
  */
 UCLASS()
-class FINALPROJECT_API AFallingSton : public AEffectBase
+class FINALPROJECT_API AFallingSton : public AActor
 {
 	GENERATED_BODY()
 
@@ -20,6 +20,12 @@ public:
 protected:
 	UPROPERTY(EditAnywhere)
 	UGeometryCollectionComponent* mStonDestroyComp;
+
+	UPROPERTY(EditAnywhere)
+	UCapsuleComponent* mCapsule;
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystemComponent* mParticle;
 
 	UPROPERTY(EditAnywhere)
 	UProjectileMovementComponent* TileMoveComp;

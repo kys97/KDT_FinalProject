@@ -138,10 +138,14 @@ void ABoss_RamPage::Tick(float DeltaTime)
 			for (int i = 0; i < SkillActorArray.Num(); ++i)
 			{
 				if (SkillActorArray[i] != nullptr)
+				{
 					SkillActorArray[i]->Destroy();
+					SkillActorArray.SetNum(0);
+				}
+
 			}
 			mDestroyTime = 0.f;
-			mDestroyTime = false;
+			mDestroy = false;
 		}
 	}
 }
@@ -265,6 +269,8 @@ void ABoss_RamPage::SpawnSkill_GroundSmash()
 	mFallingStonEffect = GetWorld()->SpawnActor<AFallingSton>(AFallingSton::StaticClass(),
 		FVector((SpawnPoint.X), (SpawnPoint.Y), (SpawnPoint.Z + (BossHalfHeight*2))),
 		FRotator::ZeroRotator, SpawnParam);
+
+	mFallingStonEffect->SetSkillPower(mState->GetSkill1_Power());
 
 	SkillActorArray.Add(Cast<AActor>(mFallingStonEffect));
 }
