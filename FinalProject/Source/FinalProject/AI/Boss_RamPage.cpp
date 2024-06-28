@@ -93,8 +93,6 @@ void ABoss_RamPage::BeginPlay()
 	mBodyCapsule->OnComponentBeginOverlap.AddDynamic(this, &ABoss_RamPage::AttackOverlap);
 	mRightArm->OnComponentBeginOverlap.AddDynamic(this, &ABoss_RamPage::AttackOverlap);
 	mLeftArm->OnComponentBeginOverlap.AddDynamic(this, &ABoss_RamPage::AttackOverlap);
-
-	//PlaySkillMontage((uint8)EBossCondition::Nomal);
 }
 
 void ABoss_RamPage::Tick(float DeltaTime)
@@ -107,62 +105,41 @@ void ABoss_RamPage::Tick(float DeltaTime)
 	if (!IsValid(mMonsterState) || !IsValid(mAnimInst))
 		return;
 
-	if (!mAnimInst->IsMontagePlaying())
+	ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
+	mChangeSkillTime += DeltaTime;
+
+	if (mChangeSkillTime >= mChangeSkillDuration)
 	{
-		if (!mSkillEnable)
+		GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Green, FString::Printf(TEXT("mChangeSkillTime : %f"), mChangeSkillTime));
+		GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Green, FString::Printf(TEXT("mHPPercent : %f"), mMonsterState->GetAIHPPercent()));
+		if (mMonsterState->GetAIHPPercent() <= 0.3f)
 		{
-			ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
-
-			if (mChangeAnimCnt < mChangeAnimMaxCnt)
-			{
-				++mChangeAnimCnt;
-				GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Blue, FString::Printf(TEXT("ChangeAnimCnt : %d"), mChangeAnimCnt));
-				PlayIdleMontage();
-			}
-			else
-			{
-				mSkillEnable = true;
-				mChangeAnimCnt = 0;
-			}
+			PlaySkillMontage((uint8)EBossCondition::Danger);
+			mChangeSkillDuration = 0.f;
 		}
-		else
+		else if (mMonsterState->GetAIHPPercent() <= 0.7f)
 		{
-			mSkillEnable = false;
-			mChangeAnimCnt = 0;
-			ChangeAIAnimType((uint8)EMonsterAnimType::Skill);
-
-			GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Green, FString::Printf(TEXT("mHPPercent : %f"), mMonsterState->GetAIHPPercent()));
-			if (mMonsterState->GetAIHPPercent() <= 0.3f)
-			{
-				PlaySkillMontage((uint8)EBossCondition::Danger);
-				mChangeAnimMaxCnt = 0;
-			}
-			else if (mMonsterState->GetAIHPPercent() <= 0.7f)
-			{
-				PlaySkillMontage((uint8)EBossCondition::Angry);
-				mChangeAnimMaxCnt = 1;
-			}
-			else if (mMonsterState->GetAIHPPercent() <= 1.f)
-			{
-
-				PlaySkillMontage((uint8)EBossCondition::Nomal);
-				// Idle 최대 2번까지
-				mChangeAnimMaxCnt = FMath::RandRange(1, 2);
-			}
+			PlaySkillMontage((uint8)EBossCondition::Angry);
+			mChangeSkillDuration = 5.f;
 		}
+		else if (mMonsterState->GetAIHPPercent() <= 1.f)
+		{
+			PlaySkillMontage((uint8)EBossCondition::Nomal);
+		}
+		mSkillEnable = false;
+		mChangeSkillTime = 0;
 	}
 
 	if (mDestroy)
 	{
 		mDestroyTime += DeltaTime;
-		if (mDestroyTime > mDestroyDuration)
+		if (mDestroyTime >= mDestroyDuration)
 		{
 			for (int i = 0; i < SkillActorArray.Num(); ++i)
 			{
 				if (SkillActorArray[i] != nullptr)
 					SkillActorArray[i]->Destroy();
 			}
-			
 			mDestroyTime = 0.f;
 			mDestroyTime = false;
 		}

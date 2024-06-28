@@ -31,50 +31,10 @@ void UMonsterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 }
 
-void UMonsterAnimInstance::PlayIdleMontage()
-{
-	if (mAnimPlay)
-		return;
-
-	mIdleIndex = mNextIdleIndex;
-	// 몽타주가 재생되고 있는지 판단
-	if (!Montage_IsPlaying(mIdleMontageArray[mIdleIndex]))
-	{
-		// 재생 시키기 전에 재생 위치를 처음으로 초기화
-		Montage_SetPosition(mIdleMontageArray[mIdleIndex], 0.f);
-
-		// 재생
-		Montage_Play(mIdleMontageArray[mIdleIndex]);
-
-		int32 RandNum = FMath::RandRange(1, mIdleMontageArray.Num());
-		mIdleIndexArray.Add(RandNum);
-
-		// 같은 Idle 모션은 최대 2번만 나올 수 있도록
-		for (int32 Array : mIdleIndexArray)
-		{
-			if (Array == RandNum)
-				++mIdleCount;
-
-			if (mIdleCount > 2)
-			{
-				mIdleIndexArray.Remove(RandNum);
-				++RandNum;
-				mIdleIndexArray.Add(RandNum);
-
-				break;
-			}
-		}
-		mIdleCount = 0;
-
-		// 배열 개수만큼 나눈 나머지는 인덱스 숫자
-		mNextIdleIndex = (mIdleIndex + RandNum) % mIdleMontageArray.Num();
-	}
-}
-
 void UMonsterAnimInstance::PlaySkillMontage(uint8 BossState)
 {
 	// 애니메이션 동작 중이면 return;
-	if (mAnimPlay)
+	if (mSkillAnimPlay)
 		return;
 
 	mSkillIndex = mNextSkillIndex;
@@ -119,14 +79,14 @@ void UMonsterAnimInstance::PlaySkillMontage(uint8 BossState)
 
 void UMonsterAnimInstance::AnimNotify_AnimStart()
 {
-	mAnimPlay = true;
+	mSkillAnimPlay = true;
 
 	StartTime = clock();
 }
 
 void UMonsterAnimInstance::AnimNotify_AnimEnd()
 {
-	mAnimPlay = false;
+	mSkillAnimPlay = false;
 
 	EndTime = clock();
 
@@ -195,6 +155,11 @@ void UMonsterAnimInstance::AnimNotify_ParticleEnd()
 	Pawn->SkillDestroy(mSkillIndex);
 }
 
+void UMonsterAnimInstance::AnimNotify_ChangeIdle()
+{
+	mChangeIdle = FMath::RandBool();
+}
+
 void UMonsterAnimInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -202,5 +167,5 @@ void UMonsterAnimInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 	DOREPLIFETIME(UMonsterAnimInstance, mAnimType);
 	DOREPLIFETIME(UMonsterAnimInstance, mLoopAnimation);
 	DOREPLIFETIME(UMonsterAnimInstance, PlayRate);
-	DOREPLIFETIME(UMonsterAnimInstance, mAnimPlay);
+	DOREPLIFETIME(UMonsterAnimInstance, mChangeIdle);
 }

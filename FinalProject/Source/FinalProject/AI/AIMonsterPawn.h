@@ -159,10 +159,6 @@ public:
 	virtual void PlaySkillMontage(uint8 BossState);
 	virtual void PlaySkillMontage_Implementation(uint8 BossState);
 
-	UFUNCTION(NetMulticast, Reliable)
-	virtual void PlayIdleMontage();
-	virtual void PlayIdleMontage_Implementation();
-
 	virtual void SkillSetting(int32 Num) {}
 	virtual void SkillDestroy(int32 Num) {}
 

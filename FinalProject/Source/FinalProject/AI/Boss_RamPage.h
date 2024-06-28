@@ -31,16 +31,16 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class AFallingSton* mFallingStonEffect;
 
-	TArray<AActor*> SkillActorArray;
-	TArray<FVector> mRandXYArray;
+	TArray<AActor*> SkillActorArray = {};
+	TArray<FVector> mRandXYArray = {};
 
-	int32 mChangeAnimCnt = 0.f;
-	int32 mChangeAnimMaxCnt = 2.f;
+	float mChangeSkillTime = 0.f;
+	float mChangeSkillDuration = 10.f;
 	bool mSkillEnable = false;
 
 	bool mDestroy = false;
 	float mDestroyTime = 0.f;
-	float mDestroyDuration = 0.f;
+	float mDestroyDuration = 5.f;
 
 	float Seed = 0.f;
 
