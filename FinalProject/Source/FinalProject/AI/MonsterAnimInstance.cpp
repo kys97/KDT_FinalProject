@@ -192,7 +192,7 @@ void UMonsterAnimInstance::AnimNotify_ParticleEnd()
 {
 	AAIMonsterPawn* Pawn = Cast<AAIMonsterPawn>(TryGetPawnOwner());
 
-	Pawn->SkillDestroy();
+	Pawn->SkillDestroy(mSkillIndex);
 }
 
 void UMonsterAnimInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

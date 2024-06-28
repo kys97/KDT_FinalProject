@@ -33,6 +33,7 @@ protected:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason);
 
 public:
 	// Called every frame
@@ -53,9 +54,13 @@ public:
 		AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		FVector NormalImpulse, const FHitResult& Hit);
 
-//public:
-//	float GetCapsuleHalfHeight()
-//	{
-//		return mCapsule->GetScaledCapsuleHalfHeight();
-//	}
+public:
+	float GetCapsuleHalfHeight()
+	{
+		return mCapsule->GetScaledCapsuleHalfHeight();
+	}
+	float GetCapsuleRadius()
+	{
+		return mCapsule->GetScaledCapsuleRadius();
+	}
 };

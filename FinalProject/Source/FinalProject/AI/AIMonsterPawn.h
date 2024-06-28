@@ -164,7 +164,7 @@ public:
 	virtual void PlayIdleMontage_Implementation();
 
 	virtual void SkillSetting(int32 Num) {}
-	virtual void SkillDestroy() {}
+	virtual void SkillDestroy(int32 Num) {}
 
 public:
 	virtual FRotator GetCurrentRotation()

@@ -101,51 +101,70 @@ void ABoss_RamPage::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	FRandomStream RandomStream;
+	RandomStream.Initialize(DeltaTime);
+
 	if (!IsValid(mMonsterState) || !IsValid(mAnimInst))
 		return;
 
 	if (!mAnimInst->IsMontagePlaying())
 	{
-		if (!SkillEnable)
+		if (!mSkillEnable)
 		{
 			ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
 
-			if (ChangeAnimCnt < ChangeAnimMaxCnt)
+			if (mChangeAnimCnt < mChangeAnimMaxCnt)
 			{
-				++ChangeAnimCnt;
-				GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Blue, FString::Printf(TEXT("ChangeAnimCnt : %d"), ChangeAnimCnt));
+				++mChangeAnimCnt;
+				GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Blue, FString::Printf(TEXT("ChangeAnimCnt : %d"), mChangeAnimCnt));
 				PlayIdleMontage();
 			}
 			else
 			{
-				SkillEnable = true;
-				ChangeAnimCnt = 0;
+				mSkillEnable = true;
+				mChangeAnimCnt = 0;
 			}
 		}
 		else
 		{
-			SkillEnable = false;
-			ChangeAnimCnt = 0;
+			mSkillEnable = false;
+			mChangeAnimCnt = 0;
 			ChangeAIAnimType((uint8)EMonsterAnimType::Skill);
 
 			GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Green, FString::Printf(TEXT("mHPPercent : %f"), mMonsterState->GetAIHPPercent()));
 			if (mMonsterState->GetAIHPPercent() <= 0.3f)
 			{
 				PlaySkillMontage((uint8)EBossCondition::Danger);
-				ChangeAnimMaxCnt = 0;
+				mChangeAnimMaxCnt = 0;
 			}
 			else if (mMonsterState->GetAIHPPercent() <= 0.7f)
 			{
 				PlaySkillMontage((uint8)EBossCondition::Angry);
-				ChangeAnimMaxCnt = 1;
+				mChangeAnimMaxCnt = 1;
 			}
 			else if (mMonsterState->GetAIHPPercent() <= 1.f)
 			{
 
 				PlaySkillMontage((uint8)EBossCondition::Nomal);
 				// Idle 최대 2번까지
-				ChangeAnimMaxCnt = FMath::RandRange(1, 2);
+				mChangeAnimMaxCnt = FMath::RandRange(1, 2);
 			}
+		}
+	}
+
+	if (mDestroy)
+	{
+		mDestroyTime += DeltaTime;
+		if (mDestroyTime > mDestroyDuration)
+		{
+			for (int i = 0; i < SkillActorArray.Num(); ++i)
+			{
+				if (SkillActorArray[i] != nullptr)
+					SkillActorArray[i]->Destroy();
+			}
+			
+			mDestroyTime = 0.f;
+			mDestroyTime = false;
 		}
 	}
 }
@@ -158,9 +177,7 @@ void ABoss_RamPage::AttackOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 
 void ABoss_RamPage::SkillSetting(int32 Num)
 {
-	int32 SkillIndex = Num;
-
-	switch (SkillIndex)
+	switch (Num)
 	{
 	case 0:	{
 		SpawnSkill_GroundSmash();
@@ -185,8 +202,38 @@ void ABoss_RamPage::SkillSetting(int32 Num)
 	default: 
 		break;
 	}
+	mDestroyTime = 0.f;
+	mDestroyTime = false;
+}
 
-
+void ABoss_RamPage::SkillDestroy(int32 Num)
+{
+	switch (Num)
+	{
+	case 0: {
+		SetDestroyDuration(5.f);
+		mDestroy = true;
+		break;
+	}
+	case 1: {
+		SpawnSkill_1();
+		break;
+	}
+	case 2: {
+		SpawnSkill_FireEmit();
+		break;
+	}
+	case 3: {
+		SpawnSkill_3();
+		break;
+	}
+	case 4: {
+		SpawnSkill_4();
+		break;
+	}
+	default:
+		break;
+	}
 }
 
 void ABoss_RamPage::SetHPBar()
@@ -214,16 +261,47 @@ void ABoss_RamPage::SpawnSkill_GroundSmash()
 	Effect->SetParticleAsset(TEXT("/Script/Engine.ParticleSystem'/Game/AI/Asset/Particle/P_Mace_Impact_Damage.P_Mace_Impact_Damage'"));
 
 	// Ston Effect
+	float BossHalfHeight = mBodyCapsule->GetScaledCapsuleHalfHeight();
+	float BossRadius = mBodyCapsule->GetScaledCapsuleRadius();
 
 	FVector SpawnCenter = GetActorLocation();
-	SpawnCenter.Z += mCapsule->GetScaledCapsuleHalfHeight();
 
-	float RandSpawnPoint = FMath::RandRange(-500.f, 500.f);
+	float RandSpawnPointX = RandRangeNumber(1.f, 2.f);
+	float RandSpawnPointY = RandRangeNumber(1.f, 2.f);
+
+	FVector RandXY(RandSpawnPointX, RandSpawnPointY, 0.f);
+	for (int i = 0; i < mRandXYArray.Num(); ++i)
+	{
+		if (mRandXYArray[i] == RandXY)
+		{
+			RandSpawnPointX = RandRangeNumber(1.f, 2.f);
+			RandSpawnPointY = RandRangeNumber(1.f, 2.f);
+		}
+	}
+	mRandXYArray.Add(RandXY);
+
+	FVector SpawnPoint;
+	SpawnPoint.X = SpawnCenter.X + BossRadius * 2.f * RandSpawnPointX;
+	SpawnPoint.Y = SpawnCenter.Y + BossRadius * 2.f * RandSpawnPointY;
+	SpawnPoint.Z = BossHalfHeight * 2;
 
 	mFallingStonEffect = GetWorld()->SpawnActor<AFallingSton>(AFallingSton::StaticClass(),
-		FVector((SpawnCenter.X + RandSpawnPoint), (SpawnCenter.Y + RandSpawnPoint), (SpawnCenter.Z + 500.f)), FRotator::ZeroRotator, SpawnParam);
+		FVector((SpawnPoint.X), (SpawnPoint.Y), (SpawnPoint.Z + (BossHalfHeight*2))),
+		FRotator::ZeroRotator, SpawnParam);
 
-	SkillActor = Cast<AActor>(mFallingStonEffect);
+	SkillActorArray.Add(Cast<AActor>(mFallingStonEffect));
+}
+
+float ABoss_RamPage::RandRangeNumber(float Min, float Max)
+{
+	bool BoolResult = FMath::RandBool();
+	float RandNum;
+	if (BoolResult)
+		RandNum = FMath::RandRange(Min, Max);
+	else
+		RandNum = FMath::RandRange(Min, Max) * -1.f;
+
+	return RandNum;
 }
 
 void ABoss_RamPage::SpawnSkill_1()
@@ -244,7 +322,7 @@ void ABoss_RamPage::SpawnSkill_FireEmit()
 	if (mMesh->DoesSocketExist(TEXT("EmitSkill_Socket")))
 		mEmitEffect->AttachToComponent(mMesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("EmitSkill_Socket"));
 
-	SkillActor = Cast<AActor>(mEmitEffect);
+	SkillActorArray.Add(Cast<AActor>(mEmitEffect));
 }
 
 void ABoss_RamPage::SpawnSkill_3()

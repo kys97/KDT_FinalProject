@@ -54,6 +54,11 @@ void AFallingSton::BeginPlay()
 	mMesh->OnComponentHit.AddDynamic(this, &AFallingSton::OnComponentHit);
 }
 
+void AFallingSton::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+}
+
 void AFallingSton::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -99,5 +104,5 @@ void AFallingSton::OnComponentHit(UPrimitiveComponent* HitComponent,
 	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("AFallingSton::OnComponentHit")));
 
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), mStonFallEndEffect,
-		Hit.ImpactPoint, FRotator::ZeroRotator, FVector(2.f, 2.f, 1.f));
+		FVector((Hit.ImpactPoint.X), (Hit.ImpactPoint.Y), 0.f), FRotator::ZeroRotator, FVector(2.f, 2.f, 1.f));
 }

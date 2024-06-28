@@ -31,11 +31,18 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class AFallingSton* mFallingStonEffect;
 
-	AActor* SkillActor = nullptr;
+	TArray<AActor*> SkillActorArray;
+	TArray<FVector> mRandXYArray;
 
-	int32 ChangeAnimCnt = 0.f;
-	int32 ChangeAnimMaxCnt = 2.f;
-	bool SkillEnable = false;
+	int32 mChangeAnimCnt = 0.f;
+	int32 mChangeAnimMaxCnt = 2.f;
+	bool mSkillEnable = false;
+
+	bool mDestroy = false;
+	float mDestroyTime = 0.f;
+	float mDestroyDuration = 0.f;
+
+	float Seed = 0.f;
 
 protected:
 	void SetCapsuleCollision();
@@ -64,19 +71,22 @@ public:
 	}
 
 	virtual void SkillSetting(int32 Num);
-	virtual void SkillDestroy()
-	{
-		if (SkillActor != nullptr)
-			SkillActor->Destroy();
-	}
+	virtual void SkillDestroy(int32 Num);
 
 	void SetHPBar();
 
 protected:
 	void SpawnSkill_GroundSmash();
+	float RandRangeNumber(float Min, float Max);
+
 	void SpawnSkill_1();
 	void SpawnSkill_FireEmit();
 	void SpawnSkill_3();
 	void SpawnSkill_4();
+
+	void SetDestroyDuration(float Time)
+	{
+		mDestroyDuration = Time;
+	}
 
 };
