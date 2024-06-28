@@ -20,14 +20,29 @@ AFallingSton::AFallingSton()
 		mStonFallEndEffect = FallEndParticle.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> Mesh{ TEXT("/Script/Engine.StaticMesh'/Game/AI/Asset/Particle/SM_Rock_To_Hold.SM_Rock_To_Hold'") };
-	if (!Mesh.Succeeded())
-	{
-		check(false);
-	}
-	mMesh->SetStaticMesh(Mesh.Object);
 
-	mMesh->SetRelativeScale3D(FVector(1.2f, 1.2f, 0.8f));
+	mStonDestroyComp = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("StonDestroyComp"));
+	SetRootComponent(mStonDestroyComp);
+
+	mCapsule->SetupAttachment(mStonDestroyComp);
+
+	// 지오메트리 컬렉션 애셋 로드
+	static ConstructorHelpers::FObjectFinder<UGeometryCollection> GeometryCollectionAssetFinder(
+		TEXT("/Script/GeometryCollectionEngine.GeometryCollection'/Game/AI/Asset/Particle/SM_Rock_To_Hold_SM_Rock_To_Hold/FallingSton_GeometryCollection.FallingSton_GeometryCollection'"));
+	if (GeometryCollectionAssetFinder.Succeeded())
+	{
+		mStonDestroyAsset = GeometryCollectionAssetFinder.Object;
+		mStonDestroyComp->SetRestCollection(mStonDestroyAsset.Get());
+	}
+
+	//static ConstructorHelpers::FObjectFinder<UStaticMesh> Mesh{ TEXT("/Script/Engine.StaticMesh'/Game/AI/Asset/Particle/SM_Rock_To_Hold.SM_Rock_To_Hold'") };
+	//if (!Mesh.Succeeded())
+	//{
+	//	check(false);
+	//}
+	//mMesh->SetStaticMesh(Mesh.Object);
+	//
+	//mMesh->SetRelativeScale3D(FVector(1.2f, 1.2f, 0.8f));
 
 	mCapsule->SetCollisionProfileName(TEXT("BossSkill"));
 	mCapsule->SetRelativeLocation(FVector(0.f, 0.f, 50.f));

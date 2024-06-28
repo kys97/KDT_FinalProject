@@ -21,6 +21,8 @@
 
 #include "Components/WidgetComponent.h"
 
+#include "GeometryCollection/GeometryCollectionComponent.h"
+
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AIPerceptionTypes.h"
 #include "Perception/AISenseConfig_Sight.h"

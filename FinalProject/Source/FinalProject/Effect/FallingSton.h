@@ -19,6 +19,13 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere)
+	UGeometryCollectionComponent* mStonDestroyComp;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UGeometryCollection> mStonDestroyAsset;
+	//UGeometryCollection* mStonDestroyAsset;
+
+	UPROPERTY(EditAnywhere)
 	UProjectileMovementComponent* TileMoveComp;
 
 	UPROPERTY(EditAnywhere)
