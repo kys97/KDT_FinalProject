@@ -44,6 +44,12 @@ public:
 
 	void SetLevel(int32 level) { mWizardLevel = level; }
 	int32 GetLevel() { return mWizardLevel; }
+	
+	UFUNCTION(BlueprintCallable)
+	FString GetLevelString()
+	{
+		return FString::Printf(TEXT("Lv.%d "), mWizardLevel);
+	}
 
 	// int32 GetExp() { return mWizardExp; }
 

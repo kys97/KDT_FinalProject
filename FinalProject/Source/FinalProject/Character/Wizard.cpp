@@ -55,10 +55,14 @@ void AWizard::BeginPlay()
 	Super::BeginPlay();
 
 	// Respawn Setting
+	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
 	if (GetGameInstance<UWizardGameInstance>()->IsRespawn())
 	{
-		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
 		State->mLevel = GetGameInstance<UWizardGameInstance>()->GetLevel();
+	}
+	else
+	{
+		GetGameInstance<UWizardGameInstance>()->SetLevel(State->mLevel);
 	}
 
 	// Set Exp UI
