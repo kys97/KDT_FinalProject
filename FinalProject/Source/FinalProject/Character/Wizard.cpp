@@ -218,7 +218,13 @@ void AWizard::CheckLevelUp()
 		GetGameInstance<UWizardGameInstance>()->SetLevel(State->mLevel);
 
 		// 능력치 강화
-
+		State->mNormalAttackPoint += 50.f;
+		State->mFirstSkillAttackDamage += 50.f;
+		State->mSecondSkillAttackDamage += 50.f;
+		State->mThirdSkillAttackDamage += 50.f;
+		State->mArmorPoint += 50.f;
+		State->mHPMax += 50;
+		State->mMPMax += 50;
 	}
 	SetExpUI(State->mExp / (State->mLevel * 500));
 }
