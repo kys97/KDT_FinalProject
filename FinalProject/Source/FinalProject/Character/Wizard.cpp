@@ -169,6 +169,10 @@ float AWizard::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AContro
 
 		// Hp Set
 		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+		if (Damage > 0) // deal
+		{
+			Damage -= State->mArmorPoint;
+		}
 		State->mHP -= Damage;
 		if (State->mHP > State->mHPMax) State->mHP = State->mHPMax;
 
