@@ -76,7 +76,7 @@ FinalProject/DerivedDataCache/*
 # Uproject File Ignore
 FinalProject/*.uproject
 
-#FinalProject/Content/ParagonRampage
+FinalProject/Content/ParagonRampage
 FinalProject/Content/InfinityBladeEffects
 FinalProject/Content/InfinityBladeAdversaries
 FinalProject/Content/KTP_Effect
