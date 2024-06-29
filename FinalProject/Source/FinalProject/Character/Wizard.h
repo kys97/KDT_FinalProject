@@ -38,16 +38,18 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool Invincibility = false;
 
+	// Skill Var
+	int32 mFirstSkillRemindTime;
+	int32 mSecondSkillRemindTime;
+	int32 mThirdSkillRemindTime;
+
 private:
 	// MP Var
 	float m_mp_time_cnt = 0.f;
 
 	// Skill Var
-	int32 mFirstSkillRemindTime;
 	float m_fist_temp;
-	int32 mSecondSkillRemindTime;
 	float m_second_temp;
-	int32 mThirdSkillRemindTime;
 	float m_third_temp;
 
 	// Item Var

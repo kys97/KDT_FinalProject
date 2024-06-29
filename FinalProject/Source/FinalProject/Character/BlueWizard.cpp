@@ -114,97 +114,104 @@ void ABlueWizard::NormalAttack()
 
 void ABlueWizard::FirstSkill()
 {
-	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
-
-	if (mAnimInstance->AttackEnable() && State->mMP > 50.f)
+	if (mFirstSkillRemindTime == 0)
 	{
-		// Set Animation
-		PlayAttackAnimation(this, EWizardAttackAnimTypes::FirstSkill);
+		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
 
-		// Respawn Skill
-		UWorld* const World = GetWorld();
-		if (World != nullptr)
+		if (mAnimInstance->AttackEnable() && State->mMP > 50.f)
 		{
-			// Spawn Rotation
-			FRotator SpawnRotation = FRotator::ZeroRotator;
+			// Set Animation
+			PlayAttackAnimation(this, EWizardAttackAnimTypes::FirstSkill);
 
-			// Spawn Location
-			FVector	EndLocation = GetActorLocation() + GetActorForwardVector() * State->mFirstSkillAttackDistance;
-			FVector SpawnLocation = (GetActorLocation() + EndLocation) / 2.f;
-			SpawnLocation.Z = 0.f;
+			// Respawn Skill
+			UWorld* const World = GetWorld();
+			if (World != nullptr)
+			{
+				// Spawn Rotation
+				FRotator SpawnRotation = FRotator::ZeroRotator;
 
-			ServerFirstSkillSpawn(this, SpawnLocation, SpawnRotation, State->mFirstSkillAttackDamage);
+				// Spawn Location
+				FVector	EndLocation = GetActorLocation() + GetActorForwardVector() * State->mFirstSkillAttackDistance;
+				FVector SpawnLocation = (GetActorLocation() + EndLocation) / 2.f;
+				SpawnLocation.Z = 0.f;
 
-			// Use MP
-			State->mMP -= 50; // TODO : MP사용량 나중에 추후 수정
+				ServerFirstSkillSpawn(this, SpawnLocation, SpawnRotation, State->mFirstSkillAttackDamage);
+
+				// Use MP
+				State->mMP -= 50; // TODO : MP사용량 나중에 추후 수정
 			
-			// Set MP UI
-			SetMPUI(State->mMP / State->mMPMax);
+				// Set MP UI
+				SetMPUI(State->mMP / State->mMPMax);
 
-			// Set Skill Cool Time UI
-			UseFirstSkill(State->mFirstSkillCoolTime);
+				// Set Skill Cool Time UI
+				UseFirstSkill(State->mFirstSkillCoolTime);
+			}
 		}
 	}
 }
 
 void ABlueWizard::SecondSkill()
 {
-	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
-
-	if (mAnimInstance->AttackEnable() && State->mMP > 50.f)
+	if(mSecondSkillRemindTime == 0)
 	{
-		// Set Animation
-		PlayAttackAnimation(this, EWizardAttackAnimTypes::SecondSkill);
-
-		// Respawn Skill
-		UWorld* const World = GetWorld();
-		if (World != nullptr)
+		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+		if (mAnimInstance->AttackEnable() && State->mMP > 50.f)
 		{
-			// Spawn Rotation
-			FRotator SpawnRotation = GetActorRotation();
+			// Set Animation
+			PlayAttackAnimation(this, EWizardAttackAnimTypes::SecondSkill);
 
-			// Spawn Location
-			FVector	EndLocation = GetActorLocation() + GetActorForwardVector() * State->mSecondSkillAttackDistance;
-			FVector SpawnLocation = (GetActorLocation() + EndLocation) / 2.f;
-			SpawnLocation.Z = 0.f;
+			// Respawn Skill
+			UWorld* const World = GetWorld();
+			if (World != nullptr)
+			{
+				// Spawn Rotation
+				FRotator SpawnRotation = GetActorRotation();
 
-			ServerSecondSkillSpawn(this, SpawnLocation, SpawnRotation, State->mSecondSkillAttackDamage);
+				// Spawn Location
+				FVector	EndLocation = GetActorLocation() + GetActorForwardVector() * State->mSecondSkillAttackDistance;
+				FVector SpawnLocation = (GetActorLocation() + EndLocation) / 2.f;
+				SpawnLocation.Z = 0.f;
 
-			// Use MP
-			State->mMP -= 50; // TODO : MP사용량 나중에 추후 수정
+				ServerSecondSkillSpawn(this, SpawnLocation, SpawnRotation, State->mSecondSkillAttackDamage);
 
-			// Set HP UI
-			SetMPUI(State->mMP / State->mMPMax);
+				// Use MP
+				State->mMP -= 50; // TODO : MP사용량 나중에 추후 수정
 
-			// Set Skill Cool Time UI
-			UseSecondSkill(State->mSecondSkillCoolTime);
+				// Set HP UI
+				SetMPUI(State->mMP / State->mMPMax);
+
+				// Set Skill Cool Time UI
+				UseSecondSkill(State->mSecondSkillCoolTime);
+			}
 		}
 	}
 }
 
 void ABlueWizard::ThirdSkill()
 {
-	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
-
-	if (mAnimInstance->AttackEnable() && State->mMP > 50)
+	if(mThirdSkillRemindTime == 0)
 	{
-		// Set Animation
-		PlayAttackAnimation(this, EWizardAttackAnimTypes::ThirdSkill);
-
-		// Respawn Skill
-		UWorld* const World = GetWorld();
-		if (World != nullptr)
+		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+		if (mAnimInstance->AttackEnable() && State->mMP > 50)
 		{
-			ServerThirdSkillSpawn(this, GetActorLocation(), GetActorRotation(), State->mThirdSkillAttackDamage);
+			// Set Animation
+			PlayAttackAnimation(this, EWizardAttackAnimTypes::ThirdSkill);
 
-			// Use MP
-			State->mMP -= 50; // TODO : MP사용량 나중에 추후 수정
+			// Respawn Skill
+			UWorld* const World = GetWorld();
+			if (World != nullptr)
+			{
+				ServerThirdSkillSpawn(this, GetActorLocation(), GetActorRotation(), State->mThirdSkillAttackDamage);
 
-			// Set HP UI
-			SetMPUI(State->mMP / State->mMPMax);
+				// Use MP
+				State->mMP -= 50; // TODO : MP사용량 나중에 추후 수정
 
-			// Set Skill Cool Time UI
-			UseThirdSkill(State->mThirdSkillCoolTime);
+				// Set HP UI
+				SetMPUI(State->mMP / State->mMPMax);
+
+				// Set Skill Cool Time UI
+				UseThirdSkill(State->mThirdSkillCoolTime);
+			}
 		}
 	}
 }
