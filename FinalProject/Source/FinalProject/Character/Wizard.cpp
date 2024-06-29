@@ -178,18 +178,23 @@ float AWizard::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AContro
 			ServerTakeDamge(Damage, DamageEvent, EventInstigator, DamageCauser);
 		}
 
-		// Hp Set
+		// Damage Set
 		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
 		if (Damage > 0) // deal
 		{
 			Damage -= State->mArmorPoint;
+
+			// if Damage is less than armorPoint, Take Damage Set 1
+			if (Damage <= 0) Damage = 1.f;
 		}
+
+		// Take Damage
 		State->mHP -= Damage;
 		if (State->mHP > State->mHPMax) State->mHP = State->mHPMax;
 
 		// Set HP UI
 		SetHPUI((float)State->mHP / (float)State->mHPMax);
-
+		
 		// Death Check
 		if (State->mHP <= 0)
 		{

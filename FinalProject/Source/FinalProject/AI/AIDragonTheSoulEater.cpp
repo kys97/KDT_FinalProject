@@ -105,7 +105,7 @@ void AAIDragonTheSoulEater::NormalAttack()
 	if (IsCollision)
 	{
 		//for (auto Hit : resultArray)
-		for(int32 i = 0; i < resultArray.Num(); ++i)
+		for (int32 i = 0; i < resultArray.Num(); ++i)
 		{
 			FDamageEvent DmgEvent;
 
@@ -123,7 +123,7 @@ void AAIDragonTheSoulEater::NormalAttack()
 
 				AEffectBase* Effect = GetWorld()->SpawnActor<AEffectBase>(
 					resultArray[i].ImpactPoint,
-					resultArray[i].ImpactNormal.Rotation(), 
+					resultArray[i].ImpactNormal.Rotation(),
 					SpawnParam);
 
 				Effect->SetParticleAsset(TEXT(""));
