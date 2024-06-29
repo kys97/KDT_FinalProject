@@ -57,6 +57,8 @@ private:
 	int32 mMPPotionCount = 0;
 	int32 mAttackItemCount = 0;
 	int32 mArmorItemCount = 0;
+	bool mIsAttackItemUsing = false;
+	bool mIsArmorItemUsing = false;
 
 public:
 	bool GetMoveEnabled() { return mAnimInstance->MoveEnable(); }

@@ -347,8 +347,10 @@ void AWizard::UseMpItem()
 }
 void AWizard::UseAttackItem()
 {
-	if (mAttackItemCount > 0)
+	if (mAttackItemCount > 0 && (!mIsAttackItemUsing))
 	{
+		mIsAttackItemUsing = true;
+
 		// Set Data
 		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
 		float temp_normalattack = State->mNormalAttackPoint;
@@ -373,6 +375,8 @@ void AWizard::UseAttackItem()
 }
 void AWizard::EndAttackItem(float normal, float first, float second, float third)
 {
+	mIsAttackItemUsing = false;
+
 	// Set Data
 	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
 	State->mNormalAttackPoint = normal;
@@ -385,8 +389,10 @@ void AWizard::EndAttackItem(float normal, float first, float second, float third
 }
 void AWizard::UseArmorItem()
 {
-	if (mArmorItemCount > 0)
+	if (mArmorItemCount > 0 && (!mIsArmorItemUsing))
 	{
+		mIsArmorItemUsing = true;
+
 		// Set Data
 		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
 		float temp_armor = State->mArmorPoint;
@@ -405,6 +411,8 @@ void AWizard::UseArmorItem()
 }
 void AWizard::EndArmorItem(float armor)
 {
+	mIsArmorItemUsing = false;
+
 	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
 	State->mArmorPoint = armor;
 
