@@ -63,6 +63,7 @@ public:
 	void RespawnGame()
 	{
 		mWizardLevel *= 0.7f;
+		if (mWizardLevel < 1) mWizardLevel = 1;
 		mWizardExp = 0;
 		mRespawn = true;
 	}

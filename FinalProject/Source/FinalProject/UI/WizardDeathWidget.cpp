@@ -4,10 +4,9 @@
 #include "WizardDeathWidget.h"
 #include "../WizardGameInstance.h"
 
-void UWizardDeathWidget::PreConstruct()
+void UWizardDeathWidget::NativePreConstruct()
 {
-	SetIsEnabled(false);
-	SetVisibility(ESlateVisibility::Collapsed);
+	Super::NativePreConstruct();
 }
 
 void UWizardDeathWidget::NativeConstruct()
@@ -32,6 +31,8 @@ void UWizardDeathWidget::NativeConstruct()
 	mResetButton->OnPressed.AddDynamic(this, &UWizardDeathWidget::ResetButtonPressed);
 	mResetButton->OnReleased.AddDynamic(this, &UWizardDeathWidget::ResetButtonReleased);
 	mResetButton->OnClicked.AddDynamic(this, &UWizardDeathWidget::ResetButtonClick);
+
+	SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UWizardDeathWidget::SetDeathWidgetEnable()

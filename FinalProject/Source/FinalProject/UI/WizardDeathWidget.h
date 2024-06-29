@@ -24,7 +24,7 @@ protected:
 	UButton* mResetButton;
 
 protected:
-	virtual void PreConstruct();
+	virtual void NativePreConstruct();
 	virtual void NativeConstruct();
 
 public:
