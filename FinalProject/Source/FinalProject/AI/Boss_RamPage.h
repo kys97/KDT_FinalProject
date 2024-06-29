@@ -40,7 +40,7 @@ protected:
 
 	bool mDestroy = false;
 	float mDestroyTime = 0.f;
-	float mDestroyDuration = 5.f;
+	float mDestroyDuration = 6.f;
 
 	float Seed = 0.f;
 
@@ -87,6 +87,7 @@ protected:
 	void SetDestroyDuration(float Time)
 	{
 		mDestroyDuration = Time;
+		mDestroy = true;
 	}
 
 };

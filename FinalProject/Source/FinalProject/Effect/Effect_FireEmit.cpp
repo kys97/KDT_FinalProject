@@ -15,6 +15,7 @@ AEffect_FireEmit::AEffect_FireEmit()
 	}
 	
 	mCapsule->SetCollisionProfileName(TEXT("BossSkill"));
+	mCapsule->SetRelativeLocation(FVector(0.f, 500.f, 0.f));
 	mCapsule->SetRelativeRotation(FRotator(0.f, 0.f, 90.f));
 	mCapsule->SetCapsuleHalfHeight(500);
 	mCapsule->SetCapsuleRadius(300);
@@ -22,13 +23,16 @@ AEffect_FireEmit::AEffect_FireEmit()
 	mParticle->SetRelativeLocation(FVector(0.f, 0.f, -500.f));
 	//mParticle->SetRelativeRotation(FRotator(180.f, 0.f, 0.f));
 	mParticle->SetRelativeScale3D(FVector(2.0f, 1.0f, 1.0f));
-
 }
 
 void AEffect_FireEmit::BeginPlay()
 {
 	Super::BeginPlay();
 	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("AEffect_FireEmit BeginPlay"));
+
+	mIsOverlap = true;
+	mAttackTime = 0.f;
+	OverlapActor = nullptr;
 
 	mCapsule->OnComponentBeginOverlap.AddDynamic(this, &AEffect_FireEmit::BeginOverlap);
 }
@@ -43,7 +47,7 @@ void AEffect_FireEmit::Tick(float DeltaTime)
 		if (mAttackTime > mAttackDuration)
 		{
 			FDamageEvent DmgEvent;
-			OverlapActor->TakeDamage(30, DmgEvent, GetInstigatorController(), this);
+			OverlapActor->TakeDamage(mSkillPower, DmgEvent, GetInstigatorController(), this);
 		
 			mAttackTime = 0.f;
 		}
@@ -59,7 +63,7 @@ void AEffect_FireEmit::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AA
 	OverlapActor = OtherActor;
 
 	FDamageEvent DmgEvent;
-	OverlapActor->TakeDamage(30, DmgEvent, GetInstigatorController(), this);
+	OverlapActor->TakeDamage(mSkillPower, DmgEvent, GetInstigatorController(), this);
 }
 
 void AEffect_FireEmit::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)

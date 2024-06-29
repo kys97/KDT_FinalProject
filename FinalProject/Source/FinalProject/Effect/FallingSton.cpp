@@ -9,23 +9,8 @@ AFallingSton::AFallingSton()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> StonParticle{ TEXT("/Script/Engine.ParticleSystem'/Game/AI/Asset/Particle/P_Beam_Laser_Fire_Hit.P_Beam_Laser_Fire_Hit'") };
-	if (StonParticle.Succeeded())
-	{
-		mParticle->SetTemplate(StonParticle.Object);
-	}
-
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> FallEndParticle{ TEXT("/Script/Engine.ParticleSystem'/Game/AI/Asset/Particle/P_ProjectileLob_Bomblet_Impact.P_ProjectileLob_Bomblet_Impact'") };
-	if (FallEndParticle.Succeeded())
-	{
-		mStonFallEndEffect = FallEndParticle.Object;
-	}
-
 	mStonDestroyComp = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("StonDestroyComp"));
 	SetRootComponent(mStonDestroyComp);
-
-	mCapsule->SetupAttachment(mStonDestroyComp);
-
 	// 지오메트리 컬렉션 에셋 로드
 	static ConstructorHelpers::FObjectFinder<UGeometryCollection> GeometryCollectionAssetFinder(
 		TEXT("/Script/GeometryCollectionEngine.GeometryCollection'/Game/AI/Asset/Particle/SM_Rock_To_Hold_SM_Rock_To_Hold/FallingSton_GeometryCollection.FallingSton_GeometryCollection'"));
@@ -34,13 +19,33 @@ AFallingSton::AFallingSton()
 		mStonDestroyComp->SetRestCollection(GeometryCollectionAssetFinder.Object.Get());
 	}
 
+	mCapsule = CreateDefaultSubobject<UCapsuleComponent>("Capsule");
+	mCapsule->SetupAttachment(mStonDestroyComp);
+
+	mStonFireParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("StonParticle"));
+	mStonFireParticle->SetupAttachment(mStonDestroyComp);
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> StonFireParticle{ TEXT("/Script/Engine.ParticleSystem'/Game/AI/Asset/Particle/P_Beam_Laser_Fire_Hit.P_Beam_Laser_Fire_Hit'") };
+	if (StonFireParticle.Succeeded())
+	{
+		mStonFireParticle->SetTemplate(StonFireParticle.Object);
+	}
+
+	mFloorParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FloorParticle"));
+	mFloorParticle->SetupAttachment(mStonDestroyComp);
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> FallEndFloorParticle{ TEXT("/Script/Engine.ParticleSystem'/Game/AI/Asset/Particle/P_ProjectileLob_Bomblet_Impact.P_ProjectileLob_Bomblet_Impact'") };
+	if (FallEndFloorParticle.Succeeded())
+	{
+		mFallEndFloorEffect = FallEndFloorParticle.Object;
+	}
+
 	mCapsule->SetCollisionProfileName(TEXT("BossSkill"));
 	mCapsule->SetRelativeLocation(FVector(0.f, 0.f, 50.f));
 	mCapsule->SetCapsuleHalfHeight(300);
 	mCapsule->SetCapsuleRadius(150);
 
-	mParticle->SetRelativeLocation(FVector(0.f, 0.f, -30.f));
-	mParticle->SetRelativeScale3D(FVector(5.0f, 0.5f, 5.0f));
+	mStonFireParticle->SetCollisionProfileName(TEXT("BossSkill"));
+	mStonFireParticle->SetRelativeLocation(FVector(0.f, 0.f, -30.f));
+	mStonFireParticle->SetRelativeScale3D(FVector(5.0f, 0.5f, 5.0f));
 
 	TileMoveComp = CreateDefaultSubobject<UProjectileMovementComponent>("TileMoveComp");
 	TileMoveComp->InitialSpeed = 500.f;
@@ -62,6 +67,9 @@ void AFallingSton::BeginPlay()
 void AFallingSton::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
+
+	if(IsValid(mFloorParticle))
+		mFloorParticle->DestroyComponent();
 }
 
 void AFallingSton::Tick(float DeltaTime)
@@ -106,6 +114,9 @@ void AFallingSton::OnComponentHit(UPrimitiveComponent* HitComponent,
 	AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
 	const FHitResult& Hit)
 {
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), mStonFallEndEffect,
+	mFloorParticle = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), mFallEndFloorEffect,
 		FVector((Hit.ImpactPoint.X), (Hit.ImpactPoint.Y), 0.f), FRotator::ZeroRotator, FVector(2.f, 2.f, 1.f));
+
+	FDamageEvent DmgEvent;
+	OtherActor->TakeDamage(mSkillPower * 0.01f, DmgEvent, GetInstigatorController(), this);
 }

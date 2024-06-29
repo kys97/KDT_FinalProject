@@ -40,15 +40,16 @@ protected:
 	EAIMonsterType mMonsterType;
 
 	// mSpawnClass를 이용해서 실제로 생성된 객체의 메모리 주소를 저장
-	class AAIPawn* mSpawnAI;
+	class AAIPawn* mSpawnAI = nullptr;
 
 	// 실제 생성된 객체가 제거되고
 	// 지정된 시간 이후에 다시 생성하게 하기 위한 변수
+	// SpawnTime이 0이면 재생성 하지 않음
 	UPROPERTY(EditAnywhere)
 	float mSpawnTime = 3.f;
 
 	// 생성을 위한 시간을 계산하기 위한 누적시간 변수
-	float mAccTime;
+	float mAccTime = 0.f;
 
 	// 순찰 PointActor를 저장할 배열
 	UPROPERTY(EditAnywhere)

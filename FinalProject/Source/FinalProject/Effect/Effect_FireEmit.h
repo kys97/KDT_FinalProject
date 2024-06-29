@@ -20,7 +20,10 @@ protected:
 
 	bool mIsOverlap = false;
 	float mAttackTime = 0.f;
-	float mAttackDuration = 1.f;
+	float mAttackDuration = 2.f;
+
+	int32 mSkillPower = 0;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -43,5 +46,10 @@ public:
 	float GetCapsuleHalfHeight()
 	{
 		return mCapsule->GetScaledCapsuleHalfHeight();
+	}
+
+	void SetSkillPower(int32 Power)
+	{
+		mSkillPower = Power;
 	}
 };

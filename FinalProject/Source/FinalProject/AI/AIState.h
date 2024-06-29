@@ -43,5 +43,13 @@ public:
 	virtual int32 GetAIMoveSpeed() { return mMoveSpeed; }
 	virtual int32 GetInteractionDistance() { return mInteractionDistance; }		
 
+	virtual int32 GetAttackPower() { return 0; }
+	virtual int32 GetArmorPower() { return 0; }
 	virtual	float GetAIHPPercent() { return 0.0f; }
+
+	virtual int32 GetSkill1_Power()	{ return 0;	}
+	virtual int32 GetSkill2_Power() { return 0; }
+	virtual int32 GetSkill3_Power() { return 0; }
+	virtual int32 GetSkill4_Power() { return 0; }
+	virtual int32 GetSkill5_Power() { return 0; }
 };
