@@ -35,10 +35,6 @@ AAISpawnPoint::AAISpawnPoint()
 	mRoot->bVisualizeComponent = true;
 
 #endif // WITH_EDITORONLY_DATA
-
-	mSpawnAI = nullptr;
-	mAccTime = 0.f;
-	mSpawnTime = 0.f;
 }
 
 // Called when the game starts or when spawned
@@ -66,7 +62,9 @@ void AAISpawnPoint::Tick(float DeltaTime)
 		{
 			mAccTime += DeltaTime;
 
-			if (mAccTime >= mSpawnTime)
+			if (mSpawnTime == 0.f)
+				Destroy();
+			else if (mAccTime >= mSpawnTime)
 				Spawn();
 		}
 	}

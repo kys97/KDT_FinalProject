@@ -116,4 +116,7 @@ void AFallingSton::OnComponentHit(UPrimitiveComponent* HitComponent,
 {
 	mFloorParticle = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), mFallEndFloorEffect,
 		FVector((Hit.ImpactPoint.X), (Hit.ImpactPoint.Y), 0.f), FRotator::ZeroRotator, FVector(2.f, 2.f, 1.f));
+
+	FDamageEvent DmgEvent;
+	OtherActor->TakeDamage(mSkillPower * 0.01f, DmgEvent, GetInstigatorController(), this);
 }

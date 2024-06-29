@@ -37,43 +37,45 @@ void UMonsterAnimInstance::PlaySkillMontage(uint8 BossState)
 	if (mSkillAnimPlay)
 		return;
 
+	// 다음 공격이 동일하지 않기 위해 최소값은 1
+	// 최대값은 배열 개수 -1
+	int32 RandNum = FMath::RandRange(0, (BossState - 1));
+	mSkillIndexArray.Add(RandNum);
+
+	// 같은 Idle 모션은 최대 2번만 나올 수 있도록
+	for (int32 Array : mSkillIndexArray)
+	{
+		if (Array == RandNum)
+			++mSkillCount;
+
+		if (mSkillCount > 2)
+		{
+			mSkillIndexArray.Remove(RandNum);
+
+			for(int32 i = 0; i < BossState; ++i)
+				if(RandNum != i)
+					RandNum = i;
+
+			mSkillIndexArray.Add(RandNum);
+
+			break;
+		}
+	}
+	mSkillCount = 0;
+
+	//// 배열 개수만큼 나눈 나머지는 인덱스 숫자
+	mNextSkillIndex = (mSkillIndex + RandNum) % BossState;
+
 	mSkillIndex = mNextSkillIndex;
 
 	// 몽타주가 재생되고 있는지 판단
 	if (!Montage_IsPlaying(mBossSkillMontageArray[mSkillIndex]))
 	{
-
 		// 재생 시키기 전에 재생 위치를 처음으로 초기화
 		Montage_SetPosition(mBossSkillMontageArray[mSkillIndex], 0.f);
 
 		// 재생
 		Montage_Play(mBossSkillMontageArray[mSkillIndex]);
-
-		// 다음 공격 동작을 재생하기 위해 인덱스 변경
-		// 다음 공격이 동일하지 않기 위해 최소값은 1
-		// 최대값은 배열 개수 -1
-		int32 RandNum = FMath::RandRange(1, (BossState - 1));
-		mSkillIndexArray.Add(RandNum);
-
-		// 같은 Idle 모션은 최대 2번만 나올 수 있도록
-		for (int32 Array : mSkillIndexArray)
-		{
-			if (Array == RandNum)
-				++mSkillCount;
-
-			if (mSkillCount > 2)
-			{
-				mSkillIndexArray.Remove(RandNum);
-				++RandNum;
-				mSkillIndexArray.Add(RandNum);
-
-				break;
-			}
-		}
-		mSkillCount = 0;
-
-		//// 배열 개수만큼 나눈 나머지는 인덱스 숫자
-		mNextSkillIndex = (mSkillIndex + RandNum) % BossState;
 	}
 }
 

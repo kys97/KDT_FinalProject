@@ -80,12 +80,16 @@ void ABoss_RamPage::BeginPlay()
 	mMonsterState = GetState<UMonsterState>();
 
 	ABossAIController* BossController = Cast<ABossAIController>(GetController());
-	mHPBar = BossController->GetHPBarWidget();
-
-	mHPBar->SetMonsterType(mMonsterType);
-	if (mHPBar)
+	
+	if (IsValid(BossController))
 	{
-		mHPBar->AddConstructDelegate<ABoss_RamPage>(this, &ABoss_RamPage::SetHPBar);
+		mHPBar = BossController->GetHPBarWidget();
+
+		mHPBar->SetMonsterType(mMonsterType);
+		if (mHPBar)
+		{
+			mHPBar->AddConstructDelegate<ABoss_RamPage>(this, &ABoss_RamPage::SetHPBar);
+		}
 	}
 
 	ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
@@ -105,29 +109,33 @@ void ABoss_RamPage::Tick(float DeltaTime)
 	if (!IsValid(mMonsterState) || !IsValid(mAnimInst))
 		return;
 
-	ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
-	mChangeSkillTime += DeltaTime;
-
-	if (mChangeSkillTime >= mChangeSkillDuration)
+	if (mState->GetAIHPPercent() > 0.f)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Green, FString::Printf(TEXT("mChangeSkillTime : %f"), mChangeSkillTime));
-		GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Green, FString::Printf(TEXT("mHPPercent : %f"), mMonsterState->GetAIHPPercent()));
-		if (mMonsterState->GetAIHPPercent() <= 0.3f)
+		ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
+		mChangeSkillTime += DeltaTime;
+
+		if (mChangeSkillTime >= mChangeSkillDuration)
 		{
-			PlaySkillMontage((uint8)EBossCondition::Danger);
-			mChangeSkillDuration = 0.f;
+			GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Green, FString::Printf(TEXT("mChangeSkillTime : %f"), mChangeSkillTime));
+			GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Green, FString::Printf(TEXT("mHPPercent : %f"), mMonsterState->GetAIHPPercent()));
+			if (mMonsterState->GetAIHPPercent() <= 0.3f)
+			{
+				PlaySkillMontage((uint8)EBossCondition::Danger);
+				mChangeSkillDuration = 1.f;
+			}
+			else if (mMonsterState->GetAIHPPercent() <= 0.7f)
+			{
+				PlaySkillMontage((uint8)EBossCondition::Angry);
+				mChangeSkillDuration = 5.f;
+			}
+			else if (mMonsterState->GetAIHPPercent() <= 1.f)
+			{
+				PlaySkillMontage((uint8)EBossCondition::Nomal);
+			}
+			mSkillEnable = false;
+			mChangeSkillTime = 0;
 		}
-		else if (mMonsterState->GetAIHPPercent() <= 0.7f)
-		{
-			PlaySkillMontage((uint8)EBossCondition::Angry);
-			mChangeSkillDuration = 5.f;
-		}
-		else if (mMonsterState->GetAIHPPercent() <= 1.f)
-		{
-			PlaySkillMontage((uint8)EBossCondition::Nomal);
-		}
-		mSkillEnable = false;
-		mChangeSkillTime = 0;
+
 	}
 
 	if (mDestroy)
@@ -153,6 +161,10 @@ void ABoss_RamPage::AttackOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("Hit")));
+
+	FDamageEvent DmgEvent;
+	OtherActor->TakeDamage(mState->GetAttackPower(), DmgEvent, GetInstigatorController(), this);
+
 }
 
 void ABoss_RamPage::SkillSetting(int32 Num)
@@ -164,11 +176,11 @@ void ABoss_RamPage::SkillSetting(int32 Num)
 		break;
 	}
 	case 1:	{
-		SpawnSkill_1();
+		SpawnSkill_FireEmit();
 		break;
 	}
 	case 2:	{
-		SpawnSkill_FireEmit();
+		SpawnSkill_1();
 		break;
 	}
 	case 3:	{
@@ -195,10 +207,10 @@ void ABoss_RamPage::SkillDestroy(int32 Num)
 		break;
 	}
 	case 1: {
+		SetDestroyDuration(0.f);
 		break;
 	}
 	case 2: {
-		SetDestroyDuration(0.f);
 		break;
 	}
 	case 3: {
@@ -242,7 +254,7 @@ void ABoss_RamPage::SpawnSkill_GroundSmash()
 
 	FVector SpawnCenter = GetActorLocation();
 
-	float RandSpawnPointX = RandRangeNumber(1.f, 2.f);
+	float RandSpawnPointX = RandRangeNumber(1.f, 5.f);
 	float RandSpawnPointY = RandRangeNumber(1.f, 2.f);
 
 	FVector RandXY(RandSpawnPointX, RandSpawnPointY, 0.f);
@@ -250,7 +262,7 @@ void ABoss_RamPage::SpawnSkill_GroundSmash()
 	{
 		if (mRandXYArray[i] == RandXY)
 		{
-			RandSpawnPointX = RandRangeNumber(1.f, 2.f);
+			RandSpawnPointX = RandRangeNumber(1.f, 5.f);
 			RandSpawnPointY = RandRangeNumber(1.f, 2.f);
 		}
 	}
@@ -258,7 +270,7 @@ void ABoss_RamPage::SpawnSkill_GroundSmash()
 
 	FVector SpawnPoint;
 	SpawnPoint.X = SpawnCenter.X + BossRadius * 2.f * RandSpawnPointX;
-	SpawnPoint.Y = SpawnCenter.Y + BossRadius * 2.f * RandSpawnPointY;
+	SpawnPoint.Y = SpawnCenter.Y + BossRadius * RandSpawnPointY;
 	SpawnPoint.Z = BossHalfHeight * 2;
 
 	mFallingStonEffect = GetWorld()->SpawnActor<AFallingSton>(AFallingSton::StaticClass(),
@@ -295,10 +307,8 @@ void ABoss_RamPage::SpawnSkill_FireEmit()
 
 	float CapsuleHalfHeight = mEmitEffect->GetCapsuleHalfHeight();
 
-	mEmitEffect->SetActorRelativeLocation(FVector(0.f, CapsuleHalfHeight, 0.f));
-
 	if (mMesh->DoesSocketExist(TEXT("EmitSkill_Socket")))
-		mEmitEffect->AttachToComponent(mMesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("EmitSkill_Socket"));
+		mEmitEffect->AttachToComponent(mMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("EmitSkill_Socket"));
 
 	mEmitEffect->SetSkillPower(mState->GetSkill1_Power());
 

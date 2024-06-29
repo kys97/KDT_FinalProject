@@ -20,7 +20,7 @@ protected:
 
 	bool mIsOverlap = false;
 	float mAttackTime = 0.f;
-	float mAttackDuration = 1.f;
+	float mAttackDuration = 2.f;
 
 	int32 mSkillPower = 0;
 
