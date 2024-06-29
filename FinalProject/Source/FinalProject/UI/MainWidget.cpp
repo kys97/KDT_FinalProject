@@ -58,5 +58,7 @@ void UMainWidget::OkButtonClick()
 
 	GetGameInstance<UWizardGameInstance>()->SetWizardName(mInputName->GetText().ToString());
 
+	// Server IP Address
+	// 192.168.0.176 : Ready Port
 	UGameplayStatics::OpenLevel(GetWorld(), TEXT("Ready"));
 }

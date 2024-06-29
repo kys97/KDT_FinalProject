@@ -71,5 +71,7 @@ void UReadyWidget::StartButtonReleased()
 
 void UReadyWidget::StartButtonClick()
 {
+	// Server IP Address
+	// 192.168.0.176 : Game Port
 	UGameplayStatics::OpenLevel(GetWorld(), TEXT("InGame"));
 }
