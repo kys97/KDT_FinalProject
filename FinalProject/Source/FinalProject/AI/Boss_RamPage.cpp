@@ -140,10 +140,9 @@ void ABoss_RamPage::Tick(float DeltaTime)
 				if (SkillActorArray[i] != nullptr)
 				{
 					SkillActorArray[i]->Destroy();
-					SkillActorArray.SetNum(0);
 				}
-
 			}
+			SkillActorArray.SetNum(0);
 			mDestroyTime = 0.f;
 			mDestroy = false;
 		}
@@ -193,23 +192,19 @@ void ABoss_RamPage::SkillDestroy(int32 Num)
 	{
 	case 0: {
 		SetDestroyDuration(5.f);
-		mDestroy = true;
 		break;
 	}
 	case 1: {
-		SpawnSkill_1();
 		break;
 	}
 	case 2: {
-		SpawnSkill_FireEmit();
+		SetDestroyDuration(0.f);
 		break;
 	}
 	case 3: {
-		SpawnSkill_3();
 		break;
 	}
 	case 4: {
-		SpawnSkill_4();
 		break;
 	}
 	default:
@@ -304,6 +299,8 @@ void ABoss_RamPage::SpawnSkill_FireEmit()
 
 	if (mMesh->DoesSocketExist(TEXT("EmitSkill_Socket")))
 		mEmitEffect->AttachToComponent(mMesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("EmitSkill_Socket"));
+
+	mEmitEffect->SetSkillPower(mState->GetSkill1_Power());
 
 	SkillActorArray.Add(Cast<AActor>(mEmitEffect));
 }

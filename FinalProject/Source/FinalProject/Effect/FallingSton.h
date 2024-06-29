@@ -25,17 +25,20 @@ protected:
 	UCapsuleComponent* mCapsule;
 
 	UPROPERTY(EditAnywhere)
-	UParticleSystemComponent* mParticle;
+	UParticleSystemComponent* mStonFireParticle;
 
 	UPROPERTY(EditAnywhere)
 	UProjectileMovementComponent* TileMoveComp;
 
 	UPROPERTY(EditAnywhere)
-	UParticleSystem* mStonFallEndEffect;
+	UParticleSystemComponent* mFloorParticle;
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* mFallEndFloorEffect;
 
 	AActor* OverlapActor = nullptr;
 
-	int32 mSkillPower = 0.f;
+	int32 mSkillPower = 0;
 
 	bool mIsOverlap = false;
 	float mAttackTime = 0.f;

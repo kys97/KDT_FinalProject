@@ -43,7 +43,7 @@ void AEffect_FireEmit::Tick(float DeltaTime)
 		if (mAttackTime > mAttackDuration)
 		{
 			FDamageEvent DmgEvent;
-			OverlapActor->TakeDamage(30, DmgEvent, GetInstigatorController(), this);
+			OverlapActor->TakeDamage(mSkillPower, DmgEvent, GetInstigatorController(), this);
 		
 			mAttackTime = 0.f;
 		}
@@ -59,7 +59,7 @@ void AEffect_FireEmit::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AA
 	OverlapActor = OtherActor;
 
 	FDamageEvent DmgEvent;
-	OverlapActor->TakeDamage(30, DmgEvent, GetInstigatorController(), this);
+	OverlapActor->TakeDamage(mSkillPower, DmgEvent, GetInstigatorController(), this);
 }
 
 void AEffect_FireEmit::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
