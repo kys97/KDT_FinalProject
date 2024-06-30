@@ -14,6 +14,7 @@ void UAIHUDWidget::NativeConstruct()
 	mBossHPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("BossHPBar")));
 
 	mDamageText = Cast<UTextBlock>(GetWidgetFromName(TEXT("DamageText")));
+	BindAnimation();
 
 	// 함수가 등록되어 있는지 판단해서 등록된 모든 함수 호출
 	if (mConstructDelegate.IsBound())
@@ -63,38 +64,32 @@ void UAIHUDWidget::SetWidgetDamageText(int32 Damage)
 {
 	FString SDamage = FString::FromInt(Damage);
 	mDamageText->SetText(FText::FromString(SDamage));
+
+	PlayAnimation(mDamageAnim, 0.f, 1, EUMGSequencePlayMode::Forward);
 }
 
 void UAIHUDWidget::BindAnimation()
 {
-	// Animation 정보는 Property 안에 들어가 있다.
-	// Property는 LinkedList 방식으로 저장되어 있다.
-	// 그래서 시작점 노드의 주소를 얻어온다.
-	FProperty* Prop = GetClass()->PropertyLink;
+	// ButtonScale Property를 얻어온다.
+	FProperty* Prop = GetClass()->FindPropertyByName(TEXT("DamageAnim"));
 
-	while (Prop)
+	// FObjectProperty로 형변환한다.
+	FObjectProperty* ObjProp = CastField<FObjectProperty>(Prop);
+
+	if (ObjProp)
 	{
-		if (Prop->GetClass() == FObjectProperty::StaticClass())
+		// WidgetAnimation 타입인지 판단한다.
+		if (ObjProp->PropertyClass == UWidgetAnimation::StaticClass())
 		{
-			FObjectProperty* ObjProp = Cast<FObjectProperty>(Prop);
-			
-			// 이 오브젝트 프로퍼티의 클래스 타입이 UWidgetAnimation인지를 판단 
-			if (ObjProp->PropertyClass == UWidgetAnimation::StaticClass())
-			{
-				UObject* Obj = ObjProp->GetObjectPropertyValue_InContainer(this);
+			// ObjectProperty로부터 실제 WidgetAnimation 객체를
+			// 얻어온다.
+			UObject* Obj = ObjProp->GetObjectPropertyValue_InContainer(this);
 
-				UWidgetAnimation* Anim = Cast<UWidgetAnimation>(Obj);
+			// UObject로 얻어온 객체를 WidgetAnimation 타입으로
+			// 형변환한다.
+			UWidgetAnimation* Anim = Cast<UWidgetAnimation>(Obj);
 
-				if (Anim)
-				{
-					// 이름에 따라 원하는 애니메이션인지를 판단하고
-					// 해당 애니메이션에 대입해준다. 
-					if (Anim->MovieScene->GetFName() == TEXT("DamageAnim"))
-						mDamageAnim = Anim;
-				}
-			}
+			mDamageAnim = Anim;
 		}
-
-		Prop = Prop->PropertyLinkNext;
 	}
 }

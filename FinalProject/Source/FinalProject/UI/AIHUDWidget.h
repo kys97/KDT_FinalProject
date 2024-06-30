@@ -24,6 +24,7 @@ protected:
 	UProgressBar* mBossHPBar;
 
 	UTextBlock* mDamageText;
+
 	UWidgetAnimation* mDamageAnim;
 
 	EMonsterType mMonsterType;
@@ -36,6 +37,7 @@ protected:
 	float mChangeDuration = 0.5f;
 
 	FConstructDelegate mConstructDelegate;
+	FWidgetAnimationDynamicEvent mAnimEndPlay;
 
 protected:
 	// AddToViewport 시 호출

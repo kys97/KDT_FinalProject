@@ -314,7 +314,7 @@ void AAIMonsterPawn::SpawnDamageText(float Damage)
 	float AIHalfHeight = mCapsule->GetScaledCapsuleHalfHeight();
 
 	FVector SpawnLocation = GetActorLocation();
-	SpawnLocation.Z += AIHalfHeight + 100.f;
+	SpawnLocation.Z += AIHalfHeight;
 
 	ADamageText* DamageText = GetWorld()->SpawnActor<ADamageText>(
 		SpawnLocation,

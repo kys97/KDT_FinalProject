@@ -45,7 +45,7 @@ void AAIDragonTheSoulEater::SetHPWidget()
 
 	mHPWidgetComp->SetWidgetClass(mHPWidgetClass);
 
-	mHPWidgetComp->SetRelativeLocation(FVector(0.f, 0.f, 800.f));
+	mHPWidgetComp->SetRelativeLocation(FVector(0.f, 0.f, -200.f));
 	mHPWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
 	mHPWidgetComp->SetVisibility(false);
 	mHPWidgetComp->SetDrawSize(FVector2D(150.f, 40.f));

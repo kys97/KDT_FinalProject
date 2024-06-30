@@ -16,11 +16,20 @@ public:
 	ADamageText();
 
 protected:
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* mRootComp;
+
+	UPROPERTY(EditAnywhere)
 	UWidgetComponent* mDamageTextComp;
+
+	TSubclassOf<UUserWidget> mDamageTextClass;
+
 	UPROPERTY(EditAnywhere)
 	class UAIHUDWidget* mDamageText;
 
 	float mDamage;
+
+	float DestroyTime = 0.f;
 
 protected:
 	// Called when the game starts or when spawned
