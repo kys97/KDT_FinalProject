@@ -6,6 +6,7 @@
 #include "MonsterState.h"
 #include "BossAIController.h"
 #include "../UI/AIHUDWidget.h"
+#include "../UI/DamageText.h"
 
 #include "../FXV/HPPotionItem.h"
 #include "../FXV/MPPotionItem.h"
@@ -140,6 +141,8 @@ float AAIMonsterPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
 	Damage = Damage < 1.f ? 1.f : Damage;
 
 	mMonsterType = GetMonsterType();
+
+	SpawnDamageText(Damage);
 
 	if (mMonsterType == EMonsterType::Nomal)
 		NomalMonsterTakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
@@ -301,6 +304,24 @@ void AAIMonsterPawn::SetHPWidgetVisible(bool Visible)
 {
 	mHPWidgetVisible = Visible;
 	mHPWidgetComp->SetVisibility(Visible);
+}
+
+void AAIMonsterPawn::SpawnDamageText(float Damage)
+{
+	FActorSpawnParameters SpawnParam;
+	SpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	float AIHalfHeight = mCapsule->GetScaledCapsuleHalfHeight();
+
+	FVector SpawnLocation = GetActorLocation();
+	SpawnLocation.Z += AIHalfHeight + 100.f;
+
+	ADamageText* DamageText = GetWorld()->SpawnActor<ADamageText>(
+		SpawnLocation,
+		FRotator::ZeroRotator,
+		SpawnParam);
+
+	DamageText->SetDamage(Damage);
 }
 
 uint8 AAIMonsterPawn::GetAnimType()

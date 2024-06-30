@@ -11,6 +11,8 @@ void UAIHUDWidget::NativeConstruct()
 	mMonsterHPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("AIHPBar")));
 	mBossHPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("BossHPBar")));
 
+	mDamageText = Cast<UTextBlock>(GetWidgetFromName(TEXT("DamageText")));
+
 	// 함수가 등록되어 있는지 판단해서 등록된 모든 함수 호출
 	if (mConstructDelegate.IsBound())
 		mConstructDelegate.Broadcast();
@@ -54,3 +56,10 @@ void UAIHUDWidget::SetAIHP(float HPPercent)
 	mHPPercent = HPPercent;
 	mChangeHP = true;
 }
+
+void UAIHUDWidget::SetWidgetDamageText(int32 Damage)
+{
+	FString SDamage = FString::FromInt(Damage);
+	mDamageText->SetText(FText::FromString(SDamage));
+}
+

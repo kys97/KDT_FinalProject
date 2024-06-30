@@ -18,7 +18,7 @@ public:
 protected:
 	AActor* OverlapActor = nullptr;
 
-	bool mIsOverlap = false;
+	//bool mIsOverlap = false;
 	float mAttackTime = 0.f;
 	float mAttackDuration = 2.f;
 

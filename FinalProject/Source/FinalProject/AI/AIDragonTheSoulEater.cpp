@@ -57,7 +57,7 @@ void AAIDragonTheSoulEater::BeginPlay()
 
 	mHPBar = Cast<UAIHUDWidget>(mHPWidgetComp->GetWidget());
 	mHPBar->SetMonsterType(mMonsterType);
-	if (mHPBar)
+	if (IsValid(mHPBar))
 	{
 		mHPBar->AddConstructDelegate<AAIDragonTheSoulEater>(this, &AAIDragonTheSoulEater::SetHPBar);
 	}

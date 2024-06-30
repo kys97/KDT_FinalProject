@@ -30,7 +30,7 @@ void AEffect_FireEmit::BeginPlay()
 	Super::BeginPlay();
 	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("AEffect_FireEmit BeginPlay"));
 
-	mIsOverlap = true;
+	//mIsOverlap = false;
 	mAttackTime = 0.f;
 	OverlapActor = nullptr;
 
@@ -41,7 +41,7 @@ void AEffect_FireEmit::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (mIsOverlap)
+	if (OverlapActor != nullptr)
 	{
 		mAttackTime += DeltaTime;
 		if (mAttackTime > mAttackDuration)
@@ -58,7 +58,7 @@ void AEffect_FireEmit::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AA
 {
 	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("AEffect_FireEmit Overlap"));
 
-	mIsOverlap = true;
+	//mIsOverlap = true;
 	mAttackTime = 0.f;
 	OverlapActor = OtherActor;
 
@@ -68,7 +68,7 @@ void AEffect_FireEmit::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AA
 
 void AEffect_FireEmit::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	mIsOverlap = false;
+	//mIsOverlap = false;
 	mAttackTime = 0.f;
 	OverlapActor = nullptr;
 }

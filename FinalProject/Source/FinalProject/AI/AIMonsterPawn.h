@@ -166,6 +166,8 @@ protected:
 	virtual void SetHPBar() {}
 	void SetHPWidgetVisible(bool Visible);
 
+	void SpawnDamageText(float Damage);
+
 public:
 	virtual EMonsterType GetMonsterType();
 

@@ -23,6 +23,7 @@ protected:
 	UProgressBar* mMonsterHPBar;
 	UProgressBar* mBossHPBar;
 
+	UTextBlock* mDamageText;
 	EMonsterType mMonsterType;
 
 	float mHPPercent = 1.f;	// 100%
@@ -42,6 +43,8 @@ protected:
 public:
 	void SetAIName(const FString& Name);
 	void SetAIHP(float HPPercent);
+
+	void SetWidgetDamageText(int32 Damage);
 	
 	// 등록할 함수의 타입을 알 수 없으니 template
 	template <typename T>
