@@ -24,6 +24,8 @@ protected:
 	UProgressBar* mBossHPBar;
 
 	UTextBlock* mDamageText;
+	UWidgetAnimation* mDamageAnim;
+
 	EMonsterType mMonsterType;
 
 	float mHPPercent = 1.f;	// 100%
@@ -57,4 +59,7 @@ public:
 	{
 		mMonsterType = Type;
 	}
+
+private:
+	void BindAnimation();
 };
