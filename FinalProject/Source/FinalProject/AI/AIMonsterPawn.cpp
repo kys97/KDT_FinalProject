@@ -142,7 +142,9 @@ float AAIMonsterPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent,
 
 	mMonsterType = GetMonsterType();
 
-	SpawnDamageText(Damage);
+
+	if (mMonsterState->GetAIHP() > 0)
+		SpawnDamageText(Damage);
 
 	if (mMonsterType == EMonsterType::Nomal)
 		NomalMonsterTakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
@@ -314,7 +316,7 @@ void AAIMonsterPawn::SpawnDamageText(float Damage)
 	float AIHalfHeight = mCapsule->GetScaledCapsuleHalfHeight();
 
 	FVector SpawnLocation = GetActorLocation();
-	SpawnLocation.Z += AIHalfHeight;
+	SpawnLocation.Z += AIHalfHeight + 100.f;
 
 	ADamageText* DamageText = GetWorld()->SpawnActor<ADamageText>(
 		SpawnLocation,

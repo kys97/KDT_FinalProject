@@ -26,7 +26,7 @@ ADamageText::ADamageText()
 
 	mDamageTextComp->SetWidgetSpace(EWidgetSpace::World);
 	mDamageTextComp->SetRelativeRotation(FRotator(0.f, 180.f, 0.f));
-	mDamageTextComp->SetDrawSize(FVector2D(300.f, 200.f));
+	mDamageTextComp->SetDrawSize(FVector2D(400.f, 200.f));
 	mDamageTextComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
