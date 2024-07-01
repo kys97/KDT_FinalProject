@@ -55,9 +55,42 @@ AWizard::AWizard()
 	bUseControllerRotationRoll = false;
 }
 
-AWizardPlayerState* AWizard::GetWizardPlayerState()
+void AWizard::InitializePlayerController()
 {
-	return GetPlayerState<AWizardPlayerState>();
+	// Respawn & State Setting
+	AWizardPlayerController* WizardPlayerController = Cast<AWizardPlayerController>(GetController());
+	if (WizardPlayerController)
+	{
+		mState = WizardPlayerController->GetPlayerState<AWizardPlayerState>();
+
+		if (mState)
+		{
+			if (GetGameInstance<UWizardGameInstance>()->IsRespawn())
+			{
+				mState = GetGameInstance<UWizardGameInstance>()->GetState();
+			}
+			else
+			{
+				GetGameInstance<UWizardGameInstance>()->SetLevel(mState->mLevel);
+				GetGameInstance<UWizardGameInstance>()->SetState(mState);
+			}
+
+			// Set Exp UI
+			GetExp(0);
+		}
+		else
+			UE_LOG(LogTemp, Warning, TEXT("PlayerState is null!"));
+
+		// Set Item Cnt
+		WizardPlayerController->GetGameWidget()->UseHPpotionItem(mHPPotionCount);
+		WizardPlayerController->GetGameWidget()->UseMPpotionItem(mMPPotionCount);
+		WizardPlayerController->GetGameWidget()->SetAttackItemCount(mAttackItemCount);
+		WizardPlayerController->GetGameWidget()->SetArmorItemCount(mArmorItemCount);
+		
+		OnInitialize = true;
+	}
+	else
+		UE_LOG(LogTemp, Warning, TEXT("PlayerController is null!"));
 }
 
 // Called when the game starts or when spawned
@@ -65,26 +98,8 @@ void AWizard::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Respawn Setting
-	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
-	if (GetGameInstance<UWizardGameInstance>()->IsRespawn())
-	{
-		State = GetGameInstance<UWizardGameInstance>()->GetState();
-	}
-	else
-	{
-		GetGameInstance<UWizardGameInstance>()->SetLevel(State->mLevel);
-	}
-
-	// Set Exp UI
-	GetExp(0);
-
-	// Set Item Cnt
-	AWizardPlayerController* WizardController = GetController<AWizardPlayerController>();
-	WizardController->GetGameWidget()->UseHPpotionItem(mHPPotionCount);
-	WizardController->GetGameWidget()->UseMPpotionItem(mMPPotionCount);
-	WizardController->GetGameWidget()->SetAttackItemCount(mAttackItemCount);
-	WizardController->GetGameWidget()->SetArmorItemCount(mArmorItemCount);
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AWizard::InitializePlayerController, 1.f, false);
 }
 
 
@@ -92,69 +107,71 @@ void AWizard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (OnInitialize)
+	{
 #pragma region MP Up
 
-	m_mp_time_cnt += DeltaTime;
-	if (m_mp_time_cnt > 1.f)
-	{
-		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
-		State->mMP++;
-		SetMPUI((float)State->mMP / (float)State->mMPMax);
-		m_mp_time_cnt = 0.f;
-	}
+		m_mp_time_cnt += DeltaTime;
+		if (m_mp_time_cnt > 1.f)
+		{
+			// AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+			mState->mMP++;
+			SetMPUI((float)mState->mMP / (float)mState->mMPMax);
+			m_mp_time_cnt = 0.f;
+		}
 
 #pragma endregion
 
 #pragma region Skill Cool Time
-	if (mFirstSkillRemindTime > 0)
-	{
-		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
-
-		m_fist_temp += DeltaTime;
-		if (m_fist_temp >= 1)
+		if (mFirstSkillRemindTime > 0)
 		{
-			mFirstSkillRemindTime--;
-			GetController<AWizardPlayerController>()->GetGameWidget()->SetFirstSkillCoolTime(mFirstSkillRemindTime, State->mFirstSkillCoolTime);
-			m_fist_temp = 0.f;
+			// mStateAWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
 
-			if (mFirstSkillRemindTime == 0)
-				GetController<AWizardPlayerController>()->GetGameWidget()->EndFirstSkillCoolTime();
+			m_fist_temp += DeltaTime;
+			if (m_fist_temp >= 1)
+			{
+				mFirstSkillRemindTime--;
+				GetController<AWizardPlayerController>()->GetGameWidget()->SetFirstSkillCoolTime(mFirstSkillRemindTime, mState->mFirstSkillCoolTime);
+				m_fist_temp = 0.f;
+
+				if (mFirstSkillRemindTime == 0)
+					GetController<AWizardPlayerController>()->GetGameWidget()->EndFirstSkillCoolTime();
+			}
 		}
-	}
 
-	if (mSecondSkillRemindTime > 0)
-	{
-		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
-
-		m_second_temp += DeltaTime;
-		if (m_second_temp >= 1)
+		if (mSecondSkillRemindTime > 0)
 		{
-			mSecondSkillRemindTime--;
-			GetController<AWizardPlayerController>()->GetGameWidget()->SetSecondSkillCoolTime(mSecondSkillRemindTime, State->mSecondSkillCoolTime);
-			m_second_temp = 0.f;
+			// AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
 
-			if (mSecondSkillRemindTime == 0)
-				GetController<AWizardPlayerController>()->GetGameWidget()->EndSecondSkillCoolTime();
+			m_second_temp += DeltaTime;
+			if (m_second_temp >= 1)
+			{
+				mSecondSkillRemindTime--;
+				GetController<AWizardPlayerController>()->GetGameWidget()->SetSecondSkillCoolTime(mSecondSkillRemindTime, mState->mSecondSkillCoolTime);
+				m_second_temp = 0.f;
+
+				if (mSecondSkillRemindTime == 0)
+					GetController<AWizardPlayerController>()->GetGameWidget()->EndSecondSkillCoolTime();
+			}
 		}
-	}
 
-	if (mThirdSkillRemindTime > 0)
-	{
-		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
-
-		m_third_temp += DeltaTime;
-		if (m_third_temp >= 1)
+		if (mThirdSkillRemindTime > 0)
 		{
-			mThirdSkillRemindTime--;
-			GetController<AWizardPlayerController>()->GetGameWidget()->SetThirdSkillCoolTime(mThirdSkillRemindTime, State->mThirdSkillCoolTime);
-			m_third_temp = 0.f;
+			// AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
 
-			if(mThirdSkillRemindTime == 0)
-				GetController<AWizardPlayerController>()->GetGameWidget()->EndThirdSkillCoolTime();
+			m_third_temp += DeltaTime;
+			if (m_third_temp >= 1)
+			{
+				mThirdSkillRemindTime--;
+				GetController<AWizardPlayerController>()->GetGameWidget()->SetThirdSkillCoolTime(mThirdSkillRemindTime, mState->mThirdSkillCoolTime);
+				m_third_temp = 0.f;
+
+				if (mThirdSkillRemindTime == 0)
+					GetController<AWizardPlayerController>()->GetGameWidget()->EndThirdSkillCoolTime();
+			}
 		}
-	}
 #pragma endregion
-
+	}
 }
 
 // Called to bind functionality to input
@@ -179,24 +196,24 @@ float AWizard::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AContro
 		}
 
 		// Damage Set
-		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+		// AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
 		if (Damage > 0) // deal
 		{
-			Damage -= State->mArmorPoint;
+			Damage -= mState->mArmorPoint;
 
 			// if Damage is less than armorPoint, Take Damage Set 1
 			if (Damage <= 0) Damage = 1.f;
 		}
 
 		// Take Damage
-		State->mHP -= Damage;
-		if (State->mHP > State->mHPMax) State->mHP = State->mHPMax;
+		mState->mHP -= Damage;
+		if (mState->mHP > mState->mHPMax) mState->mHP = mState->mHPMax;
 
 		// Set HP UI
-		SetHPUI((float)State->mHP / (float)State->mHPMax);
+		SetHPUI((float)mState->mHP / (float)mState->mHPMax);
 		
 		// Death Check
-		if (State->mHP <= 0)
+		if (mState->mHP <= 0)
 		{
 			// Collision Set
 			GetCapsuleComponent()->SetCollisionProfileName(TEXT("NoCollision"));
@@ -218,35 +235,35 @@ float AWizard::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AContro
 
 void AWizard::GetExp(float exp)
 {
-	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
-	State->mExp += exp;
+	// AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+	mState->mExp += exp;
 	CheckLevelUp();
 }
 
 void AWizard::CheckLevelUp()
 {
-	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+	// AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
 	UWizardGameInstance* Instance = GetGameInstance<UWizardGameInstance>();
-	while (State->mLevel * 500 < State->mExp) // level up
+	while (mState->mLevel * 500 < mState->mExp) // level up
 	{
-		State->mExp -= State->mLevel * 500;
-		State->mLevel++;
+		mState->mExp -= mState->mLevel * 500;
+		mState->mLevel++;
 
-		Instance->SetLevel(State->mLevel);
+		Instance->SetLevel(mState->mLevel);
 		SetInfoUI();
 
 		// 능력치 강화
-		State->mNormalAttackPoint += 50.f;
-		State->mFirstSkillAttackDamage += 50.f;
-		State->mSecondSkillAttackDamage += 50.f;
-		State->mThirdSkillAttackDamage += 50.f;
-		State->mArmorPoint += 50.f;
-		State->mHPMax += 50;
-		State->mMPMax += 50;
+		mState->mNormalAttackPoint += 50.f;
+		mState->mFirstSkillAttackDamage += 50.f;
+		mState->mSecondSkillAttackDamage += 50.f;
+		mState->mThirdSkillAttackDamage += 50.f;
+		mState->mArmorPoint += 50.f;
+		mState->mHPMax += 50;
+		mState->mMPMax += 50;
 
-		Instance->SetState(State);
+		Instance->SetState(mState);
 	}
-	SetExpUI(State->mExp / (State->mLevel * 500));
+	SetExpUI(mState->mExp / (mState->mLevel * 500));
 }
 
 void AWizard::SetInfoUI()
@@ -268,8 +285,8 @@ void AWizard::SetExpUI(float rate)
 void AWizard::HealHP(bool IsHealing)
 {
 	Invincibility = IsHealing;
-	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
-	float healingPoint = State->mHPMax * 0.5;
+	// AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+	float healingPoint = mState->mHPMax * 0.5;
 	FDamageEvent DmgEvent;
 	TakeDamage(healingPoint * (-1), DmgEvent, GetController(), this);
 }
@@ -340,9 +357,9 @@ void AWizard::UseMpItem()
 		GetController<AWizardPlayerController>()->GetGameWidget()->UseMPpotionItem(mMPPotionCount);
 		// How to make move Mp bar ???
 
-		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
-		State->mMP += 50;
-		SetMPUI(State->mMP / State->mMPMax);
+		// AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+		mState->mMP += 50;
+		SetMPUI(mState->mMP / mState->mMPMax);
 	}
 }
 void AWizard::UseAttackItem()
@@ -352,15 +369,15 @@ void AWizard::UseAttackItem()
 		mIsAttackItemUsing = true;
 
 		// Set Data
-		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
-		float temp_normalattack = State->mNormalAttackPoint;
-		float temp_firstskill = State->mFirstSkillAttackDamage;
-		float temp_secondskill = State->mSecondSkillAttackDamage;
-		float temp_thirdskill = State->mThirdSkillAttackDamage;
-		State->mNormalAttackPoint *= 1.2f;
-		State->mFirstSkillAttackDamage *= 1.2f;
-		State->mSecondSkillAttackDamage *= 1.2f;
-		State->mThirdSkillAttackDamage *= 1.2f;
+		// AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+		float temp_normalattack = mState->mNormalAttackPoint;
+		float temp_firstskill = mState->mFirstSkillAttackDamage;
+		float temp_secondskill = mState->mSecondSkillAttackDamage;
+		float temp_thirdskill = mState->mThirdSkillAttackDamage;
+		mState->mNormalAttackPoint *= 1.2f;
+		mState->mFirstSkillAttackDamage *= 1.2f;
+		mState->mSecondSkillAttackDamage *= 1.2f;
+		mState->mThirdSkillAttackDamage *= 1.2f;
 
 		// UI Set
 		mAttackItemCount--;
@@ -378,11 +395,11 @@ void AWizard::EndAttackItem(float normal, float first, float second, float third
 	mIsAttackItemUsing = false;
 
 	// Set Data
-	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
-	State->mNormalAttackPoint = normal;
-	State->mFirstSkillAttackDamage = first;
-	State->mSecondSkillAttackDamage = second;
-	State->mThirdSkillAttackDamage = third;
+	// AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+	mState->mNormalAttackPoint = normal;
+	mState->mFirstSkillAttackDamage = first;
+	mState->mSecondSkillAttackDamage = second;
+	mState->mThirdSkillAttackDamage = third;
 
 	// UI Set
 	GetController<AWizardPlayerController>()->GetGameWidget()->EndAttackPointItem();
@@ -394,9 +411,9 @@ void AWizard::UseArmorItem()
 		mIsArmorItemUsing = true;
 
 		// Set Data
-		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
-		float temp_armor = State->mArmorPoint;
-		State->mArmorPoint *= 1.5f;
+		// AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+		float temp_armor = mState->mArmorPoint;
+		mState->mArmorPoint *= 1.5f;
 
 		// UI Set
 		mArmorItemCount--;
@@ -413,8 +430,8 @@ void AWizard::EndArmorItem(float armor)
 {
 	mIsArmorItemUsing = false;
 
-	AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
-	State->mArmorPoint = armor;
+	// AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+	mState->mArmorPoint = armor;
 
 	// UI Set
 	GetController<AWizardPlayerController>()->GetGameWidget()->EndArmorPointItem();

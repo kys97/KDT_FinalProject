@@ -33,6 +33,9 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class AMagicStaff* mWeapon;
 
+	AWizardPlayerState* mState;
+	bool OnInitialize = false;
+
 	class UWizardAnimInstance* mAnimInstance;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -63,9 +66,10 @@ private:
 public:
 	bool GetMoveEnabled() { return mAnimInstance->MoveEnable(); }
 	bool GetWizardDeath() { return mAnimInstance->GetIsDeath(); }
-	AWizardPlayerState* GetWizardPlayerState();
+	AWizardPlayerState* GetWizardPlayerState() { return mState; }
 
 protected:
+	void InitializePlayerController();
 	virtual void BeginPlay() override;
 
 public:

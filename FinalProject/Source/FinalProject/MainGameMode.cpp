@@ -9,6 +9,7 @@
 
 AMainGameMode::AMainGameMode()
 {
+	PlayerControllerClass = AWizardPlayerController::StaticClass();
 	PlayerStateClass = AWizardPlayerState::StaticClass();
 }
 
