@@ -30,6 +30,8 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	class UWizardDeathWidget* WizardDeathWidget;
 
+	UUserWidget* GameReadyWidget;
+
 	UProgressBar* WizardExpPB;
 
 private:
@@ -78,4 +80,7 @@ public:
 	void EndThirdSkillCoolTime();
 
 	void PlayerDeath();
+
+private:
+	void EndReady();
 };

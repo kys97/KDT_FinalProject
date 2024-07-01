@@ -24,6 +24,10 @@ void UGameWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	WizardExpPB = Cast<UProgressBar>(GetWidgetFromName(TEXT("Exp_PB")));
+	GameReadyWidget = Cast<UUserWidget>(GetWidgetFromName(TEXT("GameReadyWidget")));
+
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UGameWidget::EndReady, 2.0f, false);
 }
 
 void UGameWidget::NativeDestruct()
@@ -165,4 +169,9 @@ void UGameWidget::EndThirdSkillCoolTime()
 void UGameWidget::PlayerDeath()
 {
 	WizardDeathWidget->SetDeathWidgetEnable();
+}
+
+void UGameWidget::EndReady()
+{
+	GameReadyWidget->SetVisibility(ESlateVisibility::Collapsed);
 }
