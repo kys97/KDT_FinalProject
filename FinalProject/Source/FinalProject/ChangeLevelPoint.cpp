@@ -27,6 +27,8 @@ AChangeLevelPoint::AChangeLevelPoint()
 	{
 		mParticle->SetTemplate(Particle.Object);
 	}
+
+	mParticle->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
 }
 
 // Called when the game starts or when spawned
