@@ -120,7 +120,7 @@ public:
 	virtual void SetSpawn(bool Value) {}
 
 	virtual void SkillSetting(int32 Num) {}
-	virtual void SkillDestroy() {}
+	virtual void SkillDestroy(int32 Num) {}
 
 public:
 	virtual void ChangeAIAnimType(uint8 AnimType) {}
