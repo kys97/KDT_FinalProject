@@ -21,11 +21,16 @@ protected:
 	FString mWizardName;
 	EWizardJob mWizardJob;
 
-	int32 mWizardLevel = 0;
+	int32 mWizardLevel = 1;
 	int32 mWizardExp = 0;
 	bool mRespawn = false;
+	bool mTutorial = false;
 
 	AWizardPlayerState* mWizardPlayerState;
+	int32 mHPPotionCount = 0;
+	int32 mMPPotionCount = 0;
+	int32 mAttackItemCount = 0;
+	int32 mArmorItemCount = 0;
 
 public:
 	void SetWizardName(FString name)
@@ -57,9 +62,25 @@ public:
 
 	AWizardPlayerState* GetState() { return mWizardPlayerState; }
 	void SetState(AWizardPlayerState* state) { mWizardPlayerState = state; }
+	void SetItems(int32 hp, int32 mp, int32 attack, int32 armor)
+	{
+		mHPPotionCount = hp;
+		mMPPotionCount = mp;
+		mAttackItemCount = attack;
+		mArmorItemCount = armor;
+	}
+	int32 GetHpItemCnt() { return mHPPotionCount; }
+	int32 GetMpItemCnt() { return mMPPotionCount; }
+	int32 GetAttackItemCnt() { return mAttackItemCount; }
+	int32 GetArmorItemCnt() { return mArmorItemCount; }
 
-	
+	UFUNCTION(BlueprintCallable)
+	bool IsTutorial() { return mTutorial; }
+	UFUNCTION(BlueprintCallable)
+	void SetTutorial(bool tutorial) { mTutorial = tutorial; }
+
 	bool IsRespawn() { return mRespawn; }
+	void SetRespawn(bool is_respawn) { mRespawn = is_respawn; }
 	void RespawnGame()
 	{
 		mWizardLevel *= 0.7f;

@@ -2,6 +2,7 @@
 
 
 #include "ChangeLevelPoint.h"
+#include "Character/Wizard.h"
 
 // Sets default values
 AChangeLevelPoint::AChangeLevelPoint()
@@ -50,6 +51,12 @@ void AChangeLevelPoint::BeginOverlap(UPrimitiveComponent* OverlappedComponent,
 	AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 	bool bFromSweep, const FHitResult& SweepResult)
 {
+	AWizard* WizardPlayer = Cast<AWizard>(OtherActor);
+	if (WizardPlayer)
+	{
+		WizardPlayer->SaveWizardInfo();
+	}
+
 	UGameplayStatics::OpenLevel(GetWorld(), mLevelName);
 }
 

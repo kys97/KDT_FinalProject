@@ -55,6 +55,13 @@ AWizard::AWizard()
 	bUseControllerRotationRoll = false;
 }
 
+void AWizard::SaveWizardInfo()
+{
+	GetGameInstance<UWizardGameInstance>()->SetState(mState);
+	GetGameInstance<UWizardGameInstance>()->SetItems(mHPPotionCount, mMPPotionCount, mAttackItemCount, mArmorItemCount);
+	GetGameInstance<UWizardGameInstance>()->SetRespawn(true);
+}
+
 void AWizard::InitializePlayerController()
 {
 	// Respawn & State Setting
@@ -68,6 +75,10 @@ void AWizard::InitializePlayerController()
 			if (GetGameInstance<UWizardGameInstance>()->IsRespawn())
 			{
 				mState = GetGameInstance<UWizardGameInstance>()->GetState();
+				mHPPotionCount = GetGameInstance<UWizardGameInstance>()->GetHpItemCnt();
+				mMPPotionCount = GetGameInstance<UWizardGameInstance>()->GetMpItemCnt();
+				mAttackItemCount = GetGameInstance<UWizardGameInstance>()->GetAttackItemCnt();
+				mArmorItemCount = GetGameInstance<UWizardGameInstance>()->GetArmorItemCnt();
 			}
 			else
 			{
@@ -76,6 +87,8 @@ void AWizard::InitializePlayerController()
 			}
 
 			// Set Exp UI
+			SetHPUI(mState->mHP / mState->mHPMax);
+			SetMPUI(mState->mMP / mState->mMPMax);
 			GetExp(0);
 		}
 		else
@@ -258,11 +271,17 @@ void AWizard::CheckLevelUp()
 		mState->mSecondSkillAttackDamage += 50.f;
 		mState->mThirdSkillAttackDamage += 50.f;
 		mState->mArmorPoint += 50.f;
+		
 		mState->mHPMax += 50;
 		mState->mMPMax += 50;
 
+		mState->mHP = mState->mHPMax;
+		mState->mMP = mState->mMPMax;
+
 		Instance->SetState(mState);
 	}
+	SetHPUI(mState->mHP / mState->mHPMax);
+	SetMPUI(mState->mMP / mState->mMPMax);
 	SetExpUI(mState->mExp / (mState->mLevel * 500));
 }
 

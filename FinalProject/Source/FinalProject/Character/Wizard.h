@@ -67,6 +67,7 @@ public:
 	bool GetMoveEnabled() { return mAnimInstance->MoveEnable(); }
 	bool GetWizardDeath() { return mAnimInstance->GetIsDeath(); }
 	AWizardPlayerState* GetWizardPlayerState() { return mState; }
+	void SaveWizardInfo();
 
 protected:
 	void InitializePlayerController();
