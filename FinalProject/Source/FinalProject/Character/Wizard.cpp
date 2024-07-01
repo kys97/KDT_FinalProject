@@ -98,7 +98,11 @@ void AWizard::InitializePlayerController()
 				break;
 			}
 
-			// Set Exp UI
+			// Set UI
+			GetController<AWizardPlayerController>()->GetGameWidget()->UseHPpotionItem(mHPPotionCount);
+			GetController<AWizardPlayerController>()->GetGameWidget()->UseMPpotionItem(mMPPotionCount);
+			GetController<AWizardPlayerController>()->GetGameWidget()->SetAttackItemCount(mAttackItemCount);
+			GetController<AWizardPlayerController>()->GetGameWidget()->SetArmorItemCount(mArmorItemCount);
 			SetHPUI(mState->mHP / mState->mHPMax);
 			SetMPUI(mState->mMP / mState->mMPMax);
 			GetExp(0);
