@@ -24,6 +24,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	FName mLevelName;
 
+	UPROPERTY(EditAnywhere)
+	UParticleSystemComponent* mParticle;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

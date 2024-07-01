@@ -18,6 +18,15 @@ AChangeLevelPoint::AChangeLevelPoint()
 	mTrigger->SetCollisionProfileName(TEXT("PlayerTrigger"));
 
 	mRoot->bVisualizeComponent = true;
+
+	mParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("StonParticle"));
+	mParticle->SetupAttachment(mRoot);
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> Particle{ TEXT("/Script/Engine.ParticleSystem'/Game/AI/Asset/Particle/P_Summon_Portal.P_Summon_Portal'") };
+	if (Particle.Succeeded())
+	{
+		mParticle->SetTemplate(Particle.Object);
+	}
 }
 
 // Called when the game starts or when spawned
