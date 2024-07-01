@@ -58,8 +58,8 @@ AWizard::AWizard()
 void AWizard::InitializePlayerController()
 {
 	// Respawn & State Setting
-	AWizardPlayerController* WizardPlayerController = Cast<AWizardPlayerController>(GetController());
-	if (WizardPlayerController)
+	AWizardPlayerController* WizardPlayerController = Cast<AWizardPlayerController>(GetWorld()->GetFirstPlayerController());
+	if (WizardPlayerController && WizardPlayerController->IsLocalPlayerController())
 	{
 		mState = WizardPlayerController->GetPlayerState<AWizardPlayerState>();
 
@@ -75,22 +75,13 @@ void AWizard::InitializePlayerController()
 				GetGameInstance<UWizardGameInstance>()->SetState(mState);
 			}
 
-			// Set Exp UI
-			GetExp(0);
+			OnInitialize = WizardPlayerController->GameWidgetOnInitialize(mHPPotionCount, mMPPotionCount, mAttackItemCount, mArmorItemCount);
 		}
 		else
-			UE_LOG(LogTemp, Warning, TEXT("PlayerState is null!"));
-
-		// Set Item Cnt
-		WizardPlayerController->GetGameWidget()->UseHPpotionItem(mHPPotionCount);
-		WizardPlayerController->GetGameWidget()->UseMPpotionItem(mMPPotionCount);
-		WizardPlayerController->GetGameWidget()->SetAttackItemCount(mAttackItemCount);
-		WizardPlayerController->GetGameWidget()->SetArmorItemCount(mArmorItemCount);
-		
-		OnInitialize = true;
+			UE_LOG(LogTemp, Warning, TEXT("Wizard : BeginPlay : PlayerState is null!"));
 	}
 	else
-		UE_LOG(LogTemp, Warning, TEXT("PlayerController is null!"));
+		UE_LOG(LogTemp, Warning, TEXT("Wizard : BeginPlay : PlayerController is null!"));
 }
 
 // Called when the game starts or when spawned
@@ -196,37 +187,40 @@ float AWizard::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AContro
 		}
 
 		// Damage Set
-		// AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
-		if (Damage > 0) // deal
+		AWizardPlayerState* State = GetPlayerState<AWizardPlayerState>();
+		if (State)
 		{
-			Damage -= mState->mArmorPoint;
+			if (Damage > 0) // deal
+			{
+				Damage -= State->mArmorPoint;
 
-			// if Damage is less than armorPoint, Take Damage Set 1
-			if (Damage <= 0) Damage = 1.f;
-		}
+				// if Damage is less than armorPoint, Take Damage Set 1
+				if (Damage <= 0) Damage = 1.f;
+			}
 
-		// Take Damage
-		mState->mHP -= Damage;
-		if (mState->mHP > mState->mHPMax) mState->mHP = mState->mHPMax;
+			// Take Damage
+			State->mHP -= Damage;
+			if (State->mHP > State->mHPMax) State->mHP = State->mHPMax;
 
-		// Set HP UI
-		SetHPUI((float)mState->mHP / (float)mState->mHPMax);
-		
-		// Death Check
-		if (mState->mHP <= 0)
-		{
-			// Collision Set
-			GetCapsuleComponent()->SetCollisionProfileName(TEXT("NoCollision"));
-			GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
+			// Set HP UI
+			SetHPUI((float)State->mHP / (float)State->mHPMax);
 
-			// Data Set
-			if (HasAuthority())
-				SetDeath(true);
-			else
-				ServerSetDeath(this, true);
-			
-			// UI Set
-			GetController<AWizardPlayerController>()->GetGameWidget()->PlayerDeath();
+			// Death Check
+			if (State->mHP <= 0)
+			{
+				// Collision Set
+				GetCapsuleComponent()->SetCollisionProfileName(TEXT("NoCollision"));
+				GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
+
+				// Data Set
+				if (HasAuthority())
+					SetDeath(true);
+				else
+					ServerSetDeath(this, true);
+
+				// UI Set
+				GetController<AWizardPlayerController>()->GetGameWidget()->PlayerDeath();
+			}
 		}
 	}
 
@@ -298,7 +292,13 @@ void AWizard::SetHPUI(const float hp_rate)
 void AWizard::SetMPUI(const float mp_rate)
 {
 	// MP UI Set
-	GetController<AWizardPlayerController>()->GetGameWidget()->SetMPBar(mp_rate);
+	AWizardPlayerController* WizardPlayerController = Cast<AWizardPlayerController>(GetController());
+	if (WizardPlayerController)
+	{
+		WizardPlayerController->GetGameWidget()->SetMPBar(mp_rate);
+	}
+	else
+		UE_LOG(LogTemp, Warning, TEXT("Wizard : SetMPUI : PlayerController is null!"));
 }
 
 // Set Skill Cooltime

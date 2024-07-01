@@ -118,12 +118,23 @@ void UGameWidget::EndArmorPointItem()
 
 void UGameWidget::SetHPBar(const float hp_per)
 {
-	WizardWidget->SetHPBar(hp_per);
+	if (WizardWidget)
+	{
+		WizardWidget->SetHPBar(hp_per);
+	}
+	else
+		UE_LOG(LogTemp, Warning, TEXT("GameWidget : SetHPBar : WizardWidget is null!"));
 }
 
 void UGameWidget::SetMPBar(const float mp_per)
 {
-	WizardWidget->SetMPBar(mp_per);
+
+	if (WizardWidget != nullptr)
+	{
+		WizardWidget->SetMPBar(mp_per);
+	}
+	else
+		UE_LOG(LogTemp, Warning, TEXT("GameWidget : SetHPBar : WizardWidget is null!"));
 }
 
 #pragma endregion

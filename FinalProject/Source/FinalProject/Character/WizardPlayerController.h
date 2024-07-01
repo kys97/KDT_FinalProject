@@ -26,6 +26,7 @@ protected:
 	
 public:
 	UGameWidget* GetGameWidget() { return mGameWidget; }
+	bool GameWidgetOnInitialize(int32 hp_cnt, int32 mp_cnt, int32 attack_cnt, int32 armor_cnt);
 
 protected:
 	virtual void BeginPlay() override;

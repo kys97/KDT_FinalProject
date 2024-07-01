@@ -77,6 +77,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	
+
 	void GetExp(float exp);
 private:
 	void CheckLevelUp();
@@ -97,9 +98,7 @@ public:
 	void UseMpItem();
 	void UseAttackItem();
 	void UseArmorItem();
-	UFUNCTION()
 	void EndAttackItem(float normal, float first, float second, float third);
-	UFUNCTION()
 	void EndArmorItem(float armor);
 
 protected:

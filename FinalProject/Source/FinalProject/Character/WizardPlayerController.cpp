@@ -16,6 +16,29 @@ AWizardPlayerController::AWizardPlayerController()
 	}
 }
 
+bool AWizardPlayerController::GameWidgetOnInitialize(int32 hp_cnt, int32 mp_cnt, int32 attack_cnt, int32 armor_cnt)
+{
+	if (IsLocalPlayerController())
+	{
+		// UI Widget Setting
+		mGameWidget = CreateWidget<UGameWidget>(GetWorld(), mGameWidgetClass);
+		mGameWidget->AddToViewport();
+
+		if (mGameWidget)
+		{
+			// Set Item Cnt
+			mGameWidget->UseHPpotionItem(hp_cnt);
+			mGameWidget->UseMPpotionItem(mp_cnt);
+			mGameWidget->SetAttackItemCount(attack_cnt);
+			mGameWidget->SetArmorItemCount(armor_cnt);
+			mGameWidget->SetExpBar(0);
+
+			return true;
+		}
+	}
+	return false;
+}
+
 void AWizardPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -32,10 +55,6 @@ void AWizardPlayerController::BeginPlay()
 		const UInputDataConfig* InputDataConfig = GetDefault<UInputDataConfig>();
 		Subsystem->AddMappingContext(InputDataConfig->WizardInputContext, 0);
 	}
-
-	// UI Widget Setting
-	mGameWidget = CreateWidget<UGameWidget>(GetWorld(), mGameWidgetClass);
-	mGameWidget->AddToViewport();
 }
 
 void AWizardPlayerController::SetupInputComponent()
