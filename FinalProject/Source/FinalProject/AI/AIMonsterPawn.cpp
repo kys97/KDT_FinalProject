@@ -192,7 +192,7 @@ void AAIMonsterPawn::NomalMonsterTakeDamage(float Damage, FDamageEvent const& Da
 		//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Client Log! AAIMonsterPawn/Monster mHPPercent : %f"), mMonsterState->GetAIHPPercent()));
 		//UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/Monster mHP : %f"), mMonsterState->GetAIHPPercent());
 
-		if (Damage >= 10.f)
+		if (Damage >= mMonsterState->GetArmorPower())
 		{
 			ChangeAnimLoop(true);
 			ChangeAIAnimType((uint8)EMonsterAnimType::TakeDamage);
@@ -276,7 +276,7 @@ void AAIMonsterPawn::BossMonsterTakeDamage(float Damage, FDamageEvent const& Dam
 		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Client Log! AAIMonsterPawn/Boss mHP : %d"), mMonsterState->GetAIHP()));
 		UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/Boss mHP : %f"), mMonsterState->GetAIHP());
 
-		if (Damage >= 300.f)
+		if (Damage >= mMonsterState->GetArmorPower())
 		{
 			ChangeAIAnimType((uint8)EMonsterAnimType::TakeDamage);
 

@@ -153,6 +153,9 @@ public:
 	UFUNCTION()
 	void AnimNotify_ChangeIdle();
 
+	UFUNCTION()
+	void AnimNotify_SpawnEnd();
+
 public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	

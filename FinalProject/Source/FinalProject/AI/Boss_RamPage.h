@@ -38,11 +38,12 @@ protected:
 	float mChangeSkillDuration = 10.f;
 	bool mSkillEnable = false;
 
+	bool mSpawn = false;
+	float mChangeAnimTime = 0.f;
+
 	bool mDestroy = false;
 	float mDestroyTime = 0.f;
 	float mDestroyDuration = 6.f;
-
-	float Seed = 0.f;
 
 protected:
 	void SetCapsuleCollision();
@@ -60,14 +61,15 @@ public:
 		AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	//UFUNCTION()
-	//void SkillOverlap(UPrimitiveComponent* OverlappedComponent,
-	//	AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	//	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 public:
 	virtual EMonsterType GetMonsterType()
 	{
 		return mMonsterType;
+	}
+
+	virtual void SetSpawn(bool Value)
+	{
+		mSpawn = Value;
 	}
 
 	virtual void SkillSetting(int32 Num);

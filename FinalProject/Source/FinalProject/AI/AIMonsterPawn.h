@@ -175,6 +175,8 @@ public:
 	virtual void PlaySkillMontage(uint8 BossState);
 	virtual void PlaySkillMontage_Implementation(uint8 BossState);
 
+	virtual void SetSpawn(bool Value) {}
+
 	virtual void SkillSetting(int32 Num) {}
 	virtual void SkillDestroy(int32 Num) {}
 
