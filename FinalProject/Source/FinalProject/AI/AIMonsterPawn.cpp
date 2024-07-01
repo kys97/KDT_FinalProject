@@ -209,6 +209,8 @@ void AAIMonsterPawn::NomalMonsterTakeDamage(float Damage, FDamageEvent const& Da
 			mCapsule->bApplyImpulseOnDamage = false;
 
 			ChangeAIAnimType((uint8)EMonsterAnimType::Death);
+			mMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			mCapsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 			AIController->UnPossess();
 			AIController->StopAI();
