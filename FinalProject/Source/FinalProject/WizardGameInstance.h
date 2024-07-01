@@ -24,6 +24,7 @@ protected:
 	int32 mWizardLevel = 0;
 	int32 mWizardExp = 0;
 	bool mRespawn = false;
+	bool mTutorial = false;
 
 	AWizardPlayerState* mWizardPlayerState;
 
@@ -58,6 +59,10 @@ public:
 	AWizardPlayerState* GetState() { return mWizardPlayerState; }
 	void SetState(AWizardPlayerState* state) { mWizardPlayerState = state; }
 
+	UFUNCTION(BlueprintCallable)
+	bool IsTutorial() { return mTutorial; }
+	UFUNCTION(BlueprintCallable)
+	void SetTutorial(bool tutorial) { mTutorial = tutorial; }
 	
 	bool IsRespawn() { return mRespawn; }
 	void RespawnGame()

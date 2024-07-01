@@ -2,6 +2,7 @@
 
 
 #include "ReadyWidget.h"
+#include "../WizardGameInstance.h"
 #include "Components/CanvasPanelSlot.h"
 
 void UReadyWidget::NativeConstruct()
@@ -46,6 +47,7 @@ void UReadyWidget::TutorialButtonReleased()
 
 void UReadyWidget::TutorialButtonClick()
 {
+	GetGameInstance<UWizardGameInstance>()->SetTutorial(true);
 	UGameplayStatics::OpenLevel(GetWorld(), TEXT("Tutorial"));
 }
 
@@ -73,5 +75,6 @@ void UReadyWidget::StartButtonClick()
 {
 	// Server IP Address
 	// 192.168.0.176 : Game Port
+	GetGameInstance<UWizardGameInstance>()->SetTutorial(false);
 	UGameplayStatics::OpenLevel(GetWorld(), TEXT("MainGame"));
 }

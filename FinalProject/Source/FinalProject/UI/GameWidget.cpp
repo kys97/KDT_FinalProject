@@ -24,6 +24,7 @@ void UGameWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	WizardExpPB = Cast<UProgressBar>(GetWidgetFromName(TEXT("Exp_PB")));
+
 }
 
 void UGameWidget::NativeDestruct()
