@@ -47,7 +47,7 @@ void UReadyWidget::TutorialButtonReleased()
 
 void UReadyWidget::TutorialButtonClick()
 {
-	GetGameInstance<UWizardGameInstance>()->SetTutorial(true);
+	GetGameInstance<UWizardGameInstance>()->BeginTutorial();
 	UGameplayStatics::OpenLevel(GetWorld(), TEXT("Tutorial"));
 }
 
@@ -75,6 +75,6 @@ void UReadyWidget::StartButtonClick()
 {
 	// Server IP Address
 	// 192.168.0.176 : Game Port
-	GetGameInstance<UWizardGameInstance>()->SetTutorial(false);
+	GetGameInstance<UWizardGameInstance>()->BeginMainGame();
 	UGameplayStatics::OpenLevel(GetWorld(), TEXT("MainGame"));
 }

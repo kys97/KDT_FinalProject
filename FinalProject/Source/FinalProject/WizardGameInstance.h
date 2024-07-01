@@ -23,14 +23,14 @@ protected:
 
 	int32 mWizardLevel = 1;
 	int32 mWizardExp = 0;
-	bool mRespawn = false;
-	bool mTutorial = false;
 
 	AWizardPlayerState* mWizardPlayerState;
 	int32 mHPPotionCount = 0;
 	int32 mMPPotionCount = 0;
 	int32 mAttackItemCount = 0;
 	int32 mArmorItemCount = 0;
+
+	EMainGameState mWizardGameState = EMainGameState::Main;
 
 public:
 	void SetWizardName(FString name)
@@ -75,24 +75,31 @@ public:
 	int32 GetArmorItemCnt() { return mArmorItemCount; }
 
 	UFUNCTION(BlueprintCallable)
-	bool IsTutorial() { return mTutorial; }
+	EMainGameState GetWizardGameState() { return mWizardGameState; }
 	UFUNCTION(BlueprintCallable)
-	void SetTutorial(bool tutorial) { mTutorial = tutorial; }
-
-	bool IsRespawn() { return mRespawn; }
-	void SetRespawn(bool is_respawn) { mRespawn = is_respawn; }
-	void RespawnGame()
-	{
+	void BeginMain() { mWizardGameState = EMainGameState::Main; }
+	UFUNCTION(BlueprintCallable)
+	void BeginReady() { mWizardGameState = EMainGameState::Ready; }
+	UFUNCTION(BlueprintCallable)
+	void BeginTutorial() { mWizardGameState = EMainGameState::Tutorial; }
+	UFUNCTION(BlueprintCallable)
+	void BeginMainGame() { mWizardGameState = EMainGameState::MainGame; }
+	UFUNCTION(BlueprintCallable)
+	void BeginBoss() { mWizardGameState = EMainGameState::Boss; }
+	UFUNCTION(BlueprintCallable)
+	void BeginRespawn() 
+	{ 
+		mWizardGameState = EMainGameState::Respawn; 
 		mWizardLevel *= 0.7f;
 		if (mWizardLevel < 1) mWizardLevel = 1;
 		mWizardExp = 0;
-		mRespawn = true;
 	}
+
 	void ResetGame()
 	{
 		mWizardName = nullptr;
 		mWizardLevel = 0;
 		mWizardExp = 0;
-		mRespawn = false;
+		BeginMain();
 	}
 };

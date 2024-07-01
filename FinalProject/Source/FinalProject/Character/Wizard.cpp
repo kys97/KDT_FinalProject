@@ -59,7 +59,6 @@ void AWizard::SaveWizardInfo()
 {
 	GetGameInstance<UWizardGameInstance>()->SetState(mState);
 	GetGameInstance<UWizardGameInstance>()->SetItems(mHPPotionCount, mMPPotionCount, mAttackItemCount, mArmorItemCount);
-	GetGameInstance<UWizardGameInstance>()->SetRespawn(true);
 }
 
 void AWizard::InitializePlayerController()
@@ -72,18 +71,31 @@ void AWizard::InitializePlayerController()
 
 		if (mState)
 		{
-			if (GetGameInstance<UWizardGameInstance>()->IsRespawn())
+			switch (GetGameInstance<UWizardGameInstance>()->GetWizardGameState())
 			{
+			case EMainGameState::Main:
+				break;
+			case EMainGameState::Ready:
+				break;
+			case EMainGameState::Tutorial:
+				break;
+			case EMainGameState::MainGame:
+				GetGameInstance<UWizardGameInstance>()->SetLevel(mState->mLevel);
+				GetGameInstance<UWizardGameInstance>()->SetState(mState);
+				break;
+			case EMainGameState::Boss:
 				mState = GetGameInstance<UWizardGameInstance>()->GetState();
 				mHPPotionCount = GetGameInstance<UWizardGameInstance>()->GetHpItemCnt();
 				mMPPotionCount = GetGameInstance<UWizardGameInstance>()->GetMpItemCnt();
 				mAttackItemCount = GetGameInstance<UWizardGameInstance>()->GetAttackItemCnt();
 				mArmorItemCount = GetGameInstance<UWizardGameInstance>()->GetArmorItemCnt();
-			}
-			else
-			{
-				GetGameInstance<UWizardGameInstance>()->SetLevel(mState->mLevel);
-				GetGameInstance<UWizardGameInstance>()->SetState(mState);
+				break;
+			case EMainGameState::Respawn:
+				mState = GetGameInstance<UWizardGameInstance>()->GetState();
+				GetGameInstance<UWizardGameInstance>()->BeginMainGame();
+				break;
+			default:
+				break;
 			}
 
 			// Set Exp UI
@@ -259,6 +271,7 @@ void AWizard::CheckLevelUp()
 	UWizardGameInstance* Instance = GetGameInstance<UWizardGameInstance>();
 	while (mState->mLevel * 500 < mState->mExp) // level up
 	{
+
 		mState->mExp -= mState->mLevel * 500;
 		mState->mLevel++;
 
@@ -279,10 +292,13 @@ void AWizard::CheckLevelUp()
 		mState->mMP = mState->mMPMax;
 
 		Instance->SetState(mState);
+
+		SetHPUI(mState->mHP / mState->mHPMax);
+		SetMPUI(mState->mMP / mState->mMPMax);
 	}
-	SetHPUI(mState->mHP / mState->mHPMax);
-	SetMPUI(mState->mMP / mState->mMPMax);
 	SetExpUI(mState->mExp / (mState->mLevel * 500));
+
+	SaveWizardInfo();
 }
 
 void AWizard::SetInfoUI()
@@ -312,11 +328,13 @@ void AWizard::HealHP(bool IsHealing)
 void AWizard::SetHPUI(const float hp_rate)
 {
 	// HP UI Set
+	SaveWizardInfo();
 	GetController<AWizardPlayerController>()->GetGameWidget()->SetHPBar(hp_rate);
 }
 void AWizard::SetMPUI(const float mp_rate)
 {
 	// MP UI Set
+	SaveWizardInfo();
 	GetController<AWizardPlayerController>()->GetGameWidget()->SetMPBar(mp_rate);
 }
 

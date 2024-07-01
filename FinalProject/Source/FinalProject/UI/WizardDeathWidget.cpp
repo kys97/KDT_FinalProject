@@ -63,7 +63,7 @@ void UWizardDeathWidget::RespawnButtonReleased()
 
 void UWizardDeathWidget::RespawnButtonClick()
 {
-	GetGameInstance<UWizardGameInstance>()->RespawnGame();
+	GetGameInstance<UWizardGameInstance>()->BeginRespawn();
 	UGameplayStatics::OpenLevel(GetWorld(), TEXT("MainGame"));
 }
 

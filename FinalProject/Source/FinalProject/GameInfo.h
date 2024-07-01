@@ -43,6 +43,17 @@
 
 DECLARE_LOG_CATEGORY_EXTERN(Network, Log, All);
 
+UENUM(BlueprintType)
+enum class EMainGameState : uint8
+{
+	Main,
+	Ready, 
+	Tutorial, 
+	MainGame,
+	Boss, 
+	Respawn
+};
+
 // 플레이어 공격 Animation ENUM
 UENUM(BlueprintType)
 enum class EWizardAttackAnimTypes : uint8
