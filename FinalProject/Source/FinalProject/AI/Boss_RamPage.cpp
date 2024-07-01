@@ -92,7 +92,8 @@ void ABoss_RamPage::BeginPlay()
 		}
 	}
 
-	ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
+	ChangeAIAnimType((uint8)EMonsterAnimType::Spawn);
+	mSpawn = true;
 
 	mBodyCapsule->OnComponentBeginOverlap.AddDynamic(this, &ABoss_RamPage::AttackOverlap);
 	mRightArm->OnComponentBeginOverlap.AddDynamic(this, &ABoss_RamPage::AttackOverlap);
@@ -109,6 +110,9 @@ void ABoss_RamPage::Tick(float DeltaTime)
 	if (!IsValid(mMonsterState) || !IsValid(mAnimInst))
 		return;
 
+	if (mSpawn)
+		return;
+	
 	if (mState->GetAIHPPercent() > 0.f)
 	{
 		ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
@@ -135,7 +139,6 @@ void ABoss_RamPage::Tick(float DeltaTime)
 			mSkillEnable = false;
 			mChangeSkillTime = 0;
 		}
-
 	}
 
 	if (mDestroy)

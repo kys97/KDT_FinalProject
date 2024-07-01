@@ -162,6 +162,13 @@ void UMonsterAnimInstance::AnimNotify_ChangeIdle()
 	mChangeIdle = FMath::RandBool();
 }
 
+void UMonsterAnimInstance::AnimNotify_SpawnEnd()
+{
+	AAIMonsterPawn* Pawn = Cast<AAIMonsterPawn>(TryGetPawnOwner());
+
+	Pawn->SetSpawn(false);
+}
+
 void UMonsterAnimInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
