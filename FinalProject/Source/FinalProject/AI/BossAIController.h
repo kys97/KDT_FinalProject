@@ -47,6 +47,8 @@ public:
 	void SetSightConfig();
 	void StopAI();
 
+	void AIMoveToLocation(const FVector& DestLocation);
+
 public:
 	UAIHUDWidget* GetHPBarWidget()
 	{

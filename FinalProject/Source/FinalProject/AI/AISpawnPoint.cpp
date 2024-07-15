@@ -51,9 +51,6 @@ void AAISpawnPoint::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("Log! AAISpawnPoint/Tick"));
-	//UE_LOG(Network, Warning, TEXT("Log! AAISpawnPoint/Tick"));
-
 	if (HasAuthority())
 	{
 		// 생성된 오브젝트가 nullptr 일 경우에는

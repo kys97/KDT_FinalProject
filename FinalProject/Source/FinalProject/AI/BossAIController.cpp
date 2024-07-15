@@ -132,3 +132,8 @@ void ABossAIController::StopAI()
 	if (IsValid(BehaviorTreeComponent))
 		BehaviorTreeComponent->StopTree(EBTStopMode::Safe);
 }
+
+void ABossAIController::AIMoveToLocation(const FVector& DestLocation)
+{
+	MoveToLocation(DestLocation);
+}

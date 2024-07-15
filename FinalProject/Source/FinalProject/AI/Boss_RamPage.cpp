@@ -115,17 +115,15 @@ void ABoss_RamPage::Tick(float DeltaTime)
 	
 	if (mState->GetAIHPPercent() > 0.f)
 	{
-		ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
 		mChangeSkillTime += DeltaTime;
 
 		if (mChangeSkillTime >= mChangeSkillDuration)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Green, FString::Printf(TEXT("mChangeSkillTime : %f"), mChangeSkillTime));
 			GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Green, FString::Printf(TEXT("mHPPercent : %f"), mMonsterState->GetAIHPPercent()));
 			if (mMonsterState->GetAIHPPercent() <= 0.3f)
 			{
 				PlaySkillMontage((uint8)EBossCondition::Danger);
-				mChangeSkillDuration = 1.f;
+				mChangeSkillDuration = 0.f;
 			}
 			else if (mMonsterState->GetAIHPPercent() <= 0.7f)
 			{
@@ -139,6 +137,8 @@ void ABoss_RamPage::Tick(float DeltaTime)
 			mSkillEnable = false;
 			mChangeSkillTime = 0;
 		}
+
+		ChangeAIAnimType((uint8)EMonsterAnimType::Idle);
 	}
 
 	if (mDestroy)
@@ -163,11 +163,8 @@ void ABoss_RamPage::Tick(float DeltaTime)
 void ABoss_RamPage::AttackOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("Hit")));
-
 	FDamageEvent DmgEvent;
 	OtherActor->TakeDamage(mState->GetAttackPower(), DmgEvent, GetInstigatorController(), this);
-
 }
 
 void ABoss_RamPage::SkillSetting(int32 Num)
@@ -183,7 +180,7 @@ void ABoss_RamPage::SkillSetting(int32 Num)
 		break;
 	}
 	case 2:	{
-		SpawnSkill_1();
+		SpawnSkill_Rolling();
 		break;
 	}
 	case 3:	{
@@ -297,10 +294,6 @@ float ABoss_RamPage::RandRangeNumber(float Min, float Max)
 	return RandNum;
 }
 
-void ABoss_RamPage::SpawnSkill_1()
-{
-}
-
 void ABoss_RamPage::SpawnSkill_FireEmit()
 {
 	FActorSpawnParameters	SpawnParam;
@@ -316,6 +309,25 @@ void ABoss_RamPage::SpawnSkill_FireEmit()
 	mEmitEffect->SetSkillPower(mState->GetSkill1_Power());
 
 	SkillActorArray.Add(Cast<AActor>(mEmitEffect));
+}
+
+void ABoss_RamPage::SpawnSkill_Rolling()
+{
+	ABossAIController* BossController = Cast<ABossAIController>(GetController());
+
+	AActor* Target = Cast<AActor>(BossController->GetBlackboardComponent()->GetValueAsObject(TEXT("Target")));
+
+	if (!IsValid(Target))
+	{
+		FVector MoveLocation = GetActorLocation() + GetActorForwardVector() * 1000.f;
+		BossController->AIMoveToLocation(MoveLocation);
+	}
+	else
+	{
+		FVector MoveLocation = GetActorLocation() + GetActorForwardVector() * 1000.f;
+
+		BossController->AIMoveToLocation(MoveLocation);
+	}
 }
 
 void ABoss_RamPage::SpawnSkill_3()

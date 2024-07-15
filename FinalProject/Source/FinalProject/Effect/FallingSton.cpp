@@ -93,8 +93,6 @@ void AFallingSton::BeginOverlap(UPrimitiveComponent* OverlappedComponent,
 	AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 	bool bFromSweep, const FHitResult& SweepResult)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("AFallingSton")));
-
 	mIsOverlap = true;
 	mAttackTime = 0.f;
 	OverlapActor = OtherActor;
