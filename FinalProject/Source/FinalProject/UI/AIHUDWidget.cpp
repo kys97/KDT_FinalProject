@@ -41,7 +41,6 @@ void UAIHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 
 		if (mChangeTime >= mChangeDuration)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 50.f, FColor::Red, FString::Printf(TEXT("Client Log! UAIHUDWidget/mHPPercent : %f"), NewPercent));
 			mOldHPPercent = NewPercent;
 			mChangeHP = false;
 			mChangeTime = 0.f;

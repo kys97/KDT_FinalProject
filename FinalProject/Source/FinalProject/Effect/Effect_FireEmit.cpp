@@ -28,7 +28,6 @@ AEffect_FireEmit::AEffect_FireEmit()
 void AEffect_FireEmit::BeginPlay()
 {
 	Super::BeginPlay();
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("AEffect_FireEmit BeginPlay"));
 
 	//mIsOverlap = false;
 	mAttackTime = 0.f;
@@ -56,8 +55,6 @@ void AEffect_FireEmit::Tick(float DeltaTime)
 
 void AEffect_FireEmit::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("AEffect_FireEmit Overlap"));
-
 	//mIsOverlap = true;
 	mAttackTime = 0.f;
 	OverlapActor = OtherActor;

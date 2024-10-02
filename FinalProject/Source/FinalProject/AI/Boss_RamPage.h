@@ -81,8 +81,8 @@ protected:
 	void SpawnSkill_GroundSmash();
 	float RandRangeNumber(float Min, float Max);
 
-	void SpawnSkill_1();
 	void SpawnSkill_FireEmit();
+	void SpawnSkill_Rolling();
 	void SpawnSkill_3();
 	void SpawnSkill_4();
 

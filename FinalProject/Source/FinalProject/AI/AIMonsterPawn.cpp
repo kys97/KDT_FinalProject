@@ -189,8 +189,6 @@ void AAIMonsterPawn::NomalMonsterTakeDamage(float Damage, FDamageEvent const& Da
 		mMonsterState->ChangeHP(-Damage);
 
 		mHPBar->SetAIHP(mMonsterState->GetAIHPPercent());
-		//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Client Log! AAIMonsterPawn/Monster mHPPercent : %f"), mMonsterState->GetAIHPPercent()));
-		//UE_LOG(Network, Warning, TEXT("Server Log! AAIMonsterPawn/Monster mHP : %f"), mMonsterState->GetAIHPPercent());
 
 		if (Damage >= mMonsterState->GetArmorPower())
 		{
